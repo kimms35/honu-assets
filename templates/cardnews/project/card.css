@@ -1,0 +1,36 @@
+/* honu_dev 카드뉴스 공통 스타일 (노을 배경). 색·크기·위치는 여기서만 정한다. */
+@font-face{font-family:KR;src:local('Noto Sans CJK KR Black');font-weight:900}
+@font-face{font-family:KR;src:local('Noto Sans CJK KR Bold');font-weight:700}
+@font-face{font-family:KR;src:local('Noto Sans CJK KR Medium');font-weight:500}
+:root{--ink:#1B1D36;--sub:#5B6080;--blue:#2E5BFF;--sun:#FFCE54;--warm:#6B2E14}
+*{box-sizing:border-box;margin:0}
+body{width:1080px;height:1350px;font-family:'Inter Display',Inter,KR,sans-serif;color:var(--ink);background:#fff;overflow:hidden;position:relative;word-break:keep-all}
+.stage{position:absolute;left:0;top:0;width:1080px;height:700px;background:linear-gradient(160deg,#FFD35C 0%,#FFB88A 55%,#FF9FC0 100%);overflow:hidden}
+.stage.full{height:1350px}
+.cloud{position:absolute;background:#fff;opacity:.6}
+.meta{position:absolute;top:56px;left:72px;right:72px;display:flex;justify-content:space-between;font-weight:700;font-size:28px;color:#7A3A12}
+.win{position:absolute;background:#fff;border-radius:36px;box-shadow:0 50px 90px -30px rgba(80,30,20,.42),0 12px 28px rgba(80,30,20,.12)}
+.bar{height:64px;display:flex;align-items:center;gap:12px;padding:0 30px;border-bottom:2px solid #EDF0F8;font-weight:700;font-size:24px;color:#8A90AD}
+.dot{width:14px;height:14px;border-radius:50%;background:#D8DDED}
+.chat{padding:34px 40px;display:flex;flex-direction:column;gap:24px}
+.me{align-self:flex-end;background:var(--ink);color:#fff;border-radius:30px 30px 8px 30px;padding:22px 30px;font-weight:700;font-size:34px;line-height:1.42}
+.me mark{color:#fff;background:linear-gradient(transparent 58%,rgba(255,206,84,.8) 58%)}
+.ai{align-self:flex-start;background:#F1F4FB;border-radius:30px 30px 30px 8px;padding:22px 30px;font-weight:500;font-size:32px;line-height:1.5;color:#2A2E52}
+.ai b{font-weight:700;color:var(--ink)}
+.px{shape-rendering:crispEdges}
+.copy{position:absolute;left:72px;top:762px;right:72px}
+.num{width:76px;height:76px;background:var(--sun);box-shadow:8px 8px 0 var(--ink);border:5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:44px}
+.when{font-weight:700;font-size:34px;color:var(--sub)}
+h1,h2{font-weight:900;letter-spacing:-.045em;line-height:1.16}
+h2{font-size:78px;margin-top:30px}
+p.body{margin-top:26px;font-weight:500;font-size:34px;line-height:1.62;color:var(--sub);letter-spacing:-.02em}
+p.body em{font-style:normal;font-weight:700;color:var(--blue)}
+.sub{font-weight:700;font-size:40px;color:var(--warm);letter-spacing:-.02em}
+.prog{position:absolute;left:72px;bottom:46px;display:flex;gap:10px}
+.prog i{width:18px;height:18px;background:#E6E3EE}.prog i.on{background:var(--ink)}
+.cap{font-weight:700;font-size:28px;color:var(--sub)}
+.row{display:flex;align-items:center;gap:28px;padding:22px 0;border-bottom:2px solid #EDF0F8}
+.row:last-child{border-bottom:0}
+.box{width:44px;height:44px;border:5px solid var(--ink);border-radius:10px;flex-shrink:0}
+.row small{display:block;font-weight:700;font-size:26px;color:var(--sub)}
+.row b{display:block;font-weight:900;font-size:40px;letter-spacing:-.03em;margin-top:2px}
