@@ -44,13 +44,13 @@ p.body em{font-style:normal;font-weight:700;color:var(--blue)}
 @keyframes hop{
 0%{translate:0 0;scale:1.26 .72;animation-timing-function:ease-out}
 13%{translate:0 0;scale:.84 1.2;animation-timing-function:cubic-bezier(.5,1,.89,1)}
-52%{translate:0 -72%;scale:1 1;animation-timing-function:cubic-bezier(.11,0,.5,0)}
+52%{translate:0 -44%;scale:1 1;animation-timing-function:cubic-bezier(.11,0,.5,0)}
 90%{translate:0 0;scale:.88 1.14;animation-timing-function:ease-out}
 100%{translate:0 0;scale:1.26 .72}}
 @keyframes shade{
 0%,100%{scale:1.12 1;opacity:.26;animation-timing-function:ease-out}
 13%{scale:1 1;opacity:.24;animation-timing-function:cubic-bezier(.5,1,.89,1)}
-52%{scale:.55 1;opacity:.1;animation-timing-function:cubic-bezier(.11,0,.5,0)}
+52%{scale:.7 1;opacity:.14;animation-timing-function:cubic-bezier(.11,0,.5,0)}
 90%{scale:1 1;opacity:.24}}
 @keyframes show{from{opacity:0}to{opacity:1}}
 @keyframes draw{from{stroke-dashoffset:40}to{stroke-dashoffset:0}}
