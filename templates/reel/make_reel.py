@@ -29,10 +29,10 @@ ROWS = [
     "..OOOOOOOOOOOO..",
 ]
 PAL = {"O": C_OUT, "B": C_BODY, "W": WHITE, "E": (24, 24, 40), "P": (255, 140, 160)}
-MOODS = ("base", "surprise", "excited", "smile")
+MOODS = ("base", "glint", "surprise", "excited", "smile")
 
 def face(mood, blink):
-    """표정별 눈·입 픽셀. base 기본 / surprise 놀람 / excited 신남 / smile 웃음."""
+    """표정별 눈·입 픽셀. base 기본(검정 눈) / glint 반짝(눈에 흰 점) / surprise 놀람 / excited 신남 / smile 웃음."""
     px = {}
     if mood == "surprise":      # 흰자 안에 작은 눈동자 + 턱에 붙은 세로 입
         for c in (4, 11):
@@ -56,15 +56,16 @@ def face(mood, blink):
     elif mood == "smile":       # ^ ^ 눈
         for c in (4, 11):
             px[(c - 1, 8)] = "E"; px[(c, 7)] = "E"; px[(c + 1, 8)] = "E"
-    elif blink:                 # 기본 눈 깜빡임
+    elif blink and mood == "base":  # 기본 눈 깜빡임
         for x0 in (4, 10):
             px[(x0, 8)] = "E"; px[(x0 + 1, 8)] = "E"
-    else:                       # 기본: 검정 세로 눈 + 왼쪽 위 흰 반짝임 한 칸
+    else:                       # 기본: 검정 세로 눈. glint 는 여기에 왼쪽 위 흰 반짝임 한 칸
         for x0 in (4, 10):
             for y in range(6, 10):
                 for x in (x0, x0 + 1):
                     px[(x, y)] = "E"
-            px[(x0, 6)] = "W"
+            if mood == "glint":
+                px[(x0, 6)] = "W"
     return px
 
 def slime_sprite(blink=False, mood="base"):
