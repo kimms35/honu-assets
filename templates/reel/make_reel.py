@@ -19,36 +19,77 @@ ROWS = [
     ".OBWBBBBBBBBBBO.",
     ".OBBBBBBBBBBBBO.",
     "OBBBBBBBBBBBBBBO",
-    "OBBBWEBBBBWEBBBO",
-    "OBBBEEBBBBEEBBBO",
-    "OBBBEEBBBBEEBBBO",
-    "OBBBEEBBBBEEBBBO",
+    "OBBBBBBBBBBBBBBO",
+    "OBBBBBBBBBBBBBBO",
+    "OBBBBBBBBBBBBBBO",
+    "OBBBBBBBBBBBBBBO",
     "OBBBBBBBBBBBBBBO",
     "OBBBBBBBBBBBBBBO",
     ".OBBBBBBBBBBBBO.",
     "..OOOOOOOOOOOO..",
 ]
-PAL = {"O": C_OUT, "B": C_BODY, "W": WHITE, "E": (24, 24, 40)}
+PAL = {"O": C_OUT, "B": C_BODY, "W": WHITE, "E": (24, 24, 40), "P": (255, 140, 160)}
+MOODS = ("base", "surprise", "excited", "smile")
 
-def slime_sprite(blink=False):
-    rows = list(ROWS)
-    if blink:
-        for j in (6, 7, 9):
-            rows[j] = "OBBBBBBBBBBBBBBO"
-    im = Image.new("RGBA", (16, len(rows)), (0, 0, 0, 0))
-    for j, r in enumerate(rows):
+def face(mood, blink):
+    """표정별 눈·입 픽셀. base 기본 / surprise 놀람 / excited 신남 / smile 웃음."""
+    px = {}
+    if mood == "surprise":      # 흰자 안에 작은 눈동자 + 턱에 붙은 세로 입
+        for c in (4, 11):
+            for y in range(5, 9):
+                for x in (c - 1, c, c + 1):
+                    px[(x, y)] = "W"
+            px[(c, 6)] = "E"; px[(c, 7)] = "E"
+        for x in (7, 8):
+            for y in (10, 11, 12):
+                px[(x, y)] = "E"
+    elif mood == "excited":     # 길어진 눈 + 턱에 붙여 크게 벌린 입
+        for x0 in (4, 10):
+            for y in range(5, 10):
+                for x in (x0, x0 + 1):
+                    px[(x, y)] = "E"
+            px[(x0, 5)] = "W"
+        for x in (6, 7, 8, 9):
+            for y in (11, 12):
+                px[(x, y)] = "E"
+        px[(7, 12)] = "P"; px[(8, 12)] = "P"
+    elif mood == "smile":       # ^ ^ 눈
+        for c in (4, 11):
+            px[(c - 1, 8)] = "E"; px[(c, 7)] = "E"; px[(c + 1, 8)] = "E"
+    elif blink:                 # 기본 눈 깜빡임
+        for x0 in (4, 10):
+            px[(x0, 8)] = "E"; px[(x0 + 1, 8)] = "E"
+    else:                       # 기본: 검정 세로 눈 + 왼쪽 위 흰 반짝임 한 칸
+        for x0 in (4, 10):
+            for y in range(6, 10):
+                for x in (x0, x0 + 1):
+                    px[(x, y)] = "E"
+            px[(x0, 6)] = "W"
+    return px
+
+def slime_sprite(blink=False, mood="base"):
+    im = Image.new("RGBA", (16, len(ROWS)), (0, 0, 0, 0))
+    for j, r in enumerate(ROWS):
         for i, ch in enumerate(r):
             if ch != ".":
                 im.putpixel((i, j), PAL[ch] + (255,))
+    for (x, y), ch in face(mood, blink).items():
+        im.putpixel((x, y), PAL[ch] + (255,))
     return im
 
-def draw_slime(base, cx, ground, scale, t, hop=1.0, period=0.9):
+def get_mood(c):
+    m = c.get("mood", "base")
+    if m not in MOODS:
+        raise SystemExit(f"mood 는 {MOODS} 중 하나여야 합니다: {m}")
+    return m
+
+def draw_slime(base, cx, ground, scale, t, hop=1.0, period=0.9, mood="base"):
     ph = (t / period) % 1.0
     air = math.sin(math.pi * ph)
     jump = air * 150 * scale * hop
     land = max(0.0, 1 - ph / 0.14) + max(0.0, (ph - 0.86) / 0.14)
     sq = land * 0.2 * hop; st = air * 0.07 * hop
-    spr = slime_sprite((t % 3.0) > 2.85)
+    spr = slime_sprite((t % 3.0) > 2.85, mood)
     P = 30 * scale
     big = spr.resize((int(16 * P * (1 + sq - st)), int(14 * P * (1 - sq + st))), Image.NEAREST)
     sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -88,6 +129,7 @@ def make_hook(c, base_dir):
     f1 = fit(c["line1"], FONT_B, 120, 940, 84)
     f2 = fit(c["line2"], FONT_B, 110, 940, 80)
     fb = fit(c["badge"], FONT_B, 58, 620, 44)
+    mood = get_mood(c)
 
     def scene(img, d, t, T):
         text_c(d, 300, c["line1"], f1, INK, 1, shadow=True)
@@ -103,9 +145,9 @@ def make_hook(c, base_dir):
             fr.rectangle([x0 + 10, y0 + 10, x0 + 522, y0 + 590], fill=INK + (255,))
             fr.rectangle([x0, y0, x0 + 512, y0 + 580], fill=INK + (255,))
             img.paste(card, (x0 + 6, y0 + 6))
-            draw_slime(img, 170, 1430, 0.5, t + 0.2, hop=1.0, period=0.8)
+            draw_slime(img, 170, 1430, 0.5, t + 0.2, hop=1.0, period=0.8, mood=mood)
         else:
-            draw_slime(img, 500, 1400, 0.95, t + 0.2, hop=1.0, period=0.8)
+            draw_slime(img, 500, 1400, 0.95, t + 0.2, hop=1.0, period=0.8, mood=mood)
     return scene, 3.6
 
 # ---------- 장면 2~4: 단계 ----------
@@ -117,6 +159,7 @@ def make_step(n, c):
     fn = fit(c["note"], FONT_M, 50, 740, 36)
     starts = [0.35 + i * 0.85 for i in range(len(boxes))]
     note_at = starts[-1] + 0.9
+    mood = get_mood(c)
     T = note_at + 1.6
 
     def scene(img, d, t, T):
@@ -133,7 +176,7 @@ def make_step(n, c):
         a = appear(t, 0.1, 0.3)
         text_c(d, 500 + (1 - a) * 30, c["title1"], ft1, INK, a, shadow=True)
         text_c(d, 625 + (1 - a) * 30, c["title2"], ft2, CORAL, a, shadow=True)
-        draw_slime(img, 270, 445, 0.4, t, hop=hop, period=0.7)
+        draw_slime(img, 270, 445, 0.4, t, hop=hop, period=0.7, mood=mood if t >= starts[-1] + 0.3 else "base")
         for i, b in enumerate(boxes):
             ai = appear(t, starts[i], 0.3)
             y = 840 + i * 170
@@ -154,10 +197,11 @@ def make_cta(c):
     f1 = fit(c["line1"], FONT_B, 80, 940, 60)
     f2 = fit(c["line2"], FONT_B, 78, 940, 60)
     f3 = fit(c.get("small", ""), FONT_R, 44, 900, 34) if c.get("small") else None
+    mood = get_mood(c)
 
     def scene(img, d, t, T):
         a1 = appear(t, 0.1, 0.3)
-        draw_slime(img, W / 2, 760, 0.95, t, hop=1.0, period=0.7)
+        draw_slime(img, W / 2, 760, 0.95, t, hop=1.0, period=0.7, mood=mood)
         text_c(d, 860, c["line1"], f1, INK, a1, shadow=True)
         text_c(d, 965, c["line2"], f2, CORAL, a1, shadow=True)
         if f3:

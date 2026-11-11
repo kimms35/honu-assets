@@ -4,15 +4,23 @@
     "line1": "코드 0줄로",
     "line2": "앱을 만들었어요",
     "badge": "AI한테 시킨 방법 3가지",
-    "images": ["assets/app1.png", "assets/app2.png"]
+    "images": [
+      "assets/app1.png",
+      "assets/app2.png"
+    ]
   },
   "steps": [
     {
       "title1": "만들고 싶은 걸",
       "title2": "말로 설명해요",
       "boxes": [
-        {"text": "약 먹을 시간 알려주는 앱 만들어줘"},
-        {"text": "네, 만들어 볼게요!", "tone": "blue"}
+        {
+          "text": "약 먹을 시간 알려주는 앱 만들어줘"
+        },
+        {
+          "text": "네, 만들어 볼게요!",
+          "tone": "blue"
+        }
       ],
       "note": "코드 말고 하고 싶은 걸 말해요"
     },
@@ -20,9 +28,18 @@
       "title1": "작게 쪼개서",
       "title2": "하나씩 시켜요",
       "boxes": [
-        {"text": "알림 화면 만들어줘", "check": true},
-        {"text": "기록 화면 만들어줘", "check": true},
-        {"text": "달력도 넣어줘", "check": true}
+        {
+          "text": "알림 화면 만들어줘",
+          "check": true
+        },
+        {
+          "text": "기록 화면 만들어줘",
+          "check": true
+        },
+        {
+          "text": "달력도 넣어줘",
+          "check": true
+        }
       ],
       "note": "한 번에 다 시키면 꼬여요"
     },
@@ -30,15 +47,24 @@
       "title1": "에러가 나면",
       "title2": "그대로 붙여넣어요",
       "boxes": [
-        {"text": "Error: 뭔지 모를 빨간 글씨", "tone": "red"},
-        {"text": "AI가 알아서 고쳐줘요", "tone": "green", "check": true}
+        {
+          "text": "Error: 뭔지 모를 빨간 글씨",
+          "tone": "red"
+        },
+        {
+          "text": "AI가 알아서 고쳐줘요",
+          "tone": "green",
+          "check": true
+        }
       ],
-      "note": "이해 못 해도 괜찮아요"
+      "note": "이해 못 해도 괜찮아요",
+      "mood": "excited"
     }
   ],
   "cta": {
     "line1": "앱 만들고 싶다던",
     "line2": "친구에게 보내주세요",
-    "small": "제가 만든 앱은 프로필에 있어요"
+    "small": "제가 만든 앱은 프로필에 있어요",
+    "mood": "smile"
   }
 }
