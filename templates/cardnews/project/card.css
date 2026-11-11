@@ -1,10 +1,11 @@
-/* honu_dev 카드뉴스 공통 스타일 (노을 배경). 색·크기·위치는 여기서만 정한다. */
+/* honu_dev 카드뉴스 공통 스타일. 색·크기·위치는 여기서만 정한다.
+   위쪽: 배경 테마(기본 노을) + 대화창 / 아래쪽: 밝은 크림 바탕에 작은 슬라임 무늬 */
 @font-face{font-family:KR;src:local('Noto Sans CJK KR Black');font-weight:900}
 @font-face{font-family:KR;src:local('Noto Sans CJK KR Bold');font-weight:700}
 @font-face{font-family:KR;src:local('Noto Sans CJK KR Medium');font-weight:500}
-:root{--ink:#1B1D36;--sub:#5B6080;--blue:#2E5BFF;--sun:#FFCE54;--warm:#6B2E14}
+:root{--ink:#1B1D36;--sub:#4C5172;--blue:#2E5BFF;--sun:#FFCE54;--warm:#6B2E14}
 *{box-sizing:border-box;margin:0}
-body{width:1080px;height:1350px;font-family:'Inter Display',Inter,KR,sans-serif;color:var(--ink);background:#fff;overflow:hidden;position:relative;word-break:keep-all}
+body{width:1080px;height:1350px;font-family:'Inter Display',Inter,KR,sans-serif;color:var(--ink);background:#FFFCF5 url("data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22130%22 shape-rendering=%22crispEdges%22><g transform=%22translate%2810 10%29 scale%283%29%22><g fill=%22%23EFE9DD%22><rect x=%225%22 y=%220%22 width=%226%22 height=%221%22/><rect x=%223%22 y=%221%22 width=%2210%22 height=%221%22/><rect x=%222%22 y=%222%22 width=%2212%22 height=%221%22/><rect x=%221%22 y=%223%22 width=%2214%22 height=%222%22/><rect x=%220%22 y=%225%22 width=%2216%22 height=%227%22/><rect x=%221%22 y=%2212%22 width=%2214%22 height=%221%22/><rect x=%222%22 y=%2213%22 width=%2212%22 height=%221%22/></g><g fill=%22%23FFFCF5%22><rect x=%224%22 y=%226%22 width=%222%22 height=%224%22/><rect x=%2210%22 y=%226%22 width=%222%22 height=%224%22/></g></g><g transform=%22translate%2885 75%29 scale%283%29%22><g fill=%22%23EFE9DD%22><rect x=%225%22 y=%220%22 width=%226%22 height=%221%22/><rect x=%223%22 y=%221%22 width=%2210%22 height=%221%22/><rect x=%222%22 y=%222%22 width=%2212%22 height=%221%22/><rect x=%221%22 y=%223%22 width=%2214%22 height=%222%22/><rect x=%220%22 y=%225%22 width=%2216%22 height=%227%22/><rect x=%221%22 y=%2212%22 width=%2214%22 height=%221%22/><rect x=%222%22 y=%2213%22 width=%2212%22 height=%221%22/></g><g fill=%22%23FFFCF5%22><rect x=%224%22 y=%226%22 width=%222%22 height=%224%22/><rect x=%2210%22 y=%226%22 width=%222%22 height=%224%22/></g></g></svg>") 0 700px;overflow:hidden;position:relative;word-break:keep-all}
 .stage{position:absolute;left:0;top:0;width:1080px;height:700px;background:linear-gradient(160deg,#FFD35C 0%,#FFB88A 55%,#FF9FC0 100%);overflow:hidden}
 .stage.full{height:1350px}
 .cloud{position:absolute;background:#fff;opacity:.6}
@@ -27,10 +28,39 @@ p.body{margin-top:26px;font-weight:500;font-size:34px;line-height:1.62;color:var
 p.body em{font-style:normal;font-weight:700;color:var(--blue)}
 .sub{font-weight:700;font-size:40px;color:var(--warm);letter-spacing:-.02em}
 .prog{position:absolute;left:72px;bottom:46px;display:flex;gap:10px}
-.prog i{width:18px;height:18px;background:#E6E3EE}.prog i.on{background:var(--ink)}
+.prog i{width:18px;height:18px;background:#E9E2D5}.prog i.on{background:var(--ink)}
 .cap{font-weight:700;font-size:28px;color:var(--sub)}
 .row{display:flex;align-items:center;gap:28px;padding:22px 0;border-bottom:2px solid #EDF0F8}
 .row:last-child{border-bottom:0}
 .box{width:44px;height:44px;border:5px solid var(--ink);border-radius:10px;flex-shrink:0}
 .row small{display:block;font-weight:700;font-size:26px;color:var(--sub)}
 .row b{display:block;font-weight:900;font-size:40px;letter-spacing:-.03em;margin-top:2px}
+
+/* ── 움직임 (모션 카드뉴스). 한 장은 5초, 처음 2.5초 안에 다 나타나고 나머지는 읽는 시간 ── */
+@keyframes pop{from{opacity:0;translate:0 26px;scale:.94}to{opacity:1;translate:0 0;scale:1}}
+@keyframes up{from{opacity:0;translate:0 34px}to{opacity:1;translate:0 0}}
+@keyframes sweep{from{background-size:0% 100%}to{background-size:100% 100%}}
+@keyframes hop{0%{translate:0 0;scale:1.12 .84}16%{translate:0 0;scale:.94 1.09}55%{translate:0 -52px;scale:1 1}100%{translate:0 0;scale:1.12 .84}}
+@keyframes show{from{opacity:0}to{opacity:1}}
+@keyframes draw{from{stroke-dashoffset:40}to{stroke-dashoffset:0}}
+.pop{animation:pop .45s cubic-bezier(.2,1.3,.4,1) both;animation-delay:var(--d,0s)}
+.up{animation:up .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d,0s)}
+.me mark{background-repeat:no-repeat;animation:sweep .5s ease-out both;animation-delay:var(--m,1s)}
+.slime{position:absolute;transform-origin:50% 100%;animation:hop .625s infinite}
+.slime svg{display:block;transform-origin:50% 100%}
+.slime .face2{position:absolute;left:0;top:0;opacity:0;animation:show .01s linear both;animation-delay:var(--f,99s)}
+.box svg{display:block;width:100%;height:100%}
+.box path{fill:none;stroke:var(--blue);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;animation:draw .35s ease-out both;animation-delay:var(--d,0s)}
+/* 정지 그림으로 뽑을 때: 슬라임은 가만히, 나머지는 다 나타난 상태 */
+body.still .slime{animation:none}
+body.still .slime .face2{display:none}
+
+/* ── 배경 테마: <body class="t-이름">. 안 쓰면 노을(sunset) ── */
+body.t-sun .stage{background:linear-gradient(180deg,#FFD35C 0%,#FFE9A8 70%,#FFF6DC 100%)} body.t-sun .meta{color:#7A5A12} body.t-sun{--warm:#6B4E0E}
+body.t-coral .stage{background:linear-gradient(180deg,#FF9C8A 0%,#FFC9BC 70%,#FFEDE8 100%)} body.t-coral .meta{color:#8A2F22} body.t-coral{--warm:#7A2A1F}
+body.t-pink .stage{background:linear-gradient(180deg,#FFA9CF 0%,#FFD2E5 70%,#FFF0F6 100%)} body.t-pink .meta{color:#8C2457} body.t-pink{--warm:#7E1F4D}
+body.t-orange .stage{background:linear-gradient(180deg,#FF9A3D 0%,#FFC58A 70%,#FFEBD6 100%)} body.t-orange .meta{color:#7A3A05} body.t-orange{--warm:#6B3204}
+body.t-lav .stage{background:linear-gradient(180deg,#C5B3FF 0%,#E1D7FF 70%,#F5F1FF 100%)} body.t-lav .meta{color:#4A3597} body.t-lav{--warm:#43308A}
+body.t-grid .stage{background:#F6F6F2;background-image:linear-gradient(#E2E2DA 2px,transparent 2px),linear-gradient(90deg,#E2E2DA 2px,transparent 2px);background-size:54px 54px} body.t-grid .meta{color:#6B6B63} body.t-grid{--warm:#4A4A44} body.t-grid .cloud{display:none}
+body.t-night .stage{background:linear-gradient(180deg,#1E2452 0%,#313B86 75%,#4350A8 100%)} body.t-night .meta{color:#B9C3F5} body.t-night{--warm:#C9D2FF} body.t-night .stage>h1,body.t-night .stage h1{color:#fff} body.t-night .cloud{opacity:.16}
+body.t-forest .stage{background:linear-gradient(180deg,#0E3B36 0%,#17574E 80%,#1F6B60 100%)} body.t-forest .meta{color:#A8DCCF} body.t-forest{--warm:#BFEADF} body.t-forest .stage h1{color:#fff} body.t-forest .cloud{opacity:.14}
