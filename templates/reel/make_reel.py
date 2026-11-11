@@ -83,20 +83,41 @@ def get_mood(c):
         raise SystemExit(f"mood 는 {MOODS} 중 하나여야 합니다: {m}")
     return m
 
+def bounce(p, hop):
+    """한 번의 튀기(p: 0~1)에서 높이(0~1)와 변형(+는 길쭉, -는 납작)을 돌려준다.
+    앞 22%는 바닥에서 눌렸다 펴지고, 나머지는 포물선으로 뜬다. 변형은 끊기지 않고 이어진다."""
+    g = 0.22
+    k = hop ** 0.5
+    st, sq = 0.09 * k, 0.24 * k
+    if p < g:
+        return 0.0, st - (st + sq) * math.sin(math.pi * p / g)
+    q = (p - g) / (1 - g)
+    return 4 * q * (1 - q), st * abs(1 - 2 * q) ** 1.5
+
+def fit_period(T, period=0.7):
+    """장면 길이가 튀기 횟수로 딱 나눠지게 주기를 맞춘다 (장면 끝에서 공중에 멈추지 않게)."""
+    return T / max(1, round(T / period))
+
 def draw_slime(base, cx, ground, scale, t, hop=1.0, period=0.9, mood="base"):
-    ph = (t / period) % 1.0
-    air = math.sin(math.pi * ph)
-    jump = air * 150 * scale * hop
-    land = max(0.0, 1 - ph / 0.14) + max(0.0, (ph - 0.86) / 0.14)
-    sq = land * 0.2 * hop; st = air * 0.07 * hop
+    """hop 은 숫자이거나, 튀기가 시작된 시각을 받아 높이를 돌려주는 함수.
+    높이는 한 번 튀는 동안 바뀌지 않는다 (공중에서 갑자기 높이가 바뀌면 끊겨 보인다)."""
+    t = max(t, 0.0)
+    n = math.floor(t / period)
+    ph = t / period - n
+    hv = hop(n * period) if callable(hop) else hop
+    air, d = bounce(ph, hv)
+    jump = air * 150 * scale * hv
     spr = slime_sprite((t % 3.0) > 2.85, mood)
-    P = 30 * scale
-    big = spr.resize((int(16 * P * (1 + sq - st)), int(14 * P * (1 - sq + st))), Image.NEAREST)
+    P = max(2, round(30 * scale))
+    crisp = spr.resize((16 * P, 14 * P), Image.NEAREST)
+    # 늘이고 줄일 때는 부드럽게 보간한다 (NEAREST 로 하면 칸 너비가 프레임마다 달라져 떨린다)
+    w = max(2, round(16 * 30 * scale * (1 - d * 0.85))); h = max(2, round(14 * 30 * scale * (1 + d)))
+    big = crisp if (w, h) == crisp.size else crisp.resize((w, h), Image.BILINEAR)
     sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    sw = int((190 - air * 60 * hop) * scale)
+    sw = int((190 - air * 60 * hv) * scale)
     ImageDraw.Draw(sh).rectangle([cx - sw, ground - 4 * scale, cx + sw, ground + 12 * scale], fill=(34, 32, 64, 40))
     base.alpha_composite(sh)
-    base.alpha_composite(big, (int(cx - big.width / 2), int(ground - big.height - jump)))
+    base.alpha_composite(big, (int(round(cx - big.width / 2)), int(round(ground - big.height - jump))))
 
 TONES = {"white": WHITE, "blue": (214, 224, 255), "red": (255, 226, 226), "green": (220, 246, 228)}
 _M = ImageDraw.Draw(Image.new("RGB", (8, 8)))
@@ -145,9 +166,9 @@ def make_hook(c, base_dir):
             fr.rectangle([x0 + 10, y0 + 10, x0 + 522, y0 + 590], fill=INK + (255,))
             fr.rectangle([x0, y0, x0 + 512, y0 + 580], fill=INK + (255,))
             img.paste(card, (x0 + 6, y0 + 6))
-            draw_slime(img, 170, 1430, 0.5, t + 0.2, hop=1.0, period=0.8, mood=mood)
+            draw_slime(img, 170, 1430, 0.5, t, hop=1.0, period=fit_period(T, 0.8), mood=mood)
         else:
-            draw_slime(img, 500, 1400, 0.95, t + 0.2, hop=1.0, period=0.8, mood=mood)
+            draw_slime(img, 500, 1400, 0.95, t, hop=1.0, period=fit_period(T, 0.8), mood=mood)
     return scene, 3.6
 
 # ---------- 장면 2~4: 단계 ----------
@@ -163,10 +184,8 @@ def make_step(n, c):
     T = note_at + 1.6
 
     def scene(img, d, t, T):
-        hop = 0.25
-        for st in starts:
-            if st + 0.4 <= t <= st + 1.1:
-                hop = 1.0
+        def hop(t0):  # 박스가 나온 직후에 시작하는 튀기만 크게
+            return 1.0 if any(st + 0.2 <= t0 <= st + 0.9 for st in starts) else 0.3
         s = ease_back((t + 0.15) / 0.4)
         r = int(70 * s)
         block(d, [540 - r, 370 - r, 540 + r, 370 + r], YELLOW, 1, 10)
@@ -176,7 +195,7 @@ def make_step(n, c):
         a = appear(t, 0.1, 0.3)
         text_c(d, 500 + (1 - a) * 30, c["title1"], ft1, INK, a, shadow=True)
         text_c(d, 625 + (1 - a) * 30, c["title2"], ft2, CORAL, a, shadow=True)
-        draw_slime(img, 270, 445, 0.4, t, hop=hop, period=0.7, mood=mood if t >= starts[-1] + 0.3 else "base")
+        draw_slime(img, 270, 445, 0.4, t, hop=hop, period=fit_period(T), mood=mood if t >= starts[-1] + 0.3 else "base")
         for i, b in enumerate(boxes):
             ai = appear(t, starts[i], 0.3)
             y = 840 + i * 170
@@ -201,7 +220,7 @@ def make_cta(c):
 
     def scene(img, d, t, T):
         a1 = appear(t, 0.1, 0.3)
-        draw_slime(img, W / 2, 760, 0.95, t, hop=1.0, period=0.7, mood=mood)
+        draw_slime(img, W / 2, 760, 0.95, t, hop=1.0, period=fit_period(T), mood=mood)
         text_c(d, 860, c["line1"], f1, INK, a1, shadow=True)
         text_c(d, 965, c["line2"], f2, CORAL, a1, shadow=True)
         if f3:
