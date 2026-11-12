@@ -3,15 +3,16 @@ from PIL import Image, ImageDraw, ImageFont
 
 W, H, FPS = 1080, 1920, 30
 OUT = os.path.dirname(os.path.abspath(__file__))
-FONT_B = "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc"
-FONT_M = "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
-FONT_R = "/usr/share/fonts/opentype/noto/NotoSansCJK-Medium.ttc"
+# 글꼴: 갈무리11 (픽셀 글꼴, SIL OFL 1.1 — fonts/OFL-Galmuri.md)
+FONT_B = os.path.join(OUT, "fonts", "Galmuri11-Bold.ttf")
+FONT_M = os.path.join(OUT, "fonts", "Galmuri11-Bold.ttf")
+FONT_R = os.path.join(OUT, "fonts", "Galmuri11.ttf")
 KR = 1
 _fc = {}
 def font(path, size):
     k = (path, size)
     if k not in _fc:
-        _fc[k] = ImageFont.truetype(path, size, index=KR)
+        _fc[k] = ImageFont.truetype(path, size, index=KR if path.endswith(".ttc") else 0)
     return _fc[k]
 
 INK = (34, 32, 64)

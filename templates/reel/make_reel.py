@@ -148,17 +148,18 @@ def make_hook(c, base_dir):
         im = im.resize((int(im.width * k) + 1, int(im.height * k) + 1), Image.LANCZOS)
         x = (im.width - 500) // 2; y = (im.height - 568) // 2
         cards.append(im.crop((x, y, x + 500, y + 568)))
-    f1 = fit(c["line1"], FONT_B, 120, 940, 84)
-    f2 = fit(c["line2"], FONT_B, 110, 940, 80)
-    fb = fit(c["badge"], FONT_B, 58, 620, 44)
+    f1 = fit(c["line1"], FONT_B, 120, 940, 60)
+    f2 = fit(c["line2"], FONT_B, 110, 940, 60)
+    fb = fit(c["badge"], FONT_B, 58, 620, 44) if c.get("badge") else None
     mood = get_mood(c)
 
     def scene(img, d, t, T):
         text_c(d, 300, c["line1"], f1, INK, 1, shadow=True)
         text_c(d, 450, c["line2"], f2, CORAL, 1, shadow=True)
         a = appear(t, 0.4, 0.3)
-        block(d, [200, 650 + (1 - a) * 30, 880, 750 + (1 - a) * 30], YELLOW, a, 8)
-        text_c(d, 663 + (1 - a) * 30, c["badge"], fb, INK, a)
+        if fb:
+            block(d, [200, 650 + (1 - a) * 30, 880, 750 + (1 - a) * 30], YELLOW, a, 8)
+            text_c(d, 663 + (1 - a) * 30, c["badge"], fb, INK, a)
         if cards:
             k = clamp((t - 1.7) / 0.25) if len(cards) > 1 else 0
             card = cards[0] if k <= 0 else (cards[1] if k >= 1 else Image.blend(cards[0], cards[1], k))
@@ -175,10 +176,11 @@ def make_hook(c, base_dir):
 # ---------- 장면 2~4: 단계 ----------
 def make_step(n, c):
     boxes = c["boxes"][:3]
-    ft1 = fit(c["title1"], FONT_B, 96, 940, 68)
-    ft2 = fit(c["title2"], FONT_B, 96, 940, 68)
+    ft1 = fit(c["title1"], FONT_B, 96, 940, 52)
+    ft2 = fit(c["title2"], FONT_B, 96, 940, 52)
     fbx = [fit(b["text"], FONT_M, 52, 560 if b.get("check") else 670, 36) for b in boxes]
     fn = fit(c["note"], FONT_M, 50, 740, 36)
+    fn2 = fit(c["note"], FONT_B, 54, 640, 36)
     starts = [0.35 + i * 0.85 for i in range(len(boxes))]
     note_at = starts[-1] + 0.9
     mood = get_mood(c)
@@ -209,7 +211,10 @@ def make_step(n, c):
                 k = clamp((t - starts[i] - 0.4) / 0.25)
                 if k > 0:
                     pixel_check(d, x0 + 625, y + 28, k)
-        text_c(d, 1370, c["note"], fn, S_SHADE, appear(t, note_at), x=106)
+        an = appear(t, note_at); ny = 840 + len(boxes) * 170 + 10
+        nb = d.textbbox((0, 0), c["note"], font=fn2); nw = nb[2] - nb[0]
+        block(d, [540 - nw/2 - 44, ny + (1-an)*30, 540 + nw/2 + 44, ny + 100 + (1-an)*30], YELLOW, an, 8)
+        text_c(d, ny + 50 - (nb[3]+nb[1])/2 + (1-an)*30, c["note"], fn2, INK, an)
     return scene, round(T, 2)
 
 # ---------- 장면 5: 마무리 ----------

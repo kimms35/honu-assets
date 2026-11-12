@@ -75,13 +75,14 @@ honu_dev 채널의 카드뉴스와 릴스를 같은 디자인으로 다시 만�
 - 소재를 고를 때와 쓸 때는 위의 "출처를 쓰는 법"을 따른다(특히 "직접" 소재와 필덕 이야기 규칙)
 - 크기 1080×1920, 30fps, 음악 없음 (음악은 올릴 때 직접 추가)
 - 색: 하늘색 바탕, 노랑 블록, 빨강 강조. 캐릭터와 위치는 틀에 고정
+- 글꼴: 갈무리11(픽셀 글꼴, `reel/fonts/`). 단계의 설명 한 줄(`note`)은 마지막 박스 바로 아래 노란 띠로 나온다
 - 만드는 법 (`reel/` 폴더에서)
   1. `example.json` 을 복사해 문구만 바꾼다
   2. `python3 make_reel.py 내문구.json stills` → `out/<slug>/still_0~5.jpg` 로 미리보기 확인
   3. `python3 make_reel.py 내문구.json` → `out/<slug>/reel.mp4`
 - 문구 파일 구성
   - `slug`: 영어 소문자와 `-` 로 된 짧은 이름
-  - `hook`: `line1`(검정), `line2`(빨강), `badge`(노랑 띠). `images` 는 선택(앱 화면 등 1~2장, 없으면 슬라임이 크게 나옴)
+  - `hook`: `line1`(검정), `line2`(빨강), `badge`(노랑 띠, 선택). `images` 는 선택(앱 화면 등 1~2장, 없으면 슬라임이 크게 나옴)
   - `steps`: 정확히 3개. 각 단계는 `title1`, `title2`, `boxes`(1~3개), `note`
     - 박스: `text`, 선택으로 `tone`(white/blue/red/green), `check`(true 면 초록 체크)
   - `cta`: `line1`, `line2`, 선택으로 `small`
