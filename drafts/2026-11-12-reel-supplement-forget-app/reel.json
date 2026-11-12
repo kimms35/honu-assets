@@ -4,15 +4,23 @@
     "line1": "영양제 자꾸 까먹어서",
     "line2": "앱을 만들었어요",
     "badge": "코딩은 배운 적 없어요",
-    "images": ["assets/app1.png", "assets/app2.png"]
+    "images": [
+      "assets/app1.png",
+      "assets/app2.png"
+    ]
   },
   "steps": [
     {
       "title1": "나한테 제일",
       "title2": "쓸모 있는 게 뭘까",
       "boxes": [
-        {"text": "챙겨 먹는 영양제가 많아요"},
-        {"text": "근데 자주 빠트려요", "tone": "red"}
+        {
+          "text": "챙겨 먹는 영양제가 많아요"
+        },
+        {
+          "text": "근데 자주 빠트려요",
+          "tone": "red"
+        }
       ],
       "note": "내 불편함에서 시작했어요"
     },
@@ -20,25 +28,43 @@
       "title1": "AI한테 말로",
       "title2": "설명해서 만들었어요",
       "boxes": [
-        {"text": "먹을 시간 알림", "check": true},
-        {"text": "먹은 날 기록", "check": true},
-        {"text": "달력으로 한눈에", "check": true}
+        {
+          "text": "먹을 시간 알림",
+          "check": true
+        },
+        {
+          "text": "먹은 날 기록",
+          "check": true
+        },
+        {
+          "text": "달력으로 한눈에",
+          "check": true
+        }
       ],
       "note": "코드는 직접 안 썼어요"
     },
     {
-      "title1": "지금은 앱스토어에",
-      "title2": "올라가 있어요",
+      "title1": "당신이 자꾸",
+      "title2": "까먹는 건 뭐예요?",
       "boxes": [
-        {"text": "아이폰 앱스토어 출시", "tone": "green", "check": true},
-        {"text": "안드로이드는 테스트 중"}
+        {
+          "text": "자꾸 까먹는 것"
+        },
+        {
+          "text": "매번 귀찮은 것"
+        },
+        {
+          "text": "그게 첫 앱 아이디어",
+          "tone": "green",
+          "check": true
+        }
       ],
-      "note": "이름은 필덕이에요",
-      "mood": "excited"
+      "note": "불편함 하나면 충분해요",
+      "mood": "glint"
     }
   ],
   "cta": {
-    "line1": "영양제 자꾸 까먹는",
+    "line1": "앱 만들고 싶다던",
     "line2": "친구에게 보내주세요",
     "small": "제가 만든 앱은 프로필에 있어요",
     "mood": "smile"
