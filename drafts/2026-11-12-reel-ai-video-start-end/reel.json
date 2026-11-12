@@ -1,0 +1,57 @@
+{
+  "slug": "ai-video-start-end",
+  "hook": {
+    "line1": "AI 영상이 자꾸",
+    "line2": "어색하게 나온다면",
+    "badge": "처음과 끝 고정하는 3단계"
+  },
+  "steps": [
+    {
+      "title1": "시작 장면을",
+      "title2": "그림으로 정해요",
+      "boxes": [
+        {
+          "text": "첫 장면 이미지 1장",
+          "check": true
+        }
+      ],
+      "note": "여기서부터 움직여요"
+    },
+    {
+      "title1": "끝 장면도",
+      "title2": "그림으로 정해요",
+      "boxes": [
+        {
+          "text": "끝 장면 이미지 1장",
+          "check": true
+        },
+        {
+          "text": "같은 캐릭터, 자세만 다르게",
+          "tone": "blue"
+        }
+      ],
+      "note": "도착할 곳이 생겨요"
+    },
+    {
+      "title1": "사이 움직임만",
+      "title2": "말로 시켜요",
+      "boxes": [
+        {
+          "text": "천천히 손을 흔들어 줘"
+        },
+        {
+          "text": "AI는 중간만 채워요",
+          "tone": "green",
+          "check": true
+        }
+      ],
+      "note": "멋대로 바뀔 틈이 줄어요",
+      "mood": "excited"
+    }
+  ],
+  "cta": {
+    "line1": "AI 영상 만드는",
+    "line2": "친구에게 보내주세요",
+    "mood": "smile"
+  }
+}
