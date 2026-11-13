@@ -179,12 +179,12 @@ def make_step(n, c):
     ft1 = fit(c["title1"], FONT_B, 96, 940, 52)
     ft2 = fit(c["title2"], FONT_B, 96, 940, 52)
     fbx = [fit(b["text"], FONT_M, 52, 560 if b.get("check") else 670, 36) for b in boxes]
-    fn = fit(c["note"], FONT_M, 50, 740, 36)
-    fn2 = fit(c["note"], FONT_B, 54, 640, 36)
+    note = c.get("note")
+    fn2 = fit(note, FONT_B, 54, 640, 36) if note else None
     starts = [0.35 + i * 0.85 for i in range(len(boxes))]
     note_at = starts[-1] + 0.9
     mood = get_mood(c)
-    T = note_at + 1.6
+    T = note_at + 1.6 if note else starts[-1] + 1.9  # 설명이 없으면 빈 시간을 줄인다
 
     def scene(img, d, t, T):
         def hop(t0):  # 박스가 나온 직후에 시작하는 튀기만 크게
@@ -211,10 +211,11 @@ def make_step(n, c):
                 k = clamp((t - starts[i] - 0.4) / 0.25)
                 if k > 0:
                     pixel_check(d, x0 + 625, y + 28, k)
-        an = appear(t, note_at); ny = 840 + len(boxes) * 170 + 10
-        nb = d.textbbox((0, 0), c["note"], font=fn2); nw = nb[2] - nb[0]
-        block(d, [540 - nw/2 - 44, ny + (1-an)*30, 540 + nw/2 + 44, ny + 100 + (1-an)*30], YELLOW, an, 8)
-        text_c(d, ny + 50 - (nb[3]+nb[1])/2 + (1-an)*30, c["note"], fn2, INK, an)
+        if note:
+            an = appear(t, note_at); ny = 840 + len(boxes) * 170 + 10
+            nb = d.textbbox((0, 0), note, font=fn2); nw = nb[2] - nb[0]
+            block(d, [540 - nw/2 - 44, ny + (1-an)*30, 540 + nw/2 + 44, ny + 100 + (1-an)*30], YELLOW, an, 8)
+            text_c(d, ny + 50 - (nb[3]+nb[1])/2 + (1-an)*30, note, fn2, INK, an)
     return scene, round(T, 2)
 
 # ---------- 장면 5: 마무리 ----------

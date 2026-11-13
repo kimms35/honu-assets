@@ -83,7 +83,7 @@ honu_dev 채널의 카드뉴스와 릴스를 같은 디자인으로 다시 만�
 - 문구 파일 구성
   - `slug`: 영어 소문자와 `-` 로 된 짧은 이름
   - `hook`: `line1`(검정), `line2`(빨강), `badge`(노랑 띠, 선택). `images` 는 선택(앱 화면 등 1~2장, 없으면 슬라임이 크게 나옴)
-  - `steps`: 정확히 3개. 각 단계는 `title1`, `title2`, `boxes`(1~3개), `note`
+  - `steps`: 정확히 3개. 각 단계는 `title1`, `title2`, `boxes`(1~3개), `note`(선택)
     - 박스: `text`, 선택으로 `tone`(white/blue/red/green), `check`(true 면 초록 체크)
   - `cta`: `line1`, `line2`, 선택으로 `small`
 - 표정 (`mood`, 선택): `hook`, 각 단계, `cta` 에 넣을 수 있다. 안 넣으면 기본 표정
