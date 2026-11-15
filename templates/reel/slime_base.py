@@ -248,7 +248,7 @@ def scene_cta(img, d, t, T):
     text_c(d, 1070, "앱 개발기", font(FONT_B, 130), INK, a1, shadow=True)
     text_c(d, 1240, "같이 봐요", font(FONT_B, 130), CORAL, a2, shadow=True)
     block(d, [300, 1480, 780, 1590], YELLOW, a3, 8)
-    text_c(d, 1495, "@honu_dev", font(FONT_B, 66), INK, a3)
+    text_c(d, 1495, "@tenbylabs", font(FONT_B, 66), INK, a3)
     text_c(d, 1650, "팔로우하고 다음 편에서 만나요", font(FONT_R, 46), INK, appear(t, 2.0))
 
 SCENES = [("s1", scene_hook, 4.2), ("s2", scene_zero, 4.6), ("s3", scene_list, 6.6), ("s4", scene_flow, 6.0), ("s5", scene_cta, 5.0)]
