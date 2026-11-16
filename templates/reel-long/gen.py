@@ -83,10 +83,12 @@ body:before{{content:"";position:absolute;inset:0;background:repeating-linear-gr
 .shead{{display:flex;align-items:center;padding:14px 16px 22px;font-size:28px;color:#E4D8E0;font-weight:800;gap:14px}}
 .shead i{{width:30px;height:30px;border-radius:8px;background:#FF8A3D}}
 .shead span{{margin-left:auto;font-size:22px;border:2px solid #42303E;border-radius:99px;padding:6px 18px;background:#2B1C28}}
-.sbar{{height:10px;border-radius:5px;background:#4A3646;margin:0 16px 22px;overflow:hidden}} .sbar b{{display:block;height:100%;width:0;background:linear-gradient(90deg,#FF8A3D,#FFCE54)}}
+.segs{{display:flex;gap:10px;margin:0 16px 22px}} .segs i{{flex:1;height:14px;border-radius:4px;background:#4A3646;position:relative;overflow:hidden}}
+.segs i b{{position:absolute;inset:0;background:#FFCE54;transform-origin:50% 100%;transform:scaleY(0)}}
 .item{{margin-bottom:20px;padding:0 34px}}
-.item u{{position:relative;overflow:hidden;width:110px;height:44px;border-radius:10px;background:#4A3646;margin-right:34px;flex:none}}
-.item u b{{position:absolute;left:0;top:0;bottom:0;width:0;background:#3FC47A;box-shadow:0 0 24px rgba(63,196,122,.6)}}
+.item u{{position:relative;width:64px;height:64px;border-radius:14px;border:4px solid #5A4256;background:#1F141D;margin-right:34px;flex:none;text-decoration:none;display:flex;align-items:center;justify-content:center}}
+.item u b{{color:#fff;font-size:40px;font-weight:900;line-height:1}}
+.item u em{{position:absolute;inset:-4px;border-radius:14px;border:4px solid #3FC47A;opacity:0}}
 .item div b{{display:block;font-size:46px;font-weight:900}} .item div span{{font-size:29px;color:#C9B6C4}}
 .item s{{margin-left:auto;text-decoration:none;font-size:22px;color:#3FC47A;border:2px solid #2C6E4B;border-radius:99px;padding:6px 14px;background:#143424}}
 .foot{{text-align:center;color:#3FC47A;font-size:38px;font-weight:900;padding:6px 0 14px}}
@@ -127,10 +129,10 @@ for i, it in enumerate(C["items"]):
 <div class=win><div class=bar><i></i>{bar}</div><div class=load></div>{body}</div>
 <div class=tags><span><i></i>{tag}</span></div></div><div class=cap></div></div>''')
 sm = C["summary"]
-rows = "".join(f'<div class="row item" style="height:{168 if N == 3 else 136}px"><u><b></b></u><div><b>{a}</b><span>{b}</span></div><s>OK</s></div>'
+rows = "".join(f'<div class="row item" style="height:{168 if N == 3 else 136}px"><u><b>✓</b><em></em></u><div><b>{a}</b><span>{b}</span></div><s>OK</s></div>'
                for a, b in sm["rows"])
 html.append(f'''<div class=scene id=s{N+1}><div class=card style="top:{300 if N == 3 else 260}px"><div class=shead><i></i>{sm["head"]}<span class=cnt></span></div>
-<div class=sbar><b></b></div>{rows}<div class=foot></div></div><div class=cap>{sm["cap"]}</div></div>''')
+<div class=segs>{''.join('<i><b></b></i>' for _ in sm['rows'])}</div>{rows}<div class=foot></div></div><div class=cap>{sm["cap"]}</div></div>''')
 html.append('<div id=sh></div><img id=sl>')
 html.append("<script>const C=" + json.dumps(C, ensure_ascii=False) + ";const SPR=" + json.dumps(SPR) + f";const GAP={GAP};\n" +
             open(os.path.join(HERE, "timeline.js"), encoding="utf-8").read() + "</script>")

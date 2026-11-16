@@ -153,13 +153,23 @@ function drawSum(t) {
   sc.querySelectorAll(".item").forEach((r, j) => {
     const s0 = .4 + j * step, a = ap(t, s0, .3);
     r.style.opacity = a; r.style.transform = `translateX(${(1 - a) * 40}px)`;
-    $("u b", r).style.width = ease((t - s0 - .15) / .5) * 100 + "%";
+    // 체크 상자가 딸깍 채워지고 테두리 물결이 퍼진다
+    const ck = t >= s0 + .45 ? back((t - s0 - .45) / .3) : 0, on = t >= s0 + .45;
+    const u = $("u", r);
+    u.style.background = on ? "#3FC47A" : "#1F141D"; u.style.borderColor = on ? "#3FC47A" : "#5A4256";
+    u.style.transform = `scale(${on ? 1 + .18 * Math.sin(Math.PI * cl((t - s0 - .45) / .25)) : 1})`;
+    $("b", u).style.transform = `scale(${ck})`; $("b", u).style.opacity = cl(ck * 3);
+    const rp = cl((t - s0 - .45) / .5), em = $("em", u);
+    em.style.opacity = on && rp < 1 ? (1 - rp) : 0; em.style.transform = `scale(${1 + rp * .9})`;
     const o = t >= s0 + .65 ? back((t - s0 - .65) / .3) : 0;
     $("s", r).style.opacity = cl(o * 3); $("s", r).style.transform = `scale(${o})`;
     if (t >= s0 + .65) done = j + 1;
   });
   $(".cnt", sc).textContent = done + " / " + R;
-  $(".sbar b", sc).style.width = ease((t - .55) / 1.8) * 100 + "%";
+  sc.querySelectorAll(".segs i b").forEach((b, j) => {   // 한 칸씩 툭 튀어 오르며 찬다
+    const s1 = .4 + j * step + .65, o = t >= s1 ? back((t - s1) / .3) : 0;
+    b.style.transform = `scaleY(${o})`; b.style.background = done === R ? "#3FC47A" : "#FFCE54";
+  });
   const ft = C.summary.foot, fk = Math.floor(cl((t - 2.3) / (ft.length * .04)) * ft.length);
   $(".foot", sc).textContent = ft.slice(0, fk) || " ";
   capSet(sc, C.summary.cap, ap(t, 3.0, .35));
@@ -190,7 +200,7 @@ function drawSlime(t) {
   const xa = lerpKeys(KEYS, n * HOP), xb = lerpKeys(KEYS, (n + 1) * HOP);
   const air = cl((ph - .2) / .8), cx = xa + (xb - xa) * air;
   const big = BIG.some(b => b >= n * HOP && b < (n + 1) * HOP), moving = Math.abs(xb - xa) > 4;
-  const H = big ? 95 : moving ? 55 : 20;
+  const H = big ? 55 : moving ? 40 : 18;
   const y = ph < .2 ? 0 : 4 * H * air * (1 - air);
   let sx, sy;
   if (ph < .2) { const q = Math.sin(Math.PI * ph / .2); sx = 1 + .18 * q * (H / 70); sy = 1 - .16 * q * (H / 70); }
