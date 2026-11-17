@@ -1,9 +1,7 @@
 // setT(t): t초 순간의 화면을 그린다. 모든 상태는 t에서만 계산한다(프레임마다 결정적).
 const N = C.items.length;
-const T_HOOK = 4.0, T_ITEM = 13.0, T_SUM = 6.5;
-const STARTS = [0]; for (let i = 0; i <= N; i++) STARTS.push(T_HOOK + i * T_ITEM);
-const DURS = [T_HOOK, ...C.items.map(() => T_ITEM), T_SUM];
-const TOTAL = STARTS[N + 1] + T_SUM;
+// 항목 길이는 고정하지 않는다. 마지막 움직임이 끝나고 HOLD초(읽을 시간)만 지나면 바로 다음 항목으로 넘어간다.
+const T_HOOK = 4.0, HOLD = 1.3, SUM_HOLD = 2.0;
 const $ = (s, r = document) => r.querySelector(s);
 const cl = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 const ease = x => 1 - Math.pow(1 - cl(x), 3);
@@ -11,7 +9,7 @@ const back = x => { x = cl(x); const c = 1.7; return 1 + (c + 1) * Math.pow(x - 
 const ap = (t, t0, d = .3) => ease((t - t0) / d);
 
 // ---------- 대화형 시간표 ----------
-const CPS = .04, CLEAR = 5.0, GOOD = 5.4;
+const CPS = .04, BAD_READ = 1.5;
 function phase(ph, p0) {
   const n = ph.msg.reduce((a, s) => a + s[0].length, 0);
   const typeS = p0 + .15, typeE = typeS + n * CPS, sent = typeE + .2;
@@ -19,23 +17,36 @@ function phase(ph, p0) {
   const dots = sent + .35 + nh * .3, reply = dots + .6;
   return { n, typeS, typeE, sent, dots, reply, mark: reply + ph.reply.length * .38 + .2 };
 }
+function chatPlan(it) {
+  const b = phase(it.bad, .4), clear = b.mark + BAD_READ, g = phase(it.good, clear + .4);
+  return { b, g, clear, end: g.mark + .65 };
+}
 // ---------- 목록형 시간표 ----------
 function listPlan(it) {
   const R = it.rows.length, step = Math.min(2.0, 8.4 / R);
   const rows = it.rows.map((_, j) => .9 + j * step);
   const lastOk = rows[R - 1] + .8;
-  return { R, rows, lastOk, chip: lastOk + .35, cap2: rows[Math.floor(R / 2)] + .8 };
+  return { R, rows, lastOk, chip: lastOk + .35, cap2: rows[Math.floor(R / 2)] + .8, end: it.chip ? lastOk + .75 : lastOk + .3 };
 }
+const isChat = it => (it.type || "chat") === "chat";
+const r1 = x => Math.round(x * 10) / 10;
+const itemDur = it => r1((isChat(it) ? chatPlan(it) : listPlan(it)).end + HOLD);
+const SUM_FOOT_END = 2.3 + C.summary.foot.length * .04;
+const T_SUM = r1(Math.max(SUM_FOOT_END, 3.35) + SUM_HOLD);
+const DURS = [T_HOOK, ...C.items.map(itemDur), T_SUM];
+const STARTS = [0]; DURS.forEach((d, i) => STARTS.push(r1(STARTS[i] + d)));
+const TOTAL = STARTS[N + 2];
 // 슬라임이 반응할 순간(항목마다)
 function beats(it) {
-  if ((it.type || "chat") === "chat") {
-    const b = phase(it.bad, .4), g = phase(it.good, GOOD);
+  const D = itemDur(it);
+  if (isChat(it)) {
+    const { b, g, clear } = chatPlan(it);
     return { moveA: g.dots - .3, moveB: g.reply + .5, big: [b.mark, g.mark],
-      moods: [[b.mark, b.mark + 1.6, "surprise"], [g.mark, T_ITEM - .2, it.mood || "excited"]] };
+      moods: [[b.mark, clear, "surprise"], [g.mark, D - .2, it.mood || "excited"]] };
   }
   const L = listPlan(it);
   return { moveA: L.cap2 - .6, moveB: L.cap2 + .8, big: [L.cap2, it.chip ? L.chip : L.lastOk],
-    moods: [[it.chip ? L.chip : L.lastOk, T_ITEM - .2, it.mood || "glint"]] };
+    moods: [[it.chip ? L.chip : L.lastOk, D - .2, it.mood || "glint"]] };
 }
 
 function headAnim(sc, i, t) {
@@ -63,7 +74,7 @@ function bubbleHTML(segs, sweepStart, t) {
 }
 
 function drawChat(sc, it, t, card) {
-  const TB = phase(it.bad, .4), TG = phase(it.good, GOOD);
+  const { b: TB, g: TG, clear: CLEAR } = chatPlan(it);
   let shake = 0; const s0 = TB.mark;
   if (t > s0 && t < s0 + .4) shake = Math.sin((t - s0) * 45) * 12 * (1 - (t - s0) / .4);
   card.style.transform += ` translateX(${shake}px)`;
@@ -137,7 +148,7 @@ function drawItem(i, t) {
   const k = back(t / .45);
   card.style.transform = `translateY(${(1 - k) * 70}px) scale(${.96 + .04 * k})`;
   headAnim(sc, i, t);
-  if ((it.type || "chat") === "chat") drawChat(sc, it, t, card); else drawList(sc, it, t, card);
+  if (isChat(it)) drawChat(sc, it, t, card); else drawList(sc, it, t, card);
 }
 
 function drawHook(t) {
@@ -227,4 +238,4 @@ function setT(t) {
   }
   drawSlime(t);
 }
-window.TOTAL = TOTAL; window.setT = setT;
+window.TOTAL = TOTAL; window.STARTS = STARTS; window.DURS = DURS; window.setT = setT;

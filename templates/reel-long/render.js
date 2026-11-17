@@ -16,17 +16,20 @@ fs.mkdirSync(OUT, { recursive: true });
   if (process.argv[2] === 'stills') {
     let ts = process.argv.slice(3).map(Number);
     if (!ts.length) {
-      const n = Math.round((total - 10.5) / 13);
+      // 항목 길이가 내용에 따라 달라지므로 시간표를 페이지에서 읽는다. 항목마다 앞·가운데·끝(다 나온 모습).
+      const { starts, durs } = await p.evaluate(() => ({ starts: window.STARTS, durs: window.DURS }));
       ts = [2.5];
-      for (let i = 0; i < n; i++) { const s = 4 + 13 * i; ts.push(s + 4.2, s + 8.0, s + 12.2); }
+      for (let i = 1; i < durs.length - 1; i++) { const s = starts[i], d = durs[i]; ts.push(s + d * .36, s + d * .68, s + d - .3); }
       ts.push(total - .5);
+      console.log('장면 길이(초):', durs.join(' / '));
     }
     for (const t of ts) {
       await p.evaluate(x => setT(x), t);
-      await p.screenshot({ path: path.join(OUT, `still_${t.toFixed(1)}.png`) });
+      await p.screenshot({ path: path.join(OUT, `still_${t.toFixed(1).padStart(4, '0')}.png`) });
     }
     console.log('stills', ts.length, 'total', total);
   } else {
+    if (total < 45) { console.error(`전체 ${total}초: 45초보다 짧습니다. 시간을 늘리지 말고 항목이나 줄(내용)을 더 채우세요.`); await b.close(); process.exit(1); }
     const tmp = path.join(OUT, 'reel.tmp.mp4');
     const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
       '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20', '-pix_fmt', 'yuv420p', tmp], { stdio: ['pipe', 'inherit', 'inherit'] });
