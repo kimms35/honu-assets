@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:support.google.com)",
+      "WebFetch(domain:developer.android.com)",
+      "WebFetch(domain:android-developers.googleblog.com)",
+      "WebFetch(domain:play.google.com)",
+      "WebFetch(domain:developer.apple.com)",
+      "WebFetch(domain:www.apple.com)",
+      "WebFetch(domain:support.apple.com)",
+      "WebFetch(domain:www.anthropic.com)",
+      "WebFetch(domain:claude.com)",
+      "WebFetch(domain:docs.claude.com)",
+      "WebFetch(domain:platform.claude.com)",
+      "WebFetch(domain:code.claude.com)",
+      "WebFetch(domain:support.claude.com)",
+      "WebFetch(domain:openai.com)",
+      "WebFetch(domain:help.openai.com)",
+      "WebFetch(domain:developers.openai.com)",
+      "WebFetch(domain:platform.openai.com)",
+      "WebFetch(domain:blog.google)",
+      "WebFetch(domain:ai.google.dev)",
+      "WebFetch(domain:gemini.google)",
+      "WebFetch(domain:workspace.google.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:cursor.com)",
+      "WebFetch(domain:docs.cursor.com)",
+      "WebFetch(domain:blogs.microsoft.com)",
+      "WebFetch(domain:news.hada.io)",
+      "WebFetch(domain:yozm.wishket.com)"
+    ]
+  }
+}
