@@ -115,7 +115,12 @@
   1. `example.json` 을 복사해 문구만 바꾼다 (예시는 구글 플레이 첫 출시: 목록형 2개 + 대화형 1개). 예시는 구조만 보여 준다: 항목이 3개라 지금 틀에서는 41.5초이고, 실제 릴스는 항목 4개로 쓴다
   2. `python3 gen.py 내문구.json` → `page.html`
   3. `node render.js stills` → 장면 길이와 전체 길이가 찍히고, `out/still_*.png`(항목마다 앞·가운데·끝)가 나온다. 전부 열어 넘치거나 겹친 곳이 없는지 본다
-  4. `node render.js video` → `out/reel.mp4` (약 1~2분 걸림)
+  4. 영상은 HyperFrames로 찍는다 (2026-11-21부터, 채널 주인 요청). `reel-hf/` 폴더에서:
+     - `npm ci` (처음 한 번. HyperFrames 0.9.72, GSAP 3.15.0 고정)
+     - `python3 build.py ../reel-long/내문구.json` → `project/index.html` (45초 미만이면 멈춘다)
+     - `npm run render` → `out/reel.mp4` (1080x1920, 30fps, 50초 영상에 약 2분 30초)
+     - 디자인과 시간표는 `reel-long` 과 똑같다. `build.py` 가 gen.py 화면을 GSAP 타임라인에 묶어 HyperFrames가 프레임마다 찍게 한다
+     - HyperFrames가 막히면 예전처럼 `reel-long/` 에서 `node render.js video` 로 찍는다
 - 문구 파일 구성
   - `slug`, `source`: [출처 이름, "YYYY-MM-DD 확인"], `placeholder`(입력칸 안내, 선택)
   - `hook`: `tag`(노란 띠, 누구에게), `lines` 세 줄(마지막 줄을 `<em>`로 감싸면 빨강), `mood`(선택)

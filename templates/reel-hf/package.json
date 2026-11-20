@@ -1,0 +1,12 @@
+{
+  "name": "tenbylabs-reel-hf",
+  "private": true,
+  "description": "TENBY LABS 릴스를 HyperFrames로 렌더링하는 틀",
+  "scripts": {
+    "render": "hyperframes render project -o out/reel.mp4 --fps 30 --quality high"
+  },
+  "dependencies": {
+    "gsap": "3.15.0",
+    "hyperframes": "0.9.72"
+  }
+}
