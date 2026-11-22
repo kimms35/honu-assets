@@ -18,6 +18,15 @@
 5. **45초 이상, 1080x1920, 30fps**. 시간을 늘려 채우지 않는다. 내용이 모자라면 더 조사해서 장면을 더한다.
 6. **사실 확인 규칙과 문장 검토**: 예약 작업 프롬프트의 규칙 그대로. 화면에 나오는 모든 숫자·조건·이름은 확인한 것만.
 
+## 소리 (2026-11-22 채널 주인 결정)
+
+배경음과 효과음은 `music.py` 로 코드로 직접 만들어 영상에 넣는다(저작권 걱정 없음).
+- 배경음 기준: 채널 주인이 고른 큐트 카와이 로파이(Heart Bubbles, 지금까지 릴스에 쓴 곡들). 측정한 특징: 80~90BPM 언저리, 장조, 아주 따뜻하고 먹먹한 소리(1kHz 아래에 에너지가 몰리고 3kHz 위는 거의 없음), 고른 음량. 부드러운 피아노·오르골·둥근 베이스·작은 붐뱁 드럼·레코드 잡음.
+- 남의 곡을 베끼지 않는다. 멜로디는 영상마다 seed(slug)로 새로 만들어진다.
+- 분위기(`--mood`)를 그날 내용에 맞게 고른다: `calm`(차분한 설명·정리), `bright`(기본, 꿀팁·출시 상식), `playful`(신나는 소식·추천 모음), `focus`(주의할 점·정책 변경).
+- 효과음은 화면에서 일어나는 일에 시각을 맞춘다. 장면을 짜면서 `out/events.json` 에 `[[초, "종류"], ...]` 로 적는다(종류는 music.py 맨 위 설명). 효과음이 날 때 배경음이 저절로 살짝 줄어든다. 모든 움직임에 넣지 말고 눈에 띄는 순간(착지, 도장, 숫자, 체크, 전환, 마무리)에만 넣는다.
+- 채널 주인이 "음악이 별로"라고 하면 그 말을 이 칸에 규칙으로 더한다.
+
 ## 매일 새로 만드는 것
 
 배경, 색, 장면 구성, 소품(카드, 도장, 숫자, 진행 막대, 타임라인, 저장소 카드, 속보 띠 등), 모션, 전환.
@@ -63,11 +72,13 @@ python3 kit.py                      # project/ 준비 (--example 을 붙이면 �
 npm run lint                        # HyperFrames 검사: 0 errors 여야 한다
 npm run render                      # out/reel.mp4
 python3 check.py out/reel.mp4       # 자동 점검 + out/check_*.png 를 전부 Read 로 열어 눈으로 확인
+python3 music.py --dur <영상 길이> --mood <분위기> --seed <slug> --events out/events.json --out out/audio.wav
+ffmpeg -y -i out/reel.mp4 -i out/audio.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k -shortest out/reel_sound.mp4
 ```
 문제가 있으면 index.html 을 고쳐 다시 렌더한다. HyperFrames 가 두 번 실패하면 예전 틀(`../reel-long` 문구 파일 + `../reel-hf`)로 찍는다.
 
 ## 초안으로 올리는 파일
 
-`drafts/<날짜>-reel-<slug>/` 에 `reel.mp4`, `index.html`(그날 화면 원본), `reel.json`.
-`reel.json` 에는 적어도 `{"slug", "source": [문서 이름, "YYYY-MM-DD 확인"], "hook": {"lines": [훅 세 줄]}, "scenes": [[시작 초, 장면에 나오는 글자 요약], ...]}`
+`drafts/<날짜>-reel-<slug>/` 에 `reel.mp4`(소리를 입힌 out/reel_sound.mp4), `index.html`(그날 화면 원본), `reel.json`, `events.json`(효과음 시각).
+`reel.json` 에는 적어도 `{"slug", "source": [문서 이름, "YYYY-MM-DD 확인"], "hook": {"lines": [훅 세 줄]}, "scenes": [[시작 초, 장면에 나오는 글자 요약], ...], "music": {"mood": 분위기, "seed": slug}}`
 를 적는다(저녁 "오늘 릴스 보내기" 작업이 `hook.lines` 를 읽는다). 슬라임 그림·글꼴·gsap·node_modules·out 은 올리지 않는다.
