@@ -28,11 +28,21 @@ ROWS = [
     ".OBBBBBBBBBBBBO.",
     "..OOOOOOOOOOOO..",
 ]
-PAL = {"O": C_OUT, "B": C_BODY, "W": WHITE, "E": (24, 24, 40), "P": (255, 140, 160)}
-MOODS = ("base", "glint", "surprise", "excited", "smile")
+PAL = {"O": C_OUT, "B": C_BODY, "W": WHITE, "E": (24, 24, 40), "P": (255, 140, 160),
+       "S": (70, 130, 220), "Y": (255, 206, 84), "K": (255, 150, 170)}
+MOODS = ("base", "glint", "surprise", "excited", "smile",
+         "think", "sweat", "serious", "wink", "sad", "sleepy", "proud", "doubt", "star", "dizzy")
+
+E = "E"
+
+def _eyes(px, y0=6, y1=10):
+    for x0 in (4, 10):
+        for y in range(y0, y1):
+            for x in (x0, x0 + 1): px[(x, y)] = E
 
 def face(mood, blink):
-    """표정별 눈·입 픽셀. base 기본(검정 눈) / glint 반짝(눈에 흰 점) / surprise 놀람 / excited 신남 / smile 웃음."""
+    """표정별 눈·입 픽셀. base 기본(검정 눈) / glint 반짝(눈에 흰 점) / surprise 놀람 / excited 신남 / smile 웃음
+    / think 생각 / sweat 곤란(땀) / serious 단호 / wink 윙크 / sad 시무룩 / sleepy 지루 / proud 뿌듯 / doubt 의심 / star 반함 / dizzy 어질."""
     px = {}
     if mood == "surprise":      # 흰자 안에 작은 눈동자 + 턱에 붙은 세로 입
         for c in (4, 11):
@@ -53,6 +63,59 @@ def face(mood, blink):
             for y in (11, 12):
                 px[(x, y)] = "E"
         px[(7, 12)] = "P"; px[(8, 12)] = "P"
+    elif mood == "think":      # 생각: 눈동자가 오른쪽 위로, 작은 일자 입
+        for x0 in (4, 10):
+            for x in (x0, x0+1, x0+2):
+                for y in (5, 6, 7, 8): px[(x, y)] = "W"
+            for y in (5, 6): px[(x0+1, y)] = E; px[(x0+2, y)] = E
+        px[(8, 11)] = E; px[(9, 11)] = E
+    elif mood == "sweat":    # 곤란: 기본 눈 + 물결 입 + 오른쪽 이마에 땀
+        _eyes(px)
+        for x, y in ((6, 12), (7, 11), (8, 12), (9, 11)): px[(x, y)] = E
+        px[(13, 3)] = "W"; px[(13, 4)] = "S"; px[(12, 4)] = "W"; px[(13, 5)] = "S"
+    elif mood == "serious":  # 단호: 안쪽으로 내려간 눈썹 + 일자 입
+        _eyes(px, 7, 10)
+        for x, y in ((3, 5), (4, 5), (5, 6), (6, 6), (12, 5), (11, 5), (10, 6), (9, 6)): px[(x, y)] = E
+        for x in (6, 7, 8, 9): px[(x, 11)] = E
+    elif mood == "wink":     # 윙크: 왼쪽 눈 감고 오른쪽 반짝 + 웃는 입
+        px[(3, 8)] = E; px[(4, 7)] = E; px[(5, 7)] = E; px[(6, 8)] = E
+        for y in range(6, 10):
+            for x in (10, 11): px[(x, y)] = E
+        px[(10, 6)] = "W"
+        px[(6, 10)] = E; px[(7, 11)] = E; px[(8, 11)] = E; px[(9, 10)] = E
+    elif mood == "sad":      # 시무룩: 처진 눈 + 눈물 + 뒤집힌 입
+        for x0 in (4, 10):
+            for y in (7, 8, 9):
+                for x in (x0, x0+1): px[(x, y)] = E
+        px[(3, 7)] = E; px[(12, 7)] = E
+        px[(4, 10)] = "W"; px[(4, 11)] = "S"
+        px[(6, 12)] = E; px[(7, 11)] = E; px[(8, 11)] = E; px[(9, 12)] = E
+    elif mood == "sleepy":   # 지루: 반쯤 감은 눈 + 작은 입
+        for x0 in (4, 10):
+            for x in (x0-1, x0, x0+1, x0+2): px[(x, 7)] = E
+            for x in (x0, x0+1): px[(x, 8)] = E
+        px[(7, 11)] = E; px[(8, 11)] = E
+    elif mood == "proud":    # 뿌듯: ^ ^ 눈 + 볼터치 + 웃는 입
+        for c in (4, 11):
+            px[(c-1, 8)] = E; px[(c, 7)] = E; px[(c+1, 8)] = E
+            px[(c-1, 9)] = "K"; px[(c, 9)] = "K"; px[(c+1, 9)] = "K"
+        px[(7, 12)] = E; px[(8, 12)] = E; px[(6, 11)] = E; px[(9, 11)] = E
+    elif mood == "doubt":    # 의심: 가늘게 뜬 눈 + 한쪽으로 쏠린 입
+        for x0 in (4, 10):
+            for x in (x0-1, x0, x0+1, x0+2): px[(x, 7)] = E
+            for x in (x0, x0+1): px[(x, 8)] = E
+            for x in (x0-1, x0+2): px[(x, 6)] = E
+        for x in (8, 9, 10): px[(x, 11)] = E
+        px[(10, 10)] = E
+    elif mood == "star":     # 반함: 노란 별 눈 + 벌린 입
+        for c in (4, 11):
+            for x, y in ((c, 5), (c-1, 6), (c, 6), (c+1, 6), (c-2, 7), (c-1, 7), (c, 7), (c+1, 7), (c+2, 7), (c-1, 8), (c+1, 8)): px[(x, y)] = "Y"
+        for x in (6, 7, 8, 9): px[(x, 10)] = E
+        for x in (7, 8): px[(x, 11)] = "K"; px[(6, 11)] = E; px[(9, 11)] = E
+    elif mood == "dizzy":    # 어질: X 눈 + 물결 입
+        for c in (4, 11):
+            for d in (-1, 0, 1): px[(c+d, 7+d)] = E; px[(c+d, 7-d)] = E
+        for x, y in ((5, 11), (6, 10), (7, 11), (8, 10), (9, 11), (10, 10)): px[(x, y)] = E
     elif mood == "smile":       # ^ ^ 눈
         for c in (4, 11):
             px[(c - 1, 8)] = "E"; px[(c, 7)] = "E"; px[(c + 1, 8)] = "E"

@@ -20,7 +20,7 @@ def sprite(mood):
     im = M.slime_sprite(False, mood).resize((256, 224), Image.NEAREST)
     b = io.BytesIO(); im.save(b, "PNG")
     return "data:image/png;base64," + base64.b64encode(b.getvalue()).decode()
-SPR = {m: sprite(m) for m in ("base", "glint", "surprise", "excited", "smile")}
+SPR = {m: sprite(m) for m in M.MOODS}
 
 CSS = f"""
 @font-face{{font-family:P;font-weight:900;src:url("{F}/Pretendard-Black.ttf")}}
