@@ -1,0 +1,13 @@
+{
+  "name": "tenbylabs-reel-free",
+  "private": true,
+  "description": "TENBY LABS 릴스: 슬라임과 최소 규칙만 두고 그날 내용에 맞춰 HyperFrames 화면을 새로 짜는 틀",
+  "scripts": {
+    "lint": "hyperframes lint project",
+    "render": "hyperframes render project -o out/reel.mp4 --fps 30 --quality high"
+  },
+  "dependencies": {
+    "gsap": "3.15.0",
+    "hyperframes": "0.9.72"
+  }
+}

@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="ko" data-resolution="portrait">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, height=1920">
+<script src="gsap.min.js"></script>
+<style>
+@font-face{font-family:P;font-weight:900;src:url("fonts/Pretendard-Black.ttf")}
+@font-face{font-family:P;font-weight:800;src:url("fonts/Pretendard-ExtraBold.ttf")}
+@font-face{font-family:P;font-weight:700;src:url("fonts/Pretendard-Bold.ttf")}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1920px;overflow:hidden;background:#120B12;font-family:P;color:#F6F2EA}
+#root{position:absolute;inset:0;overflow:hidden}
+#cam{position:absolute;inset:0;transform-origin:50% 55%}
+.bg{position:absolute;inset:0;
+ background:
+  radial-gradient(55% 28% at 50% 66%,rgba(255,122,60,.20),transparent 70%),
+  linear-gradient(#170D16,#120B12 60%,#0E080E)}
+.grid{position:absolute;inset:0;opacity:.5;
+ background-image:linear-gradient(rgba(255,255,255,.035) 2px,transparent 2px),linear-gradient(90deg,rgba(255,255,255,.035) 2px,transparent 2px);
+ background-size:48px 48px}
+.brand{position:absolute;left:64px;top:150px;font-size:30px;letter-spacing:4px;font-weight:900;color:rgba(255,255,255,.55)}
+.prog{position:absolute;right:64px;top:156px;display:flex;gap:10px}
+.prog i{display:block;width:44px;height:10px;border-radius:5px;background:rgba(255,255,255,.14)}
+.prog i b{display:block;height:100%;width:0;border-radius:5px;background:#FF7A1A}
+/* captions */
+.cap{position:absolute;left:0;right:0;top:300px;text-align:center;font-weight:900;letter-spacing:-3px;line-height:1.12}
+.cap .l{display:block;overflow:hidden;padding:4px 0}
+.cap .l span{display:inline-block}
+.c1{font-size:92px}
+.c2{font-size:116px}
+.y{color:#FFCE54}.o{color:#FF7A1A}
+.tagline{position:absolute;left:50%;top:236px;transform:translateX(-50%);background:#FFCE54;color:#1A1220;font-size:40px;font-weight:900;padding:12px 30px;border-radius:14px;white-space:nowrap}
+/* stage */
+.floor{position:absolute;left:120px;right:120px;top:1500px;height:6px;border-radius:3px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent)}
+#slime{position:absolute;left:412px;top:1276px;width:256px;height:224px;transform-origin:50% 100%}
+#slime img{position:absolute;inset:0;width:256px;height:224px;image-rendering:pixelated;opacity:0}
+#slime img.on{opacity:1}
+.shadow{position:absolute;left:440px;top:1490px;width:200px;height:26px;border-radius:50%;background:rgba(0,0,0,.45);transform-origin:50% 50%}
+/* icons */
+.ic{position:absolute;left:476px;top:1300px;width:128px;height:128px;border-radius:28px;background:#251824;border:4px solid #3D2A3A;display:flex;align-items:center;justify-content:center;opacity:0}
+.ic svg{width:76px;height:76px;shape-rendering:crispEdges}
+/* cards */
+.card{position:absolute;top:760px;width:430px;height:470px;border-radius:36px;background:#211521;border:5px solid #3D2A3A;padding:40px 36px;opacity:0}
+.card h3{font-size:72px;font-weight:900;letter-spacing:-2px}
+.card p{margin-top:18px;font-size:38px;font-weight:700;color:rgba(246,242,234,.72);line-height:1.35}
+.card .pill{position:absolute;left:36px;bottom:40px;font-size:34px;font-weight:900;padding:10px 22px;border-radius:12px;background:#2E1F2D;color:#FFCE54}
+#cA{left:84px;border-color:#5FB2FF}
+#cB{left:566px}
+.stamp{position:absolute;font-weight:900;font-size:64px;padding:12px 28px;border:7px solid;border-radius:18px;opacity:0;letter-spacing:-1px;background:rgba(18,11,18,.6)}
+#stA{left:300px;top:770px;color:#53D68A;border-color:#53D68A}
+#stB{left:760px;top:770px;color:#FF5A5A;border-color:#FF5A5A}
+/* spotlight */
+.spot{position:absolute;left:540px;top:1000px;width:900px;height:900px;margin:-450px 0 0 -450px;border-radius:50%;
+ background:radial-gradient(circle,rgba(255,206,84,.16) 0,rgba(255,206,84,.06) 45%,transparent 70%);opacity:0}
+.big{position:absolute;left:0;right:0;top:720px;text-align:center;opacity:0}
+.big .n{font-size:330px;font-weight:900;letter-spacing:-10px;color:#FFCE54;line-height:1}
+.big .u{font-size:64px;font-weight:900;margin-top:-10px}
+.warn{position:absolute;left:830px;top:830px;width:120px;height:120px;opacity:0}
+.bar{position:absolute;left:150px;right:150px;top:1180px;height:34px;border-radius:17px;background:#2A1C29;overflow:hidden;opacity:0}
+.bar b{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#FF7A1A,#FF5A5A)}
+.ticks{position:absolute;left:150px;right:150px;top:1230px;display:flex;justify-content:space-between;font-size:30px;font-weight:800;color:rgba(255,255,255,.5);opacity:0}
+/* checklist end */
+.chk{position:absolute;left:150px;right:150px;top:740px}
+.chk .r{display:flex;align-items:center;gap:26px;height:104px;margin-bottom:18px;padding:0 30px;border-radius:24px;background:#211521;border:3px solid #3D2A3A;opacity:0}
+.chk .bx{width:56px;height:56px;border-radius:14px;background:#2E1F2D;position:relative;flex:none}
+.chk .bx svg{position:absolute;inset:6px;opacity:0}
+.chk .t{font-size:46px;font-weight:900;letter-spacing:-1px}
+.chk .d{font-size:32px;color:rgba(255,255,255,.55);margin-left:auto;font-weight:700}
+.flash{position:absolute;inset:0;background:#fff;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="15" data-width="1080" data-height="1920" data-fps="30">
+<div id="cam">
+ <div class="bg"></div><div class="grid"></div>
+ <div class="brand">TENBY LABS</div>
+ <div class="prog"><i><b id="p1"></b></i><i><b id="p2"></b></i><i><b id="p3"></b></i><i><b id="p4"></b></i></div>
+
+ <!-- scene 1 : hook -->
+ <div id="s1">
+  <div class="tagline" id="tag">앱스토어에 처음 앱 내는 분</div>
+  <div class="cap">
+   <span class="l c1"><span id="h1">애플 개발자 등록</span></span>
+   <span class="l c1"><span id="h2"><span class="y">99달러</span> 내기 전</span></span>
+   <span class="l c2"><span id="h3"><span class="o">개인</span>이냐 <span class="o">조직</span>이냐</span></span>
+  </div>
+ </div>
+
+ <!-- scene 2 : 개인 vs 조직 -->
+ <div id="s2" style="opacity:0">
+  <div class="cap">
+   <span class="l c1"><span id="a1"><span class="y">개인사업자</span>는</span></span>
+   <span class="l c1"><span id="a2">개인으로 등록해요</span></span>
+  </div>
+  <div class="cap" style="top:300px">
+   <span class="l c1"><span id="b1">조직은</span></span>
+   <span class="l c1"><span id="b2"><span class="o">법인</span>만 돼요</span></span>
+  </div>
+  <div class="card" id="cA"><h3>개인</h3><p>개인사업자 포함<br>판매자 이름은<br>본인 실명</p><div class="pill">사업자등록 OK</div></div>
+  <div class="card" id="cB"><h3>조직</h3><p>법인만 가능<br>D-U-N-S 번호<br>회사 도메인 메일</p><div class="pill" style="color:#FF8A8A">법인 전용</div></div>
+  <div class="stamp" id="stA">여기!</div>
+  <div class="stamp" id="stB">법인만</div>
+ </div>
+
+ <!-- scene 3 : 숫자 스포트라이트 -->
+ <div id="s3" style="opacity:0">
+  <div class="cap">
+   <span class="l c1"><span id="d1">조직이라면</span></span>
+   <span class="l c1"><span id="d2"><span class="y">D-U-N-S 번호</span>부터</span></span>
+  </div>
+  <div class="spot" id="spot"></div>
+  <div class="big" id="big"><div class="u" style="font-size:54px;color:rgba(255,255,255,.75);margin:0 0 6px">번호 발급까지 업무일 기준 최대</div><div class="n" id="num">0</div></div>
+  <svg class="warn" id="warn" viewBox="0 0 12 12" shape-rendering="crispEdges">
+   <rect x="5" y="0" width="2" height="1" fill="#FF5A5A"/><rect x="4" y="1" width="4" height="2" fill="#FF5A5A"/><rect x="3" y="3" width="6" height="2" fill="#FF5A5A"/><rect x="2" y="5" width="8" height="2" fill="#FF5A5A"/><rect x="1" y="7" width="10" height="2" fill="#FF5A5A"/><rect x="0" y="9" width="12" height="2" fill="#FF5A5A"/>
+   <rect x="5" y="3" width="2" height="4" fill="#fff"/><rect x="5" y="8" width="2" height="2" fill="#fff"/>
+  </svg>
+  <div class="bar" id="bar"><b id="barb"></b></div>
+  <div class="ticks" id="ticks"><span>1일</span><span>2일</span><span>3일</span><span>4일</span><span>5일</span></div>
+ </div>
+
+ <!-- scene 4 : 정리 -->
+ <div id="s4" style="opacity:0">
+  <div class="cap" style="top:330px">
+   <span class="l c1"><span id="e1"><span class="y">저장</span>해 두고</span></span>
+   <span class="l c1"><span id="e2">등록 전에 꺼내 보세요</span></span>
+  </div>
+  <div class="chk">
+   <div class="r" id="r1"><div class="bx"><svg viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#53D68A"/></svg></div><div class="t">준비물</div><div class="d">계정·연회비</div></div>
+   <div class="r" id="r2"><div class="bx"><svg viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#53D68A"/></svg></div><div class="t">개인사업자</div><div class="d">개인으로</div></div>
+   <div class="r" id="r3"><div class="bx"><svg viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#53D68A"/></svg></div><div class="t">조직</div><div class="d">법인만</div></div>
+   <div class="r" id="r4"><div class="bx"><svg viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#53D68A"/></svg></div><div class="t">D-U-N-S</div><div class="d">최대 5일</div></div>
+  </div>
+ </div>
+
+ <!-- icons that burst from the slime -->
+ <div class="ic" id="i1"><svg viewBox="0 0 8 8"><rect x="2" y="0" width="4" height="1" fill="#FFCE54"/><rect x="1" y="1" width="6" height="6" fill="#FFCE54"/><rect x="2" y="7" width="4" height="1" fill="#FFCE54"/><rect x="0" y="2" width="1" height="4" fill="#FFCE54"/><rect x="7" y="2" width="1" height="4" fill="#FFCE54"/><rect x="3" y="2" width="2" height="1" fill="#B8862A"/><rect x="3" y="3" width="1" height="1" fill="#B8862A"/><rect x="3" y="4" width="2" height="1" fill="#B8862A"/><rect x="4" y="5" width="1" height="1" fill="#B8862A"/><rect x="3" y="6" width="2" height="1" fill="#B8862A"/></svg></div>
+ <div class="ic" id="i2"><svg viewBox="0 0 8 8"><rect x="0" y="1" width="8" height="6" fill="#5FB2FF"/><rect x="1" y="2" width="2" height="3" fill="#E8F3FF"/><rect x="4" y="2" width="3" height="1" fill="#E8F3FF"/><rect x="4" y="4" width="2" height="1" fill="#E8F3FF"/></svg></div>
+ <div class="ic" id="i3"><svg viewBox="0 0 8 8"><rect x="1" y="1" width="6" height="7" fill="#C9B6C6"/><rect x="2" y="2" width="1" height="1" fill="#3D2A3A"/><rect x="5" y="2" width="1" height="1" fill="#3D2A3A"/><rect x="2" y="4" width="1" height="1" fill="#3D2A3A"/><rect x="5" y="4" width="1" height="1" fill="#3D2A3A"/><rect x="3" y="6" width="2" height="2" fill="#3D2A3A"/><rect x="0" y="0" width="8" height="1" fill="#FF7A1A"/></svg></div>
+ <div class="ic" id="i4"><svg viewBox="0 0 8 8"><rect x="1" y="0" width="6" height="8" fill="#F6F2EA"/><rect x="2" y="2" width="4" height="1" fill="#8A7A88"/><rect x="2" y="4" width="4" height="1" fill="#8A7A88"/><rect x="2" y="6" width="2" height="1" fill="#8A7A88"/></svg></div>
+
+ <div class="floor"></div>
+ <div class="shadow" id="shadow"></div>
+ <div id="slime">
+  <img id="m_base" class="on" src="slime/base.png"><img id="m_glint" src="slime/glint.png"><img id="m_surprise" src="slime/surprise.png"><img id="m_excited" src="slime/excited.png"><img id="m_smile" src="slime/smile.png">
+ </div>
+</div>
+<div class="flash" id="flash"></div>
+</div>
+
+<script>
+(function(){
+ const tl = gsap.timeline({paused:true});
+ const mood = (m,t)=>tl.call(()=>{document.querySelectorAll('#slime img').forEach(i=>i.classList.toggle('on',i.id==='m_'+m));},null,t);
+ const moods=['base','glint','surprise','excited','smile'];
+ // make mood switching seek-safe: set by time in onUpdate
+ const moodAt=[[0,'base'],[1.9,'glint'],[4.7,'excited'],[6.1,'base'],[8.9,'surprise'],[11.9,'smile']];
+ const setMood=t=>{let m='base';for(const [s,k] of moodAt) if(t>=s) m=k;document.querySelectorAll('#slime img').forEach(i=>i.classList.toggle('on',i.id==='m_'+m));};
+ const clock={t:0};
+ tl.to(clock,{t:15,duration:15,ease:'none',onUpdate:()=>setMood(clock.t)},0);
+
+ const S='#slime', SH='#shadow';
+ // idle hop helper
+ const hop=(t,n,h=70,d=0.42)=>{for(let k=0;k<n;k++){const s=t+k*d;
+   tl.to(S,{y:'-='+h,scaleY:1.06,scaleX:.95,duration:d*.45,ease:'power2.out'},s)
+     .to(S,{y:'+='+h,scaleY:1,scaleX:1,duration:d*.4,ease:'power2.in'},s+d*.45)
+     .to(S,{scaleY:.86,scaleX:1.12,duration:d*.07,ease:'none'},s+d*.85)
+     .to(S,{scaleY:1,scaleX:1,duration:d*.08,ease:'none'},s+d*.92)
+     .to(SH,{scale:.7,opacity:.5,duration:d*.45},s).to(SH,{scale:1,opacity:1,duration:d*.4},s+d*.45);}};
+
+ // ---------- scene 1 : hook (0 - 3.3)
+ tl.set(S,{y:-1500}).set(SH,{scale:.2,opacity:0});
+ tl.to(S,{y:0,duration:.45,ease:'power3.in'},0.05)
+   .to(SH,{scale:1,opacity:1,duration:.45,ease:'power3.in'},0.05)
+   .to(S,{scaleY:.72,scaleX:1.25,duration:.07},0.5).to(S,{scaleY:1,scaleX:1,duration:.35,ease:'elastic.out(1,.4)'},0.57);
+ tl.from('#tag',{y:-40,opacity:0,duration:.35,ease:'back.out(2)'},0.35);
+ tl.from('#h1',{yPercent:110,duration:.4,ease:'power3.out'},0.3)
+   .from('#h2',{yPercent:110,duration:.4,ease:'power3.out'},1.0)
+   .from('#h3',{yPercent:110,duration:.45,ease:'power3.out'},1.8)
+   .from('#h3',{scale:1.25,duration:.5,ease:'back.out(2.5)'},1.8);
+ // burst icons
+ const burst=[['#i1',-330,-360,-14],['#i2',330,-330,12],['#i3',-360,-80,-8],['#i4',360,-60,10]];
+ burst.forEach(([id,x,y,r],k)=>{
+   tl.fromTo(id,{x:0,y:0,scale:.2,opacity:0,rotation:0},{x,y,scale:1,opacity:1,rotation:r,duration:.55,ease:'back.out(1.8)'},1.1+k*0.07)
+     .to(id,{y:y-24,duration:.9,ease:'sine.inOut',yoyo:true,repeat:1},1.7+k*0.07);
+ });
+ tl.to(S,{scaleY:.8,scaleX:1.15,duration:.08},1.05).to(S,{scaleY:1,scaleX:1,duration:.3,ease:'elastic.out(1,.4)'},1.13);
+ hop(2.2,2,50);
+ tl.to('#p1',{width:'100%',duration:3.2,ease:'none'},0);
+ // exit: slime dashes right, everything swipes left
+ tl.to(['#i1','#i2','#i3','#i4'],{scale:0,opacity:0,duration:.25,ease:'back.in(2)',stagger:.03},3.0)
+   .to(S,{scaleX:1.5,scaleY:.75,x:900,duration:.35,ease:'power3.in'},3.1)
+   .to(SH,{x:900,opacity:0,duration:.35,ease:'power3.in'},3.1)
+   .to('#s1',{x:-1080,duration:.4,ease:'power3.in'},3.15);
+
+ // ---------- scene 2 : 개인 vs 조직 (3.5 - 8.6)
+ tl.set('#s2',{opacity:1},3.5).set(S,{x:-900,scaleX:1,scaleY:1},3.5).set(SH,{x:-900},3.5);
+ tl.to(S,{x:-250,duration:.45,ease:'power3.out'},3.55).to(SH,{x:-250,opacity:1,duration:.45,ease:'power3.out'},3.55)
+   .to(S,{scaleX:.8,scaleY:1.15,duration:.1},3.95).to(S,{scaleX:1,scaleY:1,duration:.3,ease:'elastic.out(1,.4)'},4.05);
+ tl.from('#a1',{yPercent:110,duration:.4,ease:'power3.out'},3.6)
+   .from('#a2',{yPercent:110,duration:.4,ease:'power3.out'},4.3);
+ tl.fromTo('#cA',{y:-200,opacity:0,rotation:-6},{y:0,opacity:1,rotation:-2,duration:.5,ease:'back.out(1.6)'},3.8)
+   .fromTo('#cB',{y:-200,opacity:0,rotation:6},{y:0,opacity:1,rotation:2,duration:.5,ease:'back.out(1.6)'},3.95);
+ // slime jumps toward 개인
+ tl.to(S,{y:-180,duration:.25,ease:'power2.out'},4.6).to(S,{y:0,duration:.22,ease:'power2.in'},4.85)
+   .to(S,{scaleY:.8,scaleX:1.15,duration:.06},5.07).to(S,{scaleY:1,scaleX:1,duration:.25},5.13);
+ tl.fromTo('#stA',{scale:2.4,opacity:0,rotation:-20},{scale:1,opacity:1,rotation:-10,duration:.3,ease:'power4.in'},4.9)
+   .to('#cA',{boxShadow:'0 0 60px rgba(95,178,255,.55)',duration:.3},5.0);
+ // swap caption to 조직
+ tl.to(['#a1','#a2'],{yPercent:-110,duration:.3,ease:'power3.in',stagger:.05},6.0)
+   .from('#b1',{yPercent:110,duration:.4,ease:'power3.out'},6.15)
+   .from('#b2',{yPercent:110,duration:.4,ease:'power3.out'},6.6);
+ tl.set('#b1,#b2',{yPercent:110},0).set('#b1,#b2',{yPercent:110},6.14);
+ tl.to(S,{x:230,duration:.45,ease:'power2.inOut'},6.1).to(SH,{x:230,duration:.45,ease:'power2.inOut'},6.1);
+ tl.to('#cB',{filter:'grayscale(1) brightness(.6)',duration:.35},6.7)
+   .fromTo('#stB',{scale:2.4,opacity:0,rotation:20},{scale:1,opacity:1,rotation:8,duration:.3,ease:'power4.in'},6.75)
+   .to('#cam',{x:14,duration:.04,yoyo:true,repeat:5},7.05);
+ tl.to('#p2',{width:'100%',duration:5.1,ease:'none'},3.5);
+ tl.to('#s2',{opacity:0,scale:.92,duration:.35,ease:'power2.in'},8.3);
+
+ // ---------- scene 3 : D-U-N-S 5일 (8.6 - 12)
+ tl.set('#s3',{opacity:1},8.6).set(S,{x:0},8.6).set(SH,{x:0},8.6);
+ tl.from('#d1',{yPercent:110,duration:.4,ease:'power3.out'},8.65)
+   .from('#d2',{yPercent:110,duration:.4,ease:'power3.out'},9.1);
+ tl.fromTo('#spot',{scale:.2,opacity:0},{scale:1,opacity:1,duration:.6,ease:'power2.out'},8.7);
+ tl.fromTo('#big',{scale:.6,opacity:0},{scale:1,opacity:1,duration:.45,ease:'back.out(2)'},9.2);
+ const cnt={v:0};
+ tl.fromTo(cnt,{v:0},{v:5,duration:1.3,ease:'power1.inOut',onUpdate:()=>{document.getElementById('num').textContent=Math.max(1,Math.ceil(cnt.v-0.001))+'일'}},9.3);
+ tl.fromTo('#bar',{opacity:0},{opacity:1,duration:.2},9.3).fromTo('#ticks',{opacity:0},{opacity:1,duration:.2},9.3)
+   .fromTo('#barb',{width:'0%'},{width:'100%',duration:1.3,ease:'power1.inOut'},9.3);
+ tl.fromTo('#warn',{scale:0,opacity:0,rotation:-30},{scale:1,opacity:1,rotation:0,duration:.35,ease:'back.out(3)'},10.7)
+   .to('#warn',{y:-16,duration:.25,yoyo:true,repeat:3,ease:'sine.inOut'},11.05);
+ tl.to(S,{y:-40,duration:.12,yoyo:true,repeat:1},10.7);
+ tl.to('#p3',{width:'100%',duration:3.4,ease:'none'},8.6);
+ tl.to('#s3',{opacity:0,duration:.3},11.7);
+
+ // ---------- scene 4 : 정리 + 줌인 (12 - 15)
+ tl.set('#s4',{opacity:1},12.0);
+ tl.from('#e1',{yPercent:110,duration:.4,ease:'power3.out'},12.0)
+   .from('#e2',{yPercent:110,duration:.4,ease:'power3.out'},12.4);
+ ['#r1','#r2','#r3','#r4'].forEach((r,k)=>{
+   tl.fromTo(r,{x:-120,opacity:0},{x:0,opacity:1,duration:.3,ease:'power3.out'},12.1+k*.18)
+     .fromTo(r+' svg',{opacity:0,scale:2},{opacity:1,scale:1,duration:.2,ease:'power4.in'},12.55+k*.18);
+ });
+ hop(12.2,3,60,.45);
+ tl.to('#p4',{width:'100%',duration:3,ease:'none'},12);
+ tl.to('#cam',{scale:1.18,duration:1.0,ease:'power2.in'},14.0);
+ tl.to('#flash',{opacity:.0,duration:.01},14.99);
+
+ window.__timelines = window.__timelines || {};
+ window.__timelines['main'] = tl;
+ tl.seek(0);
+})();
+</script>
+</body>
+</html>
