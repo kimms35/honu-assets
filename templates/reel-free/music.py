@@ -1,7 +1,8 @@
 """TENBY LABS 릴스 배경음 + 효과음 생성기 (코드로 직접 만들어 저작권 걱정 없음).
 
-기준 분위기: 채널 주인이 고른 큐트 카와이 로파이(Heart Bubbles 등) —
-  80~94BPM, 장조, 아주 따뜻하고 먹먹한 소리(고음 거의 없음), 부드러운 피아노·오르골, 둥근 베이스, 작은 드럼, 레코드 잡음.
+기준 분위기: 채널 주인이 고른 큐트 카와이 로파이(Heart Bubbles, tenbylabs 릴스에 쓴 lemonade·chocolate milk·pudding 등).
+  2026-11-23 "축축 처진다" 피드백 + 그 곡들을 측정한 값 반영: 빠른 박 130~150(드럼은 절반 속도), 촘촘한 타격, G·D장조, 장조, 짧게 끊어 치는 피아노, 톡톡 튀는 플럭·오르골 멜로디,
+  통통 튀는 베이스, 박수 섞인 스네어와 촘촘한 하이햇, 따뜻하지만 답답하지 않은 소리.
 남의 곡의 멜로디·화음 진행을 베끼지 않는다. 멜로디는 매번 seed 로 새로 만든다.
 
 python3 music.py --dur 48.6 --mood bright --seed <slug> --events events.json --out out/audio.wav
@@ -60,6 +61,17 @@ def musicbox(m, vel):
     s = np.sin(2 * np.pi * f * t) + 0.35 * np.sin(2 * np.pi * 2 * f * t) * np.exp(-t * 6) + 0.12 * np.sin(2 * np.pi * 4.07 * f * t) * np.exp(-t * 12)
     return lp(s * np.exp(-t * 3.2) * np.minimum(1, t * 400), 3800) * vel * 0.16
 
+def pluck(m, vel):
+    """마림바·칼림바처럼 톡 끊어지는 소리 (멜로디용, 통통 튀는 느낌)."""
+    n = int(0.5 * SR); t = np.arange(n) / SR; f = hz(m)
+    s = np.sin(2 * np.pi * f * t) * np.exp(-t * 9) + 0.5 * np.sin(2 * np.pi * 4 * f * t) * np.exp(-t * 30) + 0.2 * np.sin(2 * np.pi * 10 * f * t) * np.exp(-t * 60)
+    return lp(s * np.minimum(1, t * 800), 7000) * vel * 0.2
+
+def clap(rng):
+    n = int(0.18 * SR); t = np.arange(n) / SR; x = hp(rng.standard_normal(n), 1200)
+    e = np.exp(-t * 30) + 0.6 * np.exp(-np.maximum(t - 0.012, 0) * 30) * (t > 0.012)
+    return lp(x * e, 6000) * 0.25
+
 def bass(m, dur):
     n = int((dur + 0.15) * SR); t = np.arange(n) / SR; f = hz(m)
     s = np.sin(2 * np.pi * f * t) + 0.18 * np.sin(2 * np.pi * 2 * f * t)
@@ -77,7 +89,7 @@ def rim(rng):
     return lp(np.sin(2 * np.pi * 900 * t) + 0.5 * rng.standard_normal(n), 2600) * np.exp(-t * 70) * 0.25
 def shaker(rng):
     n = int(0.07 * SR); t = np.arange(n) / SR
-    return lp(hp(rng.standard_normal(n), 4000), 7000) * np.sin(np.pi * np.minimum(t / 0.07, 1)) * 0.08
+    return lp(hp(rng.standard_normal(n), 6000), 11000) * np.exp(-t * 60) * 0.12
 
 # ---------------- 분위기별 설정 (진행은 흔한 재즈·로파이 화성 문법으로 직접 짠 것) ----------------
 CH = {  # 근음(미디)과 구성음(근음 기준 반음)
@@ -86,68 +98,91 @@ CH = {  # 근음(미디)과 구성음(근음 기준 반음)
     'G13sus': (43, [0, 5, 7, 10, 16]), 'E7b9': (40, [0, 4, 7, 10, 13]), 'Fm6': (41, [0, 3, 7, 9, 14]),
     'Bbmaj7': (46, [0, 4, 7, 11, 14]), 'D9': (50, [0, 4, 7, 10, 14]),
 }
-MOODS = {
-    'calm':    dict(bpm=80, progs=[['Fmaj9', 'Em7', 'Dm9', 'Cmaj9'], ['Fmaj9', 'Fm6', 'Em7', 'Am9']], mel=0.35, drums=0.75, box=0.8),
-    'bright':  dict(bpm=86, progs=[['Cmaj9', 'Am9', 'Dm9', 'G13sus'], ['Fmaj9', 'G6', 'Em7', 'Am9']], mel=0.55, drums=1.0, box=1.0),
-    'playful': dict(bpm=92, progs=[['Fmaj9', 'G6', 'Em7', 'Am9'], ['Cmaj9', 'D9', 'Fmaj9', 'G13sus']], mel=0.75, drums=1.1, box=1.2),
-    'focus':   dict(bpm=84, progs=[['Am9', 'Fmaj9', 'Cmaj9', 'G6'], ['Dm9', 'G13sus', 'Cmaj9', 'E7b9']], mel=0.4, drums=0.9, box=0.7),
+MOODS = {  # 2026-11-23 채널 주인 릴스에 쓴 곡 6개를 측정한 값에 맞춤:
+    # 빠른 박 130~150(드럼은 그 절반으로 느긋하게), 1초에 3.4~4.9번 촘촘한 타격, G·D장조 중심, 두툼한 저음, 고음은 적게
+    'calm':    dict(bpm=132, key=7, progs=[['Fmaj9', 'G6', 'Em7', 'Am9'], ['Cmaj9', 'Am9', 'Fmaj9', 'G6']], mel=0.45, drums=0.85, box=0.9, hats16=False),
+    'bright':  dict(bpm=140, key=7, progs=[['Cmaj9', 'Am9', 'Fmaj9', 'G6'], ['Fmaj9', 'G6', 'Em7', 'Am9']], mel=0.6, drums=1.0, box=1.0, hats16=True),
+    'playful': dict(bpm=146, key=2, progs=[['Fmaj9', 'G6', 'Cmaj9', 'Am9'], ['Cmaj9', 'D9', 'Fmaj9', 'G6']], mel=0.7, drums=1.1, box=1.15, hats16=True),
+    'focus':   dict(bpm=136, key=9, progs=[['Am9', 'Fmaj9', 'Cmaj9', 'G6'], ['Dm9', 'G13sus', 'Cmaj9', 'Am9']], mel=0.45, drums=0.95, box=0.85, hats16=False),
 }
-PENTA = [0, 2, 4, 7, 9]  # C장조 펜타토닉
+PENTA = [0, 2, 4, 7, 9]  # 장조 펜타토닉
 
-def make_music(dur, mood, seed):
+def key_of(mood):
+    k = MOODS[mood]['key']; return k - 12 if k > 6 else k
+
+TONAL = {'pop', 'sparkle', 'tick', 'alert', 'check', 'chime', 'stamp'}  # 음 높이가 있는 효과음
+
+def make_music(dur, mood, seed, avoid=()):
     P = MOODS[mood]; rng = np.random.default_rng(seed)
-    beat = 60 / P['bpm']; bar = 4 * beat; sw = 0.58  # 스윙(16분 뒷박을 조금 늦게)
+    beat = 60 / P['bpm']; bar = 4 * beat; sw = 0.56
+    KEY = key_of(mood)   # 조 옮기기(G=-5, D=+2, A=-3)
     n = int((dur + 2) * SR)
-    keys, bs, dr, mel, vin = (np.zeros(n) for _ in range(5))
+    keys, bs, dr, mel = (np.zeros(n) for _ in range(4))
     prog = P['progs'][rng.integers(len(P['progs']))]
     nbars = int(np.ceil(dur / bar)) + 1
-    intro = min(3.2, dur * 0.1)                 # 훅 구간: 피아노만 가볍게
-    for b in range(nbars):
-        t0 = b * bar; root, iv = CH[prog[b % 4]]
-        voic = [root + 12 + i for i in iv[1:]]  # 근음 빼고 가운데 음역으로
-        while min(voic) < 55: voic = [v + 12 for v in voic]
-        while max(voic) > 76: voic = [v - 12 for v in voic]
-        for k, m in enumerate(sorted(voic)):    # 1박에 살짝 굴려 치기
-            add(keys, t0 + k * 0.018 + rng.uniform(0, 0.006), piano(m, bar * 0.55, 0.7 + rng.uniform(-.08, .05), rng))
-        for k, m in enumerate(sorted(voic)[1:]):  # 2박 반에 가볍게 다시
-            add(keys, t0 + 1.5 * beat + (sw - .5) * beat + k * 0.012, piano(m, beat, 0.42, rng))
-        if t0 >= intro - 0.01:
-            add(bs, t0, bass(root, beat * 1.6)); add(bs, t0 + 2.5 * beat, bass(root + (7 if b % 2 else 12), beat * 0.9))
-    # 드럼: 붐뱁 (킥 1, 2&a, 3& / 스네어 2·4 / 셰이커 8분 스윙)
-    K, S, R, Sh = kick(rng), snare(rng), rim(rng), shaker(rng)
+    intro = min(1.0, dur * 0.04)
     kenv = np.zeros(n)
+    for b in range(nbars):
+        t0 = b * bar; root, iv = CH[prog[(b // 2) % 4]]   # 화음은 2마디마다(빠른 박 기준)
+        root += KEY
+        voic = [root + 12 + i for i in iv[1:]]
+        while min(voic) < 58: voic = [v + 12 for v in voic]
+        while max(voic) > 79: voic = [v - 12 for v in voic]
+        # 피아노: 짧게 콕콕 (빠른 박에서 1, 2&, 4)
+        for hit, ln, vel in ((0, 0.9, 0.6), (1.5, 0.5, 0.45), (3.0, 0.5, 0.42)):
+            if b % 2 == 1 and hit == 0: vel *= 0.8
+            for k, m in enumerate(sorted(voic)):
+                add(keys, t0 + hit * beat + k * 0.006, piano(m, beat * ln, vel + rng.uniform(-.05, .05), rng))
+        # 두툼한 저음(808처럼 둥글게): 2마디에 한 번 길게 + 중간에 짧게
+        if t0 >= intro - 0.01:
+            if b % 2 == 0:
+                add(bs, t0, bass(root - 12 if root > 40 else root, bar * 1.2) * 1.2)
+            else:
+                add(bs, t0 + 2.5 * beat, bass(root + 7 - (12 if root > 40 else 0), beat * 1.0))
+                add(bs, t0 + 3.5 * beat, bass(root + 12 - (12 if root > 40 else 0), beat * 0.4))
+    K, S, C, R, Sh = kick(rng), snare(rng), clap(rng), rim(rng), shaker(rng)
+    ke = np.exp(-np.arange(int(.25 * SR)) / SR * 14)
     nb = int(dur / beat) + 2
     for i in range(nb):
         t = i * beat
-        if t < intro - 0.01 or t > dur - 0.2: continue
-        p = i % 4
-        if p == 0 or (p == 1 and i % 8 == 5): add(dr, t + (0.75 * beat if p == 1 else 0), K, P['drums']); add(kenv, t + (0.75 * beat if p == 1 else 0), np.exp(-np.arange(int(.3 * SR)) / SR * 9))
-        if p == 2: add(dr, t + 0.5 * beat, K, P['drums'] * 0.8); add(kenv, t + 0.5 * beat, np.exp(-np.arange(int(.3 * SR)) / SR * 9))
-        if p in (1, 3): add(dr, t, S, P['drums'] * 0.9)
-        if p == 3 and i % 8 == 7: add(dr, t + 0.75 * beat, R, P['drums'])
-        add(dr, t, Sh, P['drums']); add(dr, t + sw * beat, Sh, P['drums'] * 0.7)
-    # 오르골 멜로디: 2마디 부르고 2마디 답하기, 쉼 많이. 화음 구성음에 맞춘 펜타토닉
+        if t > dur - 0.2 or t < intro - 0.01: continue
+        p8 = i % 8     # 드럼은 절반 속도: 8박(빠른 박) = 느긋한 한 마디
+        if p8 in (0, 5) or (p8 == 3 and i % 16 == 11):
+            add(dr, t, K, P['drums']); add(kenv, t, ke)
+        if p8 == 4: add(dr, t, S, P['drums'] * 0.85); add(dr, t + 0.004, C, P['drums'])
+        if p8 == 7 and i % 16 == 15: add(dr, t + 0.5 * beat, R, P['drums'])
+        add(dr, t, Sh, P['drums'] * (1.0 if p8 % 2 == 0 else 0.7))          # 빠른 박마다 하이햇
+        if P['hats16'] and (p8 in (2, 6) or rng.random() < 0.25):
+            add(dr, t + sw * beat, Sh, P['drums'] * 0.5)                      # 사이사이 잘게
+    # 멜로디: 플럭과 오르골, 빠른 박의 8분 위에서 통통
     phrase = None
     for b in range(nbars):
         t0 = b * bar
-        if t0 < intro or t0 > dur - bar * 0.6: continue
-        root, iv = CH[prog[b % 4]]
+        if t0 < intro or t0 > dur - bar * 0.5: continue
+        root, iv = CH[prog[(b // 2) % 4]]; root += KEY
         if b % 4 in (0, 2) or phrase is None:
-            slots = [s for s in np.arange(0, 4, 0.5) if rng.random() < P['mel']] or [0.0]
-            pitches = [72 + PENTA[rng.integers(5)] + (12 if rng.random() < 0.25 else 0) for _ in slots]
+            grid = list(np.arange(0, 4, 0.5))
+            slots = sorted(s_ for s_ in grid if rng.random() < P['mel']) or [0.0, 1.0]
+            pitches = []; cur = 2
+            for _ in slots:
+                cur = int(np.clip(cur + rng.choice([-1, 1, 1, 2, -2, 0]), 0, 7))
+                pitches.append(72 + KEY + [0, 2, 4, 7, 9, 12, 14, 16][cur])
             phrase = list(zip(slots, pitches))
-        else:  # 답하는 마디: 같은 리듬, 끝음만 화음 쪽으로
-            phrase = [(s, p) for s, p in phrase[:-1]] + [(phrase[-1][0], 72 + (root + iv[2]) % 12)]
-        for s, p in phrase:
-            sw_off = (sw - 0.5) * beat if (s % 1) == 0.5 else 0
-            add(mel, t0 + s * beat + sw_off, musicbox(p, 0.8 + rng.uniform(-.1, .1)), P['box'])
+        else:
+            phrase = [(s_, p_) for s_, p_ in phrase[:-1]] + [(phrase[-1][0], 72 + (root + iv[2]) % 12 + 12)]
+        inst = pluck if (b // 4) % 2 == 0 else musicbox
+        for s_, p_ in phrase:
+            off = (sw - .5) * beat if (s_ % 1) else 0
+            tn = t0 + s_ * beat + off
+            if any(-0.25 < tn - a < 0.45 for a in avoid): continue   # 효과음 자리는 비워 둠
+            add(mel, t0 + s_ * beat + off, inst(p_, 0.85 + rng.uniform(-.1, .1)), P['box'] * (1.0 if inst is pluck else 0.8))
     # 레코드 잡음
     idx = rng.integers(0, n, int(dur * 40)); cr = np.zeros(n); cr[idx] = rng.uniform(-1, 1, len(idx))
     vin = lp(cr, 3000) * 0.25 + lp(rng.standard_normal(n), 700) * 0.006
     # 섞기: 킥에 맞춰 살짝 숨쉬기(사이드체인), 전체를 먹먹하게(기준 곡처럼 고음 거의 없음), 테이프 질감
-    pump = 1 - 0.22 * np.clip(lp(kenv, 30, 1), 0, 1)
-    mix = (keys * 1.0 + mel * 1.0) * pump + bs * 1.0 * pump + dr * 0.55 + vin
-    mix = lp(mix, 4200, 2)
+    pump = 1 - 0.12 * np.clip(lp(kenv, 30, 1), 0, 1)
+    mix = (keys * 1.5 + mel * 1.7) * pump + bs * 0.55 * pump + dr * 0.8 + vin * 0.6
+    mix = lp(mix, 6500, 2)
     mix = np.tanh(mix * 1.3) / np.tanh(1.3)
     mix = mix[:int(dur * SR)]
     fo = int(min(1.2, dur * 0.06) * SR); mix[-fo:] *= np.linspace(1, 0, fo)
@@ -158,29 +193,30 @@ def make_music(dur, mood, seed):
 # ---------------- 효과음 ----------------
 def _sq(f, n, duty=.5): ph = (np.arange(n) * f / SR) % 1; return np.where(ph < duty, 1., -1.)
 def _env(n, k): return np.exp(-np.arange(n) / SR * k)
-def sfx_sig(kind, v, rng):
+def sfx_sig(kind, v, rng, key=0):
+    P5 = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21]   # 장조 펜타토닉 계단
     if kind == 'drop':   n = int(.45 * SR); return _whoosh(n, False, rng) * .5
     if kind == 'land':   n = int(.3 * SR); t = np.arange(n) / SR; return np.sin(2 * np.pi * np.cumsum(90 + 210 * np.exp(-t * 14)) / SR) * _env(n, 9) * 1.0
-    if kind == 'pop':    n = int(.07 * SR); return lp(_sq(hz(76 + 3 * (v or 0)), n), 4000) * _env(n, 40) * .35
+    if kind == 'pop':    n = int(.07 * SR); return lp(_sq(hz(76 + key + [0, 3, 5, 8][(v or 0) % 4] - 0), n), 4000) * _env(n, 40) * .35
     if kind == 'sparkle':
         out = np.zeros(int(.6 * SR))
-        for k, m in enumerate((84, 88, 91, 96)): add(out, k * .06, _ding(m, .35), .5)
+        for k, m in enumerate((84, 88, 91, 96)): add(out, k * .06, _ding(m + key, .35), .5)
         return out
     if kind in ('whoosh_out', 'whoosh_in', 'swipe'): n = int((.35 if kind != 'swipe' else .25) * SR); return _whoosh(n, kind != 'whoosh_in', rng) * .8
     if kind == 'thud':   return _thunk(115, rng) * .7
     if kind == 'jump':   n = int(.2 * SR); t = np.arange(n) / SR; return np.sin(2 * np.pi * np.cumsum(380 + 380 * (1 - np.exp(-t * 15))) / SR) * _env(n, 12) * .45
     if kind == 'stamp':
-        out = np.zeros(int(.3 * SR)); add(out, 0, _thunk(165, rng), 1.0); add(out, 0, _ding(88, .3), .15); return out
+        out = np.zeros(int(.3 * SR)); add(out, 0, _thunk(165, rng), 1.0); add(out, 0, _ding(88 + key, .3), .15); return out
     if kind == 'stamp_big':
         n = int(.3 * SR); b = lp(_sq(hz(40), n), 400) * _env(n, 12) * .35
         th = _thunk(90, rng); b[:len(th)] += th * 1.2; return b
-    if kind == 'tick':   n = int(.06 * SR); return lp(_sq(hz(72 + 2 * (v or 0)), n), 3500) * _env(n, 35) * .5
+    if kind == 'tick':   n = int(.06 * SR); return lp(_sq(hz(72 + key + P5[min(v or 0, 9)]), n), 3500) * _env(n, 35) * .5
     if kind == 'alert':
         out = np.zeros(int(.3 * SR)); n = int(.09 * SR)
-        add(out, 0, lp(_sq(hz(88), n), 4000) * _env(n, 20), .5); add(out, .12, lp(_sq(hz(84), int(.12 * SR)), 4000) * _env(int(.12 * SR), 15), .5); return out
-    if kind == 'check':  return _ding(79 + [0, 2, 4, 7, 9, 12][min(v or 0, 5)], .3) * .55
+        add(out, 0, lp(_sq(hz(88 + key), n), 4000) * _env(n, 20), .5); add(out, .12, lp(_sq(hz(84 + key), int(.12 * SR)), 4000) * _env(int(.12 * SR), 15), .5); return out
+    if kind == 'check':  return _ding(72 + key + P5[min((v or 0) + 3, 9)], .3) * .55
     if kind == 'riser':  n = int(.95 * SR); return _whoosh(n, True, rng) * .7
-    if kind == 'chime':  return _ding(91, .5) * .45 + np.concatenate([np.zeros(int(.08 * SR)), _ding(96, .42)]) [:int(.5 * SR)] * .3
+    if kind == 'chime':  return _ding(91 + key, .5) * .45 + np.concatenate([np.zeros(int(.08 * SR)), _ding(96 + key, .42)]) [:int(.5 * SR)] * .3
     if kind == 'type':   n = int(.03 * SR); return lp(hp(rng.standard_normal(n), 2000), 6000) * _env(n, 120) * .3
     raise ValueError('모르는 효과음: ' + kind)
 def _ding(m, l):
@@ -196,11 +232,11 @@ def _whoosh(n, up, rng):
         out[i * seg:(i + 1) * seg] = lp(x, fc)[i * seg:(i + 1) * seg]
     return out * np.sin(np.pi * np.arange(n) / n) * .6
 
-def make_sfx(dur, events, seed):
+def make_sfx(dur, events, seed, key=0):
     rng = np.random.default_rng(seed + 1); out = np.zeros(int(dur * SR))
     for e in events:
         t, kind = float(e[0]), e[1]; v = e[2] if len(e) > 2 else None
-        add(out, t, sfx_sig(kind, v, rng))
+        add(out, t, sfx_sig(kind, v, rng, key))
     return out * 0.5
 
 def main():
@@ -211,11 +247,12 @@ def main():
     a = ap.parse_args()
     seed = int(hashlib.sha256(a.seed.encode()).hexdigest()[:8], 16)
     N = int(a.dur * SR)
-    music = np.zeros(N) if a.sfx_only else make_music(a.dur, a.mood, seed)
     events = json.load(open(a.events)) if a.events else []
-    sfx = np.zeros(N) if a.music_only else make_sfx(a.dur, events, seed)
+    avoid = [float(e[0]) for e in events if e[1] in TONAL]
+    music = np.zeros(N) if a.sfx_only else make_music(a.dur, a.mood, seed, avoid)
+    sfx = np.zeros(N) if a.music_only else make_sfx(a.dur, events, seed, key_of(a.mood))
     env = lp(np.abs(sfx), 12, 1); env = env / (env.max() + 1e-9)
-    duck = 1 - 0.45 * np.clip(env * 4, 0, 1)          # 효과음이 날 때만 배경음을 살짝 낮춤
+    duck = 1 - 0.55 * np.clip(env * 4, 0, 1)          # 효과음이 날 때만 배경음을 살짝 낮춤
     mix = music * duck + sfx
     pk = np.max(np.abs(mix)) + 1e-9
     if pk > 0.95: mix *= 0.95 / pk
