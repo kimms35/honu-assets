@@ -188,7 +188,7 @@ def make_music(dur, mood, seed, avoid=()):
     fo = int(min(1.2, dur * 0.06) * SR); mix[-fo:] *= np.linspace(1, 0, fo)
     fi = int(0.15 * SR); mix[:fi] *= np.linspace(0, 1, fi)
     mix /= np.sqrt(np.mean(mix ** 2)) + 1e-9
-    return mix * 10 ** (-16 / 20)   # 배경음 RMS -16dBFS
+    return mix * 10 ** (-22 / 20)   # 배경음 RMS -22dBFS (2026-11-23 채널 주인 "배경음이 거슬린다, 더 줄이자" → -16에서 6dB 낮춤)
 
 # ---------------- 효과음 ----------------
 def _sq(f, n, duty=.5): ph = (np.arange(n) * f / SR) % 1; return np.where(ph < duty, 1., -1.)
