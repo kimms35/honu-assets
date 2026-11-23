@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="ko" data-resolution="portrait">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, height=1920">
+<script src="gsap.min.js"></script>
+<style>
+@font-face{font-family:P;font-weight:900;src:url("fonts/Pretendard-Black.ttf")}
+@font-face{font-family:P;font-weight:800;src:url("fonts/Pretendard-ExtraBold.ttf")}
+@font-face{font-family:P;font-weight:700;src:url("fonts/Pretendard-Bold.ttf")}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1920px;overflow:hidden;background:#0A1222;font-family:P;color:#EEF4FF}
+#root{position:absolute;inset:0;overflow:hidden}
+#cam{position:absolute;inset:0;transform-origin:50% 50%}
+.bg{position:absolute;inset:0;background:
+  radial-gradient(60% 26% at 50% 74%,rgba(94,230,197,.16),transparent 70%),
+  linear-gradient(#0C1730,#0A1222 55%,#070C18)}
+.dots{position:absolute;left:-60px;top:-60px;width:1260px;height:2100px;opacity:.55;
+  background-image:radial-gradient(rgba(255,255,255,.10) 3px,transparent 3.5px);background-size:60px 60px}
+.brand{position:absolute;left:64px;top:150px;font-size:30px;letter-spacing:4px;font-weight:900;color:rgba(255,255,255,.6)}
+.src{position:absolute;right:64px;top:152px;font-size:26px;font-weight:700;color:rgba(255,255,255,.5)}
+.prog{position:absolute;left:64px;top:204px;display:flex;gap:10px}
+.prog i{display:block;width:56px;height:10px;border-radius:5px;background:rgba(255,255,255,.14);overflow:hidden}
+.prog i b{display:block;height:100%;width:0;background:#5EE6C5}
+.sc,.bt{position:absolute;inset:0;visibility:hidden;opacity:0}
+.cap{position:absolute;left:0;right:0;top:262px;text-align:center;font-weight:900;font-size:88px;letter-spacing:-3px;line-height:1.14}
+.cap .l{display:block;overflow:hidden;padding:4px 0;white-space:nowrap}
+.cap .l>span{display:inline-block}
+.hook .cap{top:300px;font-size:98px}
+.hook .cap .l3{font-size:124px}
+.m{color:#5EE6C5}.y{color:#FFD66B}.r{color:#FF8577}.s{color:#7CC4FF}
+.tag{position:absolute;left:50%;top:232px;transform:translateX(-50%);background:#FFD66B;color:#101A30;font-size:40px;font-weight:900;padding:12px 30px;border-radius:14px;white-space:nowrap}
+/* slime */
+.floor{position:absolute;left:120px;right:120px;top:1514px;height:6px;border-radius:3px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}
+#slime{position:absolute;left:412px;top:1290px;width:256px;height:224px;transform-origin:50% 100%}
+#slime img{position:absolute;inset:0;width:256px;height:224px;image-rendering:pixelated;opacity:0}
+#slime img.on{opacity:1}
+.shadow{position:absolute;left:440px;top:1504px;width:200px;height:26px;border-radius:50%;background:rgba(0,0,0,.5)}
+/* hook floating code scraps */
+.scrap{position:absolute;padding:16px 24px;border-radius:16px;background:#14213D;border:3px solid #2A3B63;font-size:36px;font-weight:800;color:#8FA3CC;white-space:nowrap}
+.scrap.bad{border-color:#FF8577;color:#FF8577}
+/* intro mini cards */
+.mini{position:absolute;top:760px;width:210px;height:270px;border-radius:26px;background:#14213D;border:4px solid #2A3B63;text-align:center;padding-top:34px}
+.mini b{display:block;font-size:110px;font-weight:900;line-height:1}
+.mini span{display:block;margin-top:18px;font-size:34px;font-weight:800;color:#B9C7E6}
+.agents{position:absolute;left:0;right:0;top:1090px;display:flex;justify-content:center;gap:16px}
+.pill{font-size:36px;font-weight:900;padding:12px 26px;border-radius:999px;background:#1B2A4C;color:#DCE7FF;white-space:nowrap}
+/* repo header card */
+.ghost{position:absolute;right:40px;top:560px;font-size:420px;font-weight:900;letter-spacing:-20px;color:rgba(255,255,255,.045);line-height:1}
+.repo{position:absolute;left:60px;right:60px;top:600px;height:200px;border-radius:32px;background:#14213D;border:5px solid var(--ac);padding:30px 36px;display:flex;align-items:center;gap:28px}
+.repo .no{flex:none;width:112px;height:112px;border-radius:26px;background:var(--ac);color:#0A1222;font-size:76px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.repo .own{font-size:36px;font-weight:800;color:#93A6CF}
+.repo .nm{font-size:60px;font-weight:900;letter-spacing:-2px;white-space:nowrap}
+.repo .lic{position:absolute;right:30px;top:-26px;font-size:34px;font-weight:900;padding:8px 20px;border-radius:12px;background:var(--ac);color:#0A1222}
+.g1{--ac:#5EE6C5}.g2{--ac:#FFD66B}.g3{--ac:#7CC4FF}.g4{--ac:#FF9E7A}
+/* panels */
+.pn{position:absolute;left:60px;right:60px;top:836px;height:400px}
+.tiles{display:flex;gap:20px}
+.tile{flex:1;border-radius:28px;background:#111C36;border:4px solid #26365C;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px}
+.tile b{font-size:104px;font-weight:900;letter-spacing:-3px;color:var(--ac);line-height:1.05;white-space:nowrap}
+.tile b.sm{font-size:64px;letter-spacing:-2px}
+.tile>span{margin-top:14px;font-size:38px;font-weight:800;color:#C6D3EE}
+.bigbox{height:100%;border-radius:28px;background:#111C36;border:4px solid #26365C;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.bigbox .n{font-size:220px;font-weight:900;letter-spacing:-8px;color:var(--ac);line-height:1;display:flex;align-items:center;gap:24px}
+.bigbox .n svg{width:150px;height:150px;shape-rendering:crispEdges}
+.bigbox .u{font-size:38px;font-weight:800;color:#B9C7E6;margin-top:16px}
+.glow{position:absolute;left:50%;top:50%;width:820px;height:820px;margin:-410px 0 0 -410px;border-radius:50%;background:radial-gradient(circle,rgba(255,214,107,.16),transparent 65%)}
+.pipe{display:grid;grid-template-columns:repeat(3,1fr);gap:22px 26px}
+.st{border-radius:24px;background:#111C36;border:4px solid #26365C;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.st b{font-size:56px;font-weight:900;letter-spacing:-1px;color:#EEF4FF}
+.st span{font-size:36px;font-weight:800;color:#93A6CF;margin-top:6px}
+.st em{position:absolute;right:-22px;top:50%;margin-top:-18px;width:18px;height:36px;font-style:normal}
+.term{border-radius:26px;background:#060B16;border:4px solid #26365C;padding:26px 30px;height:250px}
+.term .bar{display:flex;gap:10px;margin-bottom:20px}
+.term .bar i{width:20px;height:20px;border-radius:50%;background:#33456F}
+.term .ln{font-size:34px;font-weight:700;color:#DCE7FF;white-space:nowrap;overflow:hidden;line-height:1.6;letter-spacing:-.5px}
+.term .ln u{text-decoration:none;color:var(--ac)}
+.note{position:absolute;left:0;right:0;top:272px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:16px;font-size:38px;font-weight:900;padding:16px 28px;border-radius:20px;background:#1B2A4C;color:#EEF4FF;white-space:nowrap}
+.chip.warn{background:#3A1A22;border:4px solid #FF8577;color:#FFD9D4}
+.chip.ok{background:#12332E;border:4px solid #5EE6C5;color:#D9FFF5}
+.chip svg{width:44px;height:44px;flex:none;shape-rendering:crispEdges}
+.stack{display:flex;flex-direction:column;gap:20px;align-items:center;justify-content:center}
+/* mock browser */
+.win{height:100%;border-radius:28px;background:#F3F6FC;border:4px solid #26365C;overflow:hidden;position:relative}
+.win .top{height:74px;background:#DCE4F3;display:flex;align-items:center;gap:12px;padding:0 24px}
+.win .top i{width:22px;height:22px;border-radius:50%;background:#A9B6D1}
+.win .top span{margin-left:18px;flex:1;height:44px;border-radius:22px;background:#fff;font-size:34px;font-weight:700;color:#55627F;padding:0 24px;line-height:44px}
+.el{position:absolute;font-size:38px;font-weight:800;color:#1A2540;white-space:nowrap}
+.el.h{left:50px;top:110px;font-size:50px;font-weight:900}
+.el.a{left:50px;top:200px;color:#2563EB;text-decoration:underline}
+.el.i{left:50px;top:282px;width:440px;height:76px;border-radius:14px;border:4px solid #A9B6D1;background:#fff;color:#8A96B0;line-height:68px;padding:0 20px}
+.el.b{left:520px;top:282px;height:76px;border-radius:14px;background:#1A2540;color:#fff;line-height:76px;padding:0 34px}
+.ref{position:absolute;font-size:36px;font-weight:900;padding:4px 16px;border-radius:12px;background:#FFD66B;color:#101A30;border:4px solid #101A30}
+.rows{display:flex;flex-direction:column;gap:18px;justify-content:center}
+.row{display:flex;align-items:center;gap:22px;height:112px;border-radius:24px;background:#111C36;border:4px solid #26365C;padding:0 26px}
+.row .k{flex:none;width:150px;font-size:42px;font-weight:900;color:var(--ac)}
+.row .c{font-size:36px;font-weight:700;color:#DCE7FF;white-space:nowrap;letter-spacing:-.5px}
+.row .bx{margin-left:auto;flex:none;width:52px;height:52px;border-radius:12px;background:#1B2A4C;position:relative}
+.row .bx svg{position:absolute;inset:6px}
+.cats{position:absolute;left:0;right:0;bottom:22px;display:flex;justify-content:center;gap:12px}
+.cats .pill{font-size:34px;padding:10px 20px}
+.ask{position:absolute;left:0;right:0;top:0;height:104px;border-radius:26px;background:#111C36;border:4px solid var(--ac);font-size:44px;font-weight:900;display:flex;align-items:center;padding:0 34px;white-space:nowrap}
+.trace{position:absolute;left:0;right:0;top:128px;bottom:0;border-radius:26px;background:#060B16;border:4px solid #26365C;padding:26px 30px}
+.trace .t{display:flex;align-items:center;gap:20px;height:62px}
+.trace .t span{flex:none;width:200px;font-size:36px;font-weight:800;color:#B9C7E6}
+.trace .t i{display:block;height:30px;border-radius:15px;width:0}
+.trace .res{position:absolute;right:26px;bottom:20px;font-size:36px;font-weight:900;padding:8px 20px;border-radius:14px;background:#5EE6C5;color:#0A1222}
+.cmp{height:100%;border-radius:28px;background:#111C36;border:4px solid #26365C;padding:34px 40px}
+.cmp .ro{display:flex;align-items:center;gap:22px;height:120px}
+.cmp .ro span{flex:none;width:230px;font-size:40px;font-weight:900;color:#C6D3EE}
+.cmp .ro .tr{flex:1;height:56px;border-radius:28px;background:#1B2A4C;overflow:hidden}
+.cmp .ro .tr i{display:block;height:100%;width:0;border-radius:28px}
+.cmp .ro b{flex:none;width:170px;text-align:right;font-size:72px;font-weight:900;letter-spacing:-2px}
+.cmp p{margin-top:16px;font-size:34px;font-weight:700;color:#93A6CF;text-align:center}
+.file{height:100%;border-radius:28px;background:#F3F6FC;border:4px solid #26365C;overflow:hidden;color:#1A2540}
+.file .fn{height:80px;background:#DCE4F3;font-size:38px;font-weight:900;line-height:80px;padding:0 30px}
+.file .tx{padding:30px;font-size:38px;font-weight:800;line-height:1.5}
+.file .tx mark{background:#FFD66B;color:#101A30;padding:2px 6px;border-radius:8px}
+.file .tx small{display:block;margin-top:22px;font-size:34px;font-weight:700;color:#55627F}
+/* outro */
+.chk{position:absolute;left:60px;right:60px;top:600px}
+.chk .rw{display:flex;align-items:center;gap:24px;height:116px;margin-bottom:16px;padding:0 30px;border-radius:26px;background:#14213D;border:4px solid #26365C}
+.chk .bx{flex:none;width:60px;height:60px;border-radius:14px;background:#1B2A4C;position:relative}
+.chk .bx svg{position:absolute;inset:6px}
+.chk .t{font-size:44px;font-weight:900;letter-spacing:-1px;white-space:nowrap}
+.chk .d{margin-left:auto;font-size:38px;font-weight:800;white-space:nowrap}
+.save{position:absolute;left:50%;top:1146px;transform:translateX(-50%);display:flex;align-items:center;gap:18px;font-size:44px;font-weight:900;padding:18px 34px;border-radius:22px;background:#FFD66B;color:#101A30;white-space:nowrap}
+.save svg{width:48px;height:48px;shape-rendering:crispEdges}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="52.6" data-width="1080" data-height="1920" data-fps="30">
+<div id="cam">
+ <div class="bg"></div><div class="dots" id="dots"></div>
+ <div class="brand">TENBY LABS</div>
+ <div class="src">각 저장소 README · 2026-11-23 확인</div>
+ <div class="prog"><i><b id="p1"></b></i><i><b id="p2"></b></i><i><b id="p3"></b></i><i><b id="p4"></b></i></div>
+
+ <!-- 0 hook -->
+ <div class="sc hook" id="s0">
+  <div class="tag">AI로 앱·웹 만드는 분</div>
+  <div class="cap">
+   <span class="l"><span>AI가 짠 코드</span></span>
+   <span class="l"><span>자꾸 <span class="r">엉성</span>하다면</span></span>
+   <span class="l l3"><span>이 <span class="y">레포 4개</span></span></span>
+  </div>
+  <div class="scrap bad" id="k1" style="left:90px;top:800px">옛날 방식 코드</div>
+  <div class="scrap" id="k2" style="left:620px;top:860px">테스트 없음</div>
+  <div class="scrap bad" id="k3" style="left:150px;top:1010px">느린 화면</div>
+  <div class="scrap" id="k4" style="left:560px;top:1070px">확인 안 한 버튼</div>
+ </div>
+
+ <!-- 1 intro -->
+ <div class="sc" id="s1">
+  <div class="cap">
+   <span class="l"><span>클로드 코드·Codex에</span></span>
+   <span class="l"><span><span class="m">붙여 쓰는</span> 도구예요</span></span>
+  </div>
+  <div class="mini" id="n1" style="left:84px"><b class="m">1</b><span>일하는 순서</span></div>
+  <div class="mini" id="n2" style="left:318px"><b class="y">2</b><span>브라우저</span></div>
+  <div class="mini" id="n3" style="left:552px"><b class="s">3</b><span>개발자 도구</span></div>
+  <div class="mini" id="n4" style="left:786px"><b style="color:#FF9E7A">4</b><span>최신 웹</span></div>
+  <div class="agents" id="ag"><span class="pill">Claude Code</span><span class="pill">Codex</span><span class="pill">Gemini CLI</span></div>
+ </div>
+
+ <!-- repo 1 -->
+ <div class="sc g1" id="g1">
+  <div class="ghost">01</div>
+  <div class="repo"><div class="no">1</div><div><div class="own">addyosmani /</div><div class="nm">agent-skills</div></div><div class="lic">MIT</div></div>
+  <div class="bt" id="g1a">
+   <div class="cap"><span class="l"><span><span class="m">일하는 순서</span>를</span></span><span class="l"><span>AI한테 가르쳐요</span></span></div>
+   <div class="pn tiles"><div class="tile"><b>26개</b><span>스킬</span></div><div class="tile"><b>10개</b><span>슬래시 명령</span></div></div>
+  </div>
+  <div class="bt" id="g1b">
+   <div class="cap"><span class="l"><span>깃허브 별이</span></span><span class="l"><span>약 <span class="y">12만 개</span>예요</span></span></div>
+   <div class="pn"><div class="glow" id="g1glow"></div><div class="bigbox"><div class="n" style="color:#FFD66B"><svg viewBox="0 0 9 9"><path d="M4 0h1v2h1v1h3v1H8v1H7v1h1v3H7V8H6V7H3v1H2v1H1V6h1V5H1V4H0V3h3V2h1z" fill="#FFD66B"/></svg><span id="st1">0</span></div><div class="u">별 119.8k · 2026-11-23 확인</div></div></div>
+  </div>
+  <div class="bt" id="g1c">
+   <div class="cap"><span class="l"><span>기획부터 배포까지</span></span><span class="l"><span><span class="m">명령 6개</span>로 이어져요</span></span></div>
+   <div class="pn pipe">
+    <div class="st"><b>/spec</b><span>명세</span></div><div class="st"><b>/plan</b><span>계획</span></div><div class="st"><b>/build</b><span>구현</span></div>
+    <div class="st"><b>/test</b><span>테스트</span></div><div class="st"><b>/review</b><span>리뷰</span></div><div class="st"><b>/ship</b><span>배포</span></div>
+   </div>
+  </div>
+  <div class="bt" id="g1d">
+   <div class="cap"><span class="l"><span>클로드 코드에서는</span></span><span class="l"><span>설치가 <span class="m">두 줄</span>이에요</span></span></div>
+   <div class="pn">
+    <div class="term"><div class="bar"><i></i><i></i><i></i></div>
+     <div class="ln" id="t1a"><u>/plugin</u> marketplace add addyosmani/agent-skills</div>
+     <div class="ln" id="t1b"><u>/plugin</u> install agent-skills@addy-agent-skills</div></div>
+    <div class="note"><span class="chip warn" id="w1"><svg viewBox="0 0 12 12"><path d="M5 0h2v1h1v2h1v2h1v2h1v2h1v2H0V9h1V7h1V5h1V3h1V1h1z" fill="#FF8577"/><rect x="5" y="3" width="2" height="4" fill="#fff"/><rect x="5" y="8" width="2" height="2" fill="#fff"/></svg>설치 전에 hooks 폴더 열어 보기</span></div>
+   </div>
+  </div>
+ </div>
+
+ <!-- repo 2 -->
+ <div class="sc g2" id="g2">
+  <div class="ghost">02</div>
+  <div class="repo"><div class="no">2</div><div><div class="own">vercel-labs /</div><div class="nm">agent-browser</div></div><div class="lic">Apache-2.0</div></div>
+  <div class="bt" id="g2a">
+   <div class="cap"><span class="l"><span>AI가 <span class="y">브라우저</span>를</span></span><span class="l"><span>명령어로 다뤄요</span></span></div>
+   <div class="pn tiles"><div class="tile"><b class="sm">Rust CLI</b><span>터미널에서 실행</span></div><div class="tile"><b><span id="st2">0</span>k</b><span>별 · 11-23 확인</span></div></div>
+  </div>
+  <div class="bt" id="g2b">
+   <div class="cap"><span class="l"><span>화면 요소마다</span></span><span class="l"><span><span class="y">@e1</span> 같은 번호를 붙여요</span></span></div>
+   <div class="pn"><div class="win"><div class="top"><i></i><i></i><i></i><span>example.com</span></div>
+     <div class="el h">Example Domain</div><div class="el a">Learn more</div><div class="el i">이메일</div><div class="el b" id="btn">Submit</div>
+     <div class="ref" id="rf1" style="left:286px;top:194px">@e1</div><div class="ref" id="rf2" style="left:388px;top:252px">@e2</div><div class="ref" id="rf3" style="left:726px;top:252px">@e3</div>
+   </div></div>
+  </div>
+  <div class="bt" id="g2c">
+   <div class="cap"><span class="l"><span>열고, 읽고, 누르기</span></span><span class="l"><span><span class="y">세 단계</span>로 움직여요</span></span></div>
+   <div class="pn rows">
+    <div class="row" id="q1"><div class="k">열기</div><div class="c">agent-browser open example.com</div><div class="bx"><svg viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#FFD66B"/></svg></div></div>
+    <div class="row" id="q2"><div class="k">읽기</div><div class="c">agent-browser snapshot -i</div><div class="bx"><svg viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#FFD66B"/></svg></div></div>
+    <div class="row" id="q3"><div class="k">누르기</div><div class="c">agent-browser click @e1</div><div class="bx"><svg viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#FFD66B"/></svg></div></div>
+   </div>
+  </div>
+  <div class="bt" id="g2d">
+   <div class="cap"><span class="l"><span>내 크롬에 연결하는 건</span></span><span class="l"><span><span class="r">신중하게</span> 하세요</span></span></div>
+   <div class="pn stack">
+    <span class="chip ok" id="c2a">기본: 테스트용 크롬을 따로 받아 써요</span>
+    <span class="chip warn" id="c2b"><svg viewBox="0 0 12 12"><path d="M5 0h2v1h1v2h1v2h1v2h1v2h1v2H0V9h1V7h1V5h1V3h1V1h1z" fill="#FF8577"/><rect x="5" y="3" width="2" height="4" fill="#fff"/><rect x="5" y="8" width="2" height="2" fill="#fff"/></svg>--cdp · --auto-connect</span>
+    <span class="chip" id="c2c">켜 둔 내 크롬에 붙는 옵션이에요</span>
+   </div>
+  </div>
+ </div>
+
+ <!-- repo 3 -->
+ <div class="sc g3" id="g3">
+  <div class="ghost">03</div>
+  <div class="repo"><div class="no">3</div><div><div class="own">ChromeDevTools /</div><div class="nm">chrome-devtools-mcp</div></div><div class="lic">MCP 서버</div></div>
+  <div class="bt" id="g3a">
+   <div class="cap"><span class="l"><span><span class="s">크롬 개발자 도구</span>를</span></span><span class="l"><span>AI가 직접 써요</span></span></div>
+   <div class="pn tiles"><div class="tile"><b class="sm">성능 측정</b><span>트레이스 기록</span></div><div class="tile"><b class="sm">디버깅</b><span>네트워크·콘솔</span></div></div>
+  </div>
+  <div class="bt" id="g3b">
+   <div class="cap"><span class="l"><span>쓸 수 있는 도구가</span></span><span class="l"><span><span class="s">63개</span>예요</span></span></div>
+   <div class="pn"><div class="bigbox" style="justify-content:flex-start;padding-top:24px"><div class="n"><span id="st3">0</span></div><div class="u" style="margin-top:4px">v1.13.0 문서 기준 · 13개 분류</div></div>
+    <div class="cats"><span class="pill" id="ct1">입력 10</span><span class="pill" id="ct2">디버깅 10</span><span class="pill" id="ct3">메모리 14</span><span class="pill" id="ct4">성능 3</span></div></div>
+  </div>
+  <div class="bt" id="g3c">
+   <div class="cap"><span class="l"><span>성능 봐 달라고 하면</span></span><span class="l"><span><span class="s">직접 재서</span> 알려 줘요</span></span></div>
+   <div class="pn"><div class="ask" id="ask">이 사이트 성능 확인해 줘</div>
+    <div class="trace"><div class="t"><span>불러오기</span><i id="tr1" style="background:#7CC4FF"></i></div><div class="t"><span>스크립트</span><i id="tr2" style="background:#FFD66B"></i></div><div class="t"><span>그리기</span><i id="tr3" style="background:#5EE6C5"></i></div><div class="res" id="res">트레이스 기록 완료</div></div></div>
+  </div>
+  <div class="bt" id="g3d">
+   <div class="cap"><span class="l"><span>브라우저 내용이</span></span><span class="l"><span>AI한테 <span class="r">보여요</span></span></span></div>
+   <div class="pn stack">
+    <span class="chip warn" id="c3a"><svg viewBox="0 0 12 12"><path d="M5 0h2v1h1v2h1v2h1v2h1v2h1v2H0V9h1V7h1V5h1V3h1V1h1z" fill="#FF8577"/><rect x="5" y="3" width="2" height="4" fill="#fff"/><rect x="5" y="8" width="2" height="2" fill="#fff"/></svg>개인 정보 화면은 띄우지 않기</span>
+    <span class="chip ok" id="c3b">--isolated : 임시 프로필로 실행</span>
+    <span class="chip ok" id="c3c">--no-usage-statistics : 통계 끄기</span>
+   </div>
+  </div>
+ </div>
+
+ <!-- repo 4 -->
+ <div class="sc g4" id="g4">
+  <div class="ghost">04</div>
+  <div class="repo"><div class="no">4</div><div><div class="own">GoogleChrome /</div><div class="nm">modern-web-guidance</div></div><div class="lic">스킬 묶음</div></div>
+  <div class="bt" id="g4a">
+   <div class="cap"><span class="l"><span>AI가 <span style="color:#FF9E7A">옛날 방식</span>으로</span></span><span class="l"><span>짜는 걸 막아 줘요</span></span></div>
+   <div class="pn tiles"><div class="tile"><b>200+</b><span>최신 웹 가이드</span></div><div class="tile"><b class="sm">Chrome 팀</b><span>Mozilla·MS도 참여</span></div></div>
+  </div>
+  <div class="bt" id="g4b">
+   <div class="cap"><span class="l"><span>공개 평가 통과율</span></span><span class="l"><span>약 51% → <span style="color:#FF9E7A">91%</span></span></span></div>
+   <div class="pn"><div class="cmp">
+     <div class="ro"><span>그냥 시키면</span><div class="tr"><i id="b51" style="background:#55627F"></i></div><b style="color:#B9C7E6"><span id="v51">0</span>%</b></div>
+     <div class="ro"><span>가이드 붙이면</span><div class="tr"><i id="b91" style="background:#FF9E7A"></i></div><b style="color:#FF9E7A"><span id="v91">0</span>%</b></div>
+     <p>Chrome 공식 문서 수치 · 초기 결과라 달라질 수 있어요</p></div></div>
+  </div>
+  <div class="bt" id="g4c">
+   <div class="cap"><span class="l"><span>설치는 터미널에</span></span><span class="l"><span><span style="color:#FF9E7A">한 줄</span>이면 돼요</span></span></div>
+   <div class="pn">
+    <div class="term" style="height:170px"><div class="bar"><i></i><i></i><i></i></div>
+     <div class="ln" id="t4a"><u>npx</u> modern-web-guidance@latest install</div></div>
+    <div class="note" style="top:200px"><span class="pill" id="tp1">팝오버</span><span class="pill" id="tp2">뷰 전환</span><span class="pill" id="tp3">패스키</span><span class="pill" id="tp4">컨테이너 쿼리</span><span class="pill" id="tp5">앵커 포지셔닝</span><span class="pill" id="tp6">INP 진단</span></div>
+   </div>
+  </div>
+  <div class="bt" id="g4d">
+   <div class="cap"><span class="l"><span>지원 브라우저 기준은</span></span><span class="l"><span><span style="color:#FF9E7A">CLAUDE.md</span>에 한 줄</span></span></div>
+   <div class="pn"><div class="file"><div class="fn">CLAUDE.md</div><div class="tx"><mark id="mk">This project's Baseline target is Baseline 2024.</mark><small id="sm4">안 적으면 'Baseline Widely available'이 기본이에요</small></div></div></div>
+  </div>
+ </div>
+
+ <!-- outro -->
+ <div class="sc" id="s9">
+  <div class="bt" id="s9a"><div class="cap"><span class="l"><span><span class="y">AI가 짠 코드</span>,</span></span><span class="l"><span>이 4개로 챙겨 보세요</span></span></div></div>
+  <div class="bt" id="s9b"><div class="cap"><span class="l"><span><span class="y">저장</span>해 두고</span></span><span class="l"><span>하나씩 써 보세요</span></span></div></div>
+  <div class="chk">
+   <div class="rw" id="o1"><div class="bx"><svg viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#5EE6C5"/></svg></div><div class="t">agent-skills</div><div class="d m">일하는 순서</div></div>
+   <div class="rw" id="o2"><div class="bx"><svg viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#5EE6C5"/></svg></div><div class="t">agent-browser</div><div class="d y">브라우저 조작</div></div>
+   <div class="rw" id="o3"><div class="bx"><svg viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#5EE6C5"/></svg></div><div class="t">chrome-devtools-mcp</div><div class="d s">성능·디버깅</div></div>
+   <div class="rw" id="o4"><div class="bx"><svg viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#5EE6C5"/></svg></div><div class="t">modern-web-guidance</div><div class="d" style="color:#FF9E7A">최신 웹 코드</div></div>
+  </div>
+  <div class="save" id="save"><svg viewBox="0 0 8 8"><path d="M1 0h6v8H6V7H5V6H3v1H2v1H1z" fill="#101A30"/></svg>설치 전에 README부터 읽기</div>
+ </div>
+
+ <div class="floor"></div>
+ <div class="shadow" id="shadow"></div>
+ <div id="slime"></div>
+</div>
+</div>
+
+<script>
+(function(){
+ const D=52.6;
+ const tl=gsap.timeline({paused:true});
+ const $=s=>document.querySelector(s);
+ // ----- slime faces (time-computed, seek-safe)
+ const MOODS=['base','glint','surprise','excited','smile','think','sweat','serious','wink','sad','sleepy','proud','doubt','star','dizzy'];
+ const sl=$('#slime');
+ MOODS.forEach(m=>{const i=document.createElement('img');i.id='m_'+m;i.src='slime/'+m+'.png';if(m==='base')i.className='on';sl.appendChild(i);});
+ const moodAt=[[0,'base'],[1.1,'dizzy'],[2.1,'base'],[3.6,'think'],[5.9,'base'],[8.5,'star'],[10.8,'base'],[13.9,'doubt'],
+  [16.3,'base'],[18.9,'wink'],[21.3,'base'],[24.2,'serious'],[26.7,'base'],[29.3,'surprise'],[31.7,'base'],[33.0,'smile'],[34.5,'sweat'],
+  [37.1,'sleepy'],[39.7,'excited'],[42.3,'base'],[45.0,'glint'],[47.5,'base'],[48.6,'proud']];
+ const setMood=t=>{let m='base';for(const [s,k] of moodAt) if(t>=s) m=k;sl.querySelectorAll('img').forEach(i=>i.classList.toggle('on',i.id==='m_'+m));};
+ const clock={t:0};
+ tl.to(clock,{t:D,duration:D,ease:'none',onUpdate:()=>setMood(clock.t)},0);
+ tl.to('#dots',{x:60,y:60,duration:D,ease:'none'},0);
+
+ const S='#slime',SH='#shadow';
+ const hop=(s,h=46,d=.44)=>{
+   tl.to(S,{y:-h,scaleY:1.06,scaleX:.95,duration:d*.45,ease:'power2.out'},s)
+     .to(S,{y:0,scaleY:1,scaleX:1,duration:d*.4,ease:'power2.in'},s+d*.45)
+     .to(S,{scaleY:.86,scaleX:1.12,duration:d*.07,ease:'none'},s+d*.85)
+     .to(S,{scaleY:1,scaleX:1,duration:d*.08,ease:'none'},s+d*.92)
+     .to(SH,{scale:.72,opacity:.5,duration:d*.45},s).to(SH,{scale:1,opacity:1,duration:d*.4},s+d*.45);};
+ // scene helpers
+ const show=(id,a,b,out=true)=>{tl.set(id,{autoAlpha:1},a);
+   const ls=document.querySelectorAll(id+'>.cap .l>span');
+   ls.forEach((e,k)=>tl.from(e,{yPercent:115,duration:.36,ease:'power3.out'},a+.04+k*.3));
+   if(out) tl.to(id,{autoAlpha:0,duration:.16,ease:'power1.in'},b-.16);};
+ const pop=(sel,t,o={})=>tl.from(sel,Object.assign({scale:.3,opacity:0,duration:.34,ease:'back.out(2.2)'},o),t);
+ const count=(el,to,t,dur,fmt)=>{const o={v:0};tl.to(o,{v:to,duration:dur,ease:'power2.out',onUpdate:()=>{$(el).textContent=fmt(o.v)}},t);};
+ const typeIn=(sel,t,dur)=>tl.from(sel,{width:0,duration:dur,ease:'steps(24)'},t);
+ const dash=(t)=>{ // slime dashes out right, comes back from left
+   tl.to(S,{x:900,scaleX:1.45,scaleY:.76,duration:.26,ease:'power3.in'},t-.3)
+     .to(SH,{x:900,opacity:0,duration:.26,ease:'power3.in'},t-.3)
+     .set(S,{x:-900},t-.02).set(SH,{x:-900},t-.02)
+     .to(S,{x:0,scaleX:1,scaleY:1,duration:.4,ease:'power3.out'},t)
+     .to(SH,{x:0,opacity:1,duration:.4,ease:'power3.out'},t);};
+ const groupIn=(g,t)=>{tl.set(g,{autoAlpha:1},t)
+   .from(g+' .repo',{x:1100,rotation:5,duration:.42,ease:'back.out(1.3)'},t+.02)
+   .from(g+' .ghost',{x:300,opacity:0,duration:.6,ease:'power2.out'},t)
+   .from(g+' .lic',{scale:0,duration:.3,ease:'back.out(3)'},t+.42);};
+ const groupOut=(g,t)=>tl.to(g,{x:-1100,duration:.28,ease:'power3.in'},t-.3).set(g,{autoAlpha:0},t);
+
+ // ---------- hook 0 - 3.4
+ tl.set(S,{y:-1500},0).set(SH,{scale:.2,opacity:0},0);
+ tl.to(S,{y:0,duration:.42,ease:'power3.in'},.06).to(SH,{scale:1,opacity:1,duration:.42,ease:'power3.in'},.06)
+   .to(S,{scaleY:.72,scaleX:1.25,duration:.07},.48).to(S,{scaleY:1,scaleX:1,duration:.35,ease:'elastic.out(1,.4)'},.55);
+ tl.set('#s0',{autoAlpha:1},0);
+ tl.from('#s0 .tag',{y:-40,opacity:0,duration:.3,ease:'back.out(2)'},.2);
+ const hl=document.querySelectorAll('#s0 .cap .l>span');
+ tl.from(hl[0],{yPercent:115,duration:.36,ease:'power3.out'},.25)
+   .from(hl[1],{yPercent:115,duration:.36,ease:'power3.out'},.95)
+   .from(hl[2],{yPercent:115,duration:.4,ease:'power3.out'},1.8)
+   .from(hl[2],{scale:1.3,duration:.5,ease:'back.out(2.5)'},1.8);
+ [['#k1',-8],['#k2',6],['#k3',5],['#k4',-6]].forEach(([id,r],k)=>{
+   tl.from(id,{y:500,scale:.2,opacity:0,rotation:0,duration:.5,ease:'back.out(1.6)'},1.0+k*.09)
+     .to(id,{rotation:r,duration:.5},1.0+k*.09)
+     .to(id,{y:-18,duration:.7,ease:'sine.inOut',yoyo:true,repeat:1},1.6+k*.09);});
+ hop(2.2,60);
+ tl.to(['#k1','#k2','#k3','#k4'],{scale:0,opacity:0,duration:.22,ease:'back.in(2)',stagger:.03},2.95)
+   .to('#s0',{x:-1100,duration:.3,ease:'power3.in'},3.1).set('#s0',{autoAlpha:0},3.4);
+ dash(3.4);
+
+ // ---------- intro 3.4 - 5.8
+ show('#s1',3.4,5.8);
+ ['#n1','#n2','#n3','#n4'].forEach((n,k)=>tl.from(n,{y:-260,opacity:0,rotation:k%2?8:-8,duration:.4,ease:'back.out(1.6)'},3.6+k*.14));
+ tl.from('#ag .pill',{scale:0,opacity:0,duration:.3,ease:'back.out(2)',stagger:.12},4.3);
+ hop(4.5);hop(5.05);
+ dash(5.8);
+
+ // ---------- repo 1  5.8 - 16.2
+ groupIn('#g1',5.8);
+ show('#g1a',5.8,8.3);
+ tl.from('#g1a .tile',{y:120,opacity:0,duration:.36,ease:'back.out(1.8)',stagger:.2},6.3);
+ hop(6.9);hop(7.5);
+ show('#g1b',8.3,10.7);
+ tl.from('#g1b .bigbox',{scale:.7,opacity:0,duration:.35,ease:'back.out(2)'},8.35)
+   .from('#g1glow',{scale:.2,opacity:0,duration:.6},8.4);
+ count('#st1',119.8,8.5,1.3,v=>v.toFixed(1)+'k');
+ tl.to('#g1b .n',{scale:1.12,duration:.14,yoyo:true,repeat:1},9.8);
+ hop(9.85,40);
+ show('#g1c',10.7,13.5);
+ document.querySelectorAll('#g1c .st').forEach((e,k)=>{const t=10.95+k*.3;
+   tl.from(e,{scale:.4,opacity:0,duration:.26,ease:'back.out(2)'},t)
+     .to(e,{borderColor:'#5EE6C5',backgroundColor:'#12332E',duration:.2},t+.24);});
+ hop(11.6);hop(12.6);
+ show('#g1d',13.5,16.2);
+ tl.from('#g1d .term',{y:60,opacity:0,duration:.3,ease:'power3.out'},13.55);
+ typeIn('#t1a',13.8,.6);typeIn('#t1b',14.45,.6);
+ tl.from('#w1',{scale:0,opacity:0,rotation:-8,duration:.34,ease:'back.out(2.6)'},15.1)
+   .to('#w1',{y:-10,duration:.22,yoyo:true,repeat:3,ease:'sine.inOut'},15.4);
+ hop(15.1,34);
+ tl.to('#p1',{width:'100%',duration:10.4,ease:'none'},5.8);
+ groupOut('#g1',16.2);dash(16.2);
+
+ // ---------- repo 2  16.2 - 26.6
+ groupIn('#g2',16.2);
+ show('#g2a',16.2,18.7);
+ tl.from('#g2a .tile',{y:120,opacity:0,duration:.36,ease:'back.out(1.8)',stagger:.2},16.7);
+ count('#st2',52.9,17.0,1.0,v=>v.toFixed(1));
+ hop(17.4);hop(18.0);
+ show('#g2b',18.7,21.2);
+ tl.from('#g2b .win',{y:80,opacity:0,duration:.32,ease:'power3.out'},18.75);
+ ['#rf1','#rf2','#rf3'].forEach((r,k)=>tl.from(r,{scale:0,rotation:-20,duration:.3,ease:'back.out(3)'},19.4+k*.35));
+ hop(19.4,34);hop(19.75,34);hop(20.1,34);
+ tl.to('#rf1',{scale:1.25,duration:.16,yoyo:true,repeat:1},20.6);
+ show('#g2c',21.2,24.0);
+ ['#q1','#q2','#q3'].forEach((q,k)=>{const t=21.45+k*.6;
+   tl.from(q,{x:-160,opacity:0,duration:.3,ease:'power3.out'},t)
+     .from(q+' svg',{scale:2.2,opacity:0,duration:.2,ease:'power4.in'},t+.32)
+     .to(q,{borderColor:'#FFD66B',duration:.2},t+.4);});
+ hop(22.1);hop(23.2);
+ show('#g2d',24.0,26.6);
+ tl.from('#c2a',{y:50,opacity:0,duration:.3,ease:'back.out(1.8)'},24.3)
+   .from('#c2b',{scale:0,opacity:0,duration:.34,ease:'back.out(2.6)'},24.95)
+   .from('#c2c',{y:40,opacity:0,duration:.3,ease:'power3.out'},25.35)
+   .to('#cam',{x:10,duration:.04,yoyo:true,repeat:5},25.2);
+ hop(25.8,34);
+ tl.to('#p2',{width:'100%',duration:10.4,ease:'none'},16.2);
+ groupOut('#g2',26.6);dash(26.6);
+
+ // ---------- repo 3  26.6 - 37.0
+ groupIn('#g3',26.6);
+ show('#g3a',26.6,29.1);
+ tl.from('#g3a .tile',{y:120,opacity:0,duration:.36,ease:'back.out(1.8)',stagger:.2},27.1);
+ hop(27.8);hop(28.4);
+ show('#g3b',29.1,31.6);
+ tl.from('#g3b .bigbox',{scale:.7,opacity:0,duration:.35,ease:'back.out(2)'},29.15);
+ count('#st3',63,29.3,1.0,v=>Math.round(v)+'개');
+ tl.from(['#ct1','#ct2','#ct3','#ct4'],{y:40,opacity:0,duration:.26,ease:'back.out(2)',stagger:.14},30.3);
+ hop(30.35,34);
+ show('#g3c',31.6,34.3);
+ tl.from('#ask',{x:-200,opacity:0,duration:.3,ease:'power3.out'},31.7)
+   .from('#g3c .trace',{y:60,opacity:0,duration:.3,ease:'power3.out'},32.0)
+   .to('#tr1',{width:420,duration:.5,ease:'power2.out'},32.3)
+   .to('#tr2',{width:560,duration:.5,ease:'power2.out'},32.55)
+   .to('#tr3',{width:300,duration:.5,ease:'power2.out'},32.8);
+ pop('#res',33.2);
+ hop(33.25,34);
+ show('#g3d',34.3,37.0);
+ tl.from('#c3a',{scale:0,opacity:0,duration:.34,ease:'back.out(2.6)'},34.6)
+   .to('#cam',{x:10,duration:.04,yoyo:true,repeat:5},34.9)
+   .from('#c3b',{x:-200,opacity:0,duration:.3,ease:'power3.out'},35.4)
+   .from('#c3c',{x:200,opacity:0,duration:.3,ease:'power3.out'},35.9);
+ hop(36.2,34);
+ tl.to('#p3',{width:'100%',duration:10.4,ease:'none'},26.6);
+ groupOut('#g3',37.0);dash(37.0);
+
+ // ---------- repo 4  37.0 - 47.4
+ groupIn('#g4',37.0);
+ show('#g4a',37.0,39.6);
+ tl.from('#g4a .tile',{y:120,opacity:0,duration:.36,ease:'back.out(1.8)',stagger:.2},37.5);
+ hop(38.2);hop(38.8);
+ show('#g4b',39.6,42.2);
+ tl.from('#g4b .cmp',{y:60,opacity:0,duration:.3,ease:'power3.out'},39.65)
+   .to('#b51',{width:'51%',duration:.6,ease:'power2.out'},40.0)
+   .to('#b91',{width:'91%',duration:.9,ease:'power2.out'},40.6);
+ count('#v51',51,40.0,.6,v=>Math.round(v));count('#v91',91,40.6,.9,v=>Math.round(v));
+ hop(41.5,40);
+ show('#g4c',42.2,44.8);
+ tl.from('#g4c .term',{y:60,opacity:0,duration:.3,ease:'power3.out'},42.25);
+ typeIn('#t4a',42.5,.6);
+ tl.from(['#tp1','#tp2','#tp3','#tp4','#tp5','#tp6'],{scale:0,opacity:0,duration:.26,ease:'back.out(2.4)',stagger:.13},43.2);
+ hop(43.3,34);hop(43.95,34);
+ show('#g4d',44.8,47.4);
+ tl.from('#g4d .file',{rotationX:-70,opacity:0,transformOrigin:'50% 0%',duration:.4,ease:'back.out(1.4)'},44.85)
+   .from('#mk',{backgroundColor:'rgba(255,214,107,0)',duration:.4},45.5)
+   .from('#sm4',{y:20,opacity:0,duration:.3},46.0);
+ hop(45.5);hop(46.4);
+ tl.to('#p4',{width:'100%',duration:10.4,ease:'none'},37.0);
+ groupOut('#g4',47.4);dash(47.4);
+
+ // ---------- outro 47.4 - 52.6
+ tl.set('#s9',{autoAlpha:1},47.4);
+ show('#s9a',47.4,50.0);
+ ['#o1','#o2','#o3','#o4'].forEach((r,k)=>{const t=47.7+k*.32;
+   tl.from(r,{x:-160,opacity:0,duration:.28,ease:'power3.out'},t)
+     .from(r+' svg',{scale:2.2,opacity:0,duration:.18,ease:'power4.in'},t+.3);});
+ hop(49.1,40);
+ show('#s9b',50.0,D,false);
+ pop('#save',50.5);
+ hop(50.5,36);hop(51.0,36);
+ tl.to('#cam',{scale:1.12,duration:1.1,ease:'power2.in'},51.5);
+
+ window.__timelines=window.__timelines||{};
+ window.__timelines['main']=tl;
+ tl.seek(0);
+})();
+</script>
+</body>
+</html>
