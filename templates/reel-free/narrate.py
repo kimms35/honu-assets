@@ -1,22 +1,23 @@
-"""TENBY LABS 릴스 나레이션 입히기 (타입캐스트 TTS, 목소리 "필재").
+"""slimebot.ai 릴스 나레이션 입히기 (기본: 구글 TTS, 목소리 ko-KR-Chirp3-HD-Despina).
 
 채널 주인 결정(2026-11-24): 배경음은 빼고, 효과음은 그대로, 나레이션을 넣는다.
 
 쓰는 법 (Default 클라우드 환경의 Claude Code 루틴에서만 돈다. 키는 그 환경의 네트워크 시크릿으로
-api.typecast.ai 요청에 프록시가 자동으로 붙인다. 이 스크립트는 키를 읽거나 넣거나 출력하지 않는다):
+구글·타입캐스트 요청에 프록시가 자동으로 붙인다. 이 스크립트는 키를 읽거나 넣거나 출력하지 않는다):
 
   python3 templates/reel-free/narrate.py drafts/<날짜>-reel-<slug>
 
-구글 TTS로 만들 때 (채널 주인 결정 2026-11-24: 타입캐스트 무료 계정 차단 뒤 구글 Achernar 로 바꿈.
-키는 같은 환경의 네트워크 시크릿이 texttospeech.googleapis.com 요청에 X-Goog-Api-Key 로 붙인다):
+기본은 구글 TTS Despina 다 (채널 주인 결정 2026-11-24: 타입캐스트 무료 계정 차단 뒤 구글 목소리 13개를 들어 보고 고름).
+구글 키는 같은 환경의 네트워크 시크릿이 texttospeech.googleapis.com 요청에 X-Goog-Api-Key 로 붙인다.
+narration.json 의 voice 가 "ko-KR-" 로 시작하지 않으면(예: 예전 "필재") 구글에선 무시하고 Despina 를 쓴다.
 
-  python3 templates/reel-free/narrate.py drafts/<날짜>-reel-<slug> --engine google --voice ko-KR-Chirp3-HD-Achernar
-
-  --voice 를 주면 narration.json 의 voice 대신 그 목소리를 쓴다. 문장 앞뒤 맥락(smart 감정)은 구글에선 쓰지 않는다.
+  다른 구글 목소리:  ... --voice ko-KR-Chirp3-HD-Achernar
+  타입캐스트로:      ... --engine typecast            (narration.json 의 voice, 없으면 "필재")
+  문장 앞뒤 맥락(smart 감정)은 타입캐스트에서만 쓴다.
 
 그 폴더에 있어야 하는 것: reel.mp4(영상, 지금 소리는 무엇이든 상관없음), events.json(효과음 시각), narration.json
 narration.json 형식:
-  {"voice": "필재", "tempo": 1.1,
+  {"voice": "ko-KR-Chirp3-HD-Despina", "tempo": 1.1,
    "lines": [{"start": 0.0, "end": 3.3, "text": "말할 문장"}, ...]}
   start/end 는 그 문장이 들어갈 장면의 시작·끝 초. 문장은 그 안에 들어가게 짧게 쓴다.
 
@@ -122,9 +123,14 @@ def trim_silence(x, thr=0.01):
     return x[max(0, idx[0] - int(0.02 * SR)): min(len(x), idx[-1] + int(0.06 * SR))]
 
 
-def main(folder, engine="typecast", voice=None):
+GOOGLE_VOICE = "ko-KR-Chirp3-HD-Despina"
+
+
+def main(folder, engine="google", voice=None):
     n = json.load(open(os.path.join(folder, "narration.json")))
     if voice: n["voice"] = voice
+    if engine == "google" and not str(n.get("voice", "")).startswith("ko-KR-"):
+        n["voice"] = GOOGLE_VOICE
     video = os.path.join(folder, "reel.mp4")
     dur = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration",
                                          "-of", "csv=p=0", video]).decode().strip())
@@ -182,7 +188,7 @@ def main(folder, engine="typecast", voice=None):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("folder")
-    ap.add_argument("--engine", choices=["typecast", "google"], default="typecast")
-    ap.add_argument("--voice", help="narration.json 의 voice 대신 쓸 목소리 (구글은 ko-KR-Chirp3-HD-Achernar 같은 이름)")
+    ap.add_argument("--engine", choices=["google", "typecast"], default="google")
+    ap.add_argument("--voice", help="narration.json 의 voice 대신 쓸 목소리 (구글 기본 ko-KR-Chirp3-HD-Despina)")
     a = ap.parse_args()
     main(a.folder, a.engine, a.voice)
