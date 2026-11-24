@@ -1,0 +1,166 @@
+[
+ {
+  "name": "ko-KR-Chirp3-HD-Achird",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Algenib",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Algieba",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Alnilam",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Charon",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Enceladus",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Fenrir",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Iapetus",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Orus",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Puck",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Rasalgethi",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Sadachbia",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Sadaltager",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Schedar",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Umbriel",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Zubenelgenubi",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Neural2-C",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Wavenet-C",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Wavenet-D",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Standard-C",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Standard-D",
+  "gender": "MALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Achernar",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Aoede",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Autonoe",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Callirrhoe",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Despina",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Erinome",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Gacrux",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Kore",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Laomedeia",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Leda",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Pulcherrima",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Sulafat",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Vindemiatrix",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Chirp3-HD-Zephyr",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Neural2-A",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Neural2-B",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Wavenet-A",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Wavenet-B",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Standard-A",
+  "gender": "FEMALE"
+ },
+ {
+  "name": "ko-KR-Standard-B",
+  "gender": "FEMALE"
+ }
+]
