@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="ko" data-resolution="portrait">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, height=1920">
+<script src="gsap.min.js"></script>
+<style>
+@font-face{font-family:P;font-weight:900;src:url("fonts/Pretendard-Black.ttf")}
+@font-face{font-family:P;font-weight:800;src:url("fonts/Pretendard-ExtraBold.ttf")}
+@font-face{font-family:P;font-weight:700;src:url("fonts/Pretendard-Bold.ttf")}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1920px;overflow:hidden;background:#0C241D;font-family:P;color:#F3F6EC}
+#root{position:absolute;inset:0;overflow:hidden}
+#cam{position:absolute;inset:0;transform-origin:50% 52%}
+.bg{position:absolute;inset:0;background:
+  radial-gradient(60% 26% at 50% 72%,rgba(216,243,106,.13),transparent 70%),
+  linear-gradient(#0F2C23,#0C241D 55%,#081A15)}
+.dots{position:absolute;left:-60px;right:-60px;top:0;bottom:0;opacity:.55;
+  background-image:radial-gradient(rgba(255,255,255,.07) 3px,transparent 3.5px);background-size:54px 54px}
+.brand{position:absolute;left:64px;top:150px;font-size:30px;letter-spacing:4px;font-weight:900;color:rgba(255,255,255,.6)}
+.src{position:absolute;right:64px;top:146px;text-align:right;font-size:24px;font-weight:700;line-height:1.3;color:rgba(255,255,255,.5)}
+.sc{position:absolute;inset:0;opacity:0}
+.cap{position:absolute;left:0;right:0;top:268px;text-align:center;font-weight:900;letter-spacing:-3px;line-height:1.14}
+.cap .l{display:block;overflow:hidden;padding:6px 0;white-space:nowrap}
+.cap .l span{display:inline-block}
+.f1{font-size:92px}.f2{font-size:84px}.f3{font-size:112px}
+.y{color:#D8F36A}.p{color:#FF8FA3}.m{color:#7FE3FF}
+.tagline{position:absolute;left:50%;top:232px;transform:translateX(-50%);background:#D8F36A;color:#0C241D;font-size:38px;font-weight:900;padding:12px 28px;border-radius:14px;white-space:nowrap}
+.floor{position:absolute;left:120px;right:120px;top:1500px;height:6px;border-radius:3px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}
+#slime{position:absolute;left:412px;top:1276px;width:256px;height:224px;transform-origin:50% 100%}
+#slime img{position:absolute;inset:0;width:256px;height:224px;image-rendering:pixelated;opacity:0}
+#slime img.on{opacity:1}
+.shadow{position:absolute;left:440px;top:1490px;width:200px;height:26px;border-radius:50%;background:rgba(0,0,0,.45)}
+.flash{position:absolute;inset:0;background:#fff;opacity:0}
+/* common props */
+.box{position:absolute;border-radius:30px;background:#143A2E;border:4px solid #26574A}
+.t34{font-size:34px;font-weight:700}.t38{font-size:38px;font-weight:800}.t44{font-size:44px;font-weight:900}.t56{font-size:56px;font-weight:900;letter-spacing:-1px}
+.dim{color:rgba(243,246,236,.66)}
+.pill{position:absolute;font-size:36px;font-weight:900;padding:12px 26px;border-radius:16px;white-space:nowrap}
+.pY{background:#D8F36A;color:#0C241D}.pP{background:#FF8FA3;color:#3A0F1B}.pD{background:#0A1E18;color:#D8F36A;border:3px solid #26574A}
+.stamp{position:absolute;font-weight:900;font-size:66px;padding:10px 30px;border:8px solid;border-radius:20px;letter-spacing:-1px;background:rgba(12,36,29,.82);white-space:nowrap}
+.num{position:absolute;left:0;right:0;text-align:center;font-weight:900;letter-spacing:-6px;line-height:1;white-space:nowrap}
+.gauge{position:absolute;left:110px;width:860px;height:120px;border-radius:26px;background:#0A1E18;border:4px solid #26574A;overflow:hidden}
+.gauge b{position:absolute;left:0;top:0;bottom:0;width:0;background:#D8F36A}
+.glabel{position:absolute;left:110px;font-size:36px;font-weight:800;color:rgba(243,246,236,.8)}
+.sheet{position:absolute;width:74px;height:96px;border-radius:10px;background:#F3F6EC}
+.sheet:before,.sheet:after{content:"";position:absolute;left:12px;right:12px;height:8px;border-radius:4px;background:#9DB3A8}
+.sheet:before{top:22px}.sheet:after{top:44px;right:26px}
+.win{position:absolute;left:90px;width:900px;border-radius:28px;background:#081A15;border:4px solid #26574A;overflow:hidden}
+.win .bar{height:76px;background:#143A2E;display:flex;align-items:center;gap:12px;padding:0 26px;font-size:36px;font-weight:900}
+.win .bar i{width:20px;height:20px;border-radius:50%;background:#FF8FA3;display:block}
+.win .bar i+i{background:#D8F36A}.win .bar i+i+i{background:#7FE3FF;margin-right:14px}
+.win .bar em{margin-left:auto;font-style:normal;font-size:30px;font-weight:700;color:rgba(243,246,236,.55)}
+.code{padding:26px 34px 30px;font-size:40px;font-weight:700;line-height:1.5;white-space:pre}
+.code div{display:block}
+.row{display:flex;align-items:center;gap:22px;height:92px;padding:0 28px;border-radius:22px;background:#143A2E;border:3px solid #26574A;font-size:40px;font-weight:900;letter-spacing:-1px}
+.row .d{margin-left:auto;font-size:34px;font-weight:700;color:rgba(243,246,236,.62);letter-spacing:0}
+.bx{width:54px;height:54px;border-radius:14px;background:#0A1E18;position:relative;flex:none}
+.bx svg{position:absolute;inset:6px}
+.cur{position:absolute;width:64px;height:64px;opacity:0}
+.tog{margin-left:auto;width:104px;height:54px;border-radius:27px;background:#2B4A40;position:relative;flex:none}
+.tog u{position:absolute;left:6px;top:6px;width:42px;height:42px;border-radius:50%;background:#F3F6EC}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="51.6" data-width="1080" data-height="1920" data-fps="30">
+<div id="cam">
+ <div class="bg"></div><div class="dots" id="dots"></div>
+ <div class="brand">TENBY LABS</div>
+ <div class="src">Cloudflare 블로그·문서, Anthropic 글<br>2026-11-24 확인</div>
+
+ <!-- 1 hook -->
+ <div class="sc" id="s1">
+  <div class="tagline" id="tag">클로드 코드에 MCP 붙여 쓰는 분</div>
+  <div class="cap" style="top:330px">
+   <span class="l f1"><span><span class="p">117만</span> 토큰을</span></span>
+   <span class="l f1"><span><span class="y">1,000토큰</span>으로</span></span>
+   <span class="l f1"><span>줄인 MCP가 있어요</span></span>
+  </div>
+  <div id="barA" style="position:absolute;left:250px;top:780px;width:220px;height:440px;border-radius:22px 22px 0 0;background:#FF8FA3;transform-origin:50% 100%"></div>
+  <div id="barB" style="position:absolute;left:610px;top:1206px;width:220px;height:14px;border-radius:7px 7px 0 0;background:#D8F36A;transform-origin:50% 100%"></div>
+  <div style="position:absolute;left:150px;right:150px;top:1220px;height:5px;background:rgba(255,255,255,.35)"></div>
+  <div id="lbA" class="t38" style="position:absolute;left:210px;width:300px;top:720px;text-align:center;color:#FF8FA3">1,170,000</div>
+  <div id="lbB" class="t38" style="position:absolute;left:570px;width:300px;top:1146px;text-align:center;color:#D8F36A">약 1,000</div>
+ </div>
+
+ <!-- 2 설명서가 딸려 와요 -->
+ <div class="sc" id="s2">
+  <div class="cap">
+   <span class="l f1"><span>MCP 도구에는</span></span>
+   <span class="l f1"><span><span class="y">설명서</span>가 딸려 와요</span></span>
+  </div>
+  <div class="box" id="s2tool" style="left:90px;top:760px;width:300px;height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px">
+   <svg width="120" height="120" viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="1" y="0" width="2" height="1" fill="#D8F36A"/><rect x="0" y="1" width="1" height="2" fill="#D8F36A"/><rect x="3" y="1" width="1" height="2" fill="#D8F36A"/><rect x="1" y="3" width="3" height="1" fill="#D8F36A"/><rect x="3" y="4" width="2" height="1" fill="#D8F36A"/><rect x="4" y="5" width="2" height="1" fill="#D8F36A"/><rect x="5" y="6" width="2" height="1" fill="#D8F36A"/><rect x="6" y="7" width="2" height="1" fill="#D8F36A"/></svg>
+   <div class="t44">도구 1개</div>
+  </div>
+  <div id="s2link" style="position:absolute;left:390px;top:906px;width:60px;height:8px;background:#D8F36A;transform-origin:0 50%"></div>
+  <div class="box" id="s2doc" style="left:450px;top:700px;width:540px;height:420px;background:#F3F6EC;border-color:#F3F6EC;color:#0C241D;padding:30px 36px">
+   <div class="t44" style="margin-bottom:16px">설명서</div>
+   <div class="row s2r" style="background:#DCE6D8;border-color:#DCE6D8;height:78px;margin-bottom:12px;font-size:38px">도구 이름</div>
+   <div class="row s2r" style="background:#DCE6D8;border-color:#DCE6D8;height:78px;margin-bottom:12px;font-size:38px">하는 일</div>
+   <div class="row s2r" style="background:#DCE6D8;border-color:#DCE6D8;height:78px;font-size:38px">넣어야 할 값</div>
+  </div>
+ </div>
+
+ <!-- 3 질문 전에 다 읽어요 -->
+ <div class="sc" id="s3">
+  <div class="cap">
+   <span class="l f1"><span>질문하기도 전에</span></span>
+   <span class="l f1"><span>AI가 그걸 <span class="p">다 읽어요</span></span></span>
+  </div>
+  <div class="glabel" style="top:640px">AI 기억 공간 (컨텍스트)</div>
+  <div class="gauge" style="top:700px"><b id="g3"></b></div>
+  <div id="s3sheets"></div>
+  <div class="pill pD" id="s3q" style="left:560px;top:1090px">내 질문은 그다음</div>
+  <div class="t34 dim" id="s3n" style="position:absolute;left:110px;top:840px">도구가 늘수록 설명서도 늘어요</div>
+ </div>
+
+ <!-- 4 2,500개 -->
+ <div class="sc" id="s4">
+  <div class="cap">
+   <span class="l f1"><span>Cloudflare API는</span></span>
+   <span class="l f1"><span>기능이 <span class="y">2,500개</span>가 넘어요</span></span>
+  </div>
+  <div id="s4grid" style="position:absolute;left:110px;top:650px;width:860px;height:330px;border-radius:24px;background-color:#0A1E18;background-image:radial-gradient(#D8F36A 5px,transparent 5.5px);background-size:21.5px 22px;background-position:4px 0"></div>
+  <div class="num" id="s4n" style="top:1010px;font-size:150px;color:#D8F36A">0</div>
+  <div class="pill pD s4c" style="left:110px;top:1180px">DNS</div>
+  <div class="pill pD s4c" style="left:262px;top:1180px">Workers</div>
+  <div class="pill pD s4c" style="left:490px;top:1180px">R2</div>
+  <div class="pill pD s4c" style="left:610px;top:1180px">Zero Trust</div>
+ </div>
+
+ <!-- 5 117만 -->
+ <div class="sc" id="s5">
+  <div class="cap">
+   <span class="l f1"><span>전부 도구로 만들면</span></span>
+   <span class="l f1"><span><span class="p">117만 토큰</span>이에요</span></span>
+  </div>
+  <div class="glabel" style="top:640px">AI 기억 공간</div>
+  <div class="gauge" id="s5gb" style="top:700px"><b id="g5" style="background:#FF8FA3"></b></div>
+  <div class="num" id="s5n" style="top:870px;font-size:168px;color:#FF8FA3">0</div>
+  <div class="t38 dim" id="s5s" style="position:absolute;left:0;right:0;top:1060px;text-align:center">도구 2,594개 · 설명서 전체 기준</div>
+  <div class="pill pP" id="s5p" style="left:186px;top:1140px">최신 AI 모델 기억 공간보다 커요</div>
+  <div class="stamp" id="s5st" style="left:760px;top:650px;color:#FF8FA3;border-color:#FF8FA3">초과</div>
+ </div>
+
+ <!-- 6 24만 4천 -->
+ <div class="sc" id="s6">
+  <div class="cap">
+   <span class="l f1"><span>설명서를 줄여도</span></span>
+   <span class="l f1"><span><span class="p">24만 4천</span> 토큰이에요</span></span>
+  </div>
+  <div id="s6docs" style="position:absolute;left:0;top:0">
+   <div class="box s6d" style="left:110px;top:660px;width:260px;height:300px;background:repeating-linear-gradient(#F3F6EC 0 34px,#B9C9BE 34px 44px) #F3F6EC;border-color:#F3F6EC"></div>
+   <div class="box s6d" style="left:410px;top:660px;width:260px;height:300px;background:repeating-linear-gradient(#F3F6EC 0 34px,#B9C9BE 34px 44px) #F3F6EC;border-color:#F3F6EC"></div>
+   <div class="box s6d" style="left:710px;top:660px;width:260px;height:300px;background:repeating-linear-gradient(#F3F6EC 0 34px,#B9C9BE 34px 44px) #F3F6EC;border-color:#F3F6EC"></div>
+  </div>
+  <div class="num" id="s6n" style="top:990px;font-size:150px;color:#FF8FA3">1,170,000</div>
+  <div class="pill pD" id="s6p" style="left:262px;top:1166px">꼭 넣어야 하는 값만 남긴 경우</div>
+ </div>
+
+ <!-- 7 도구 2개 -->
+ <div class="sc" id="s7">
+  <div class="cap">
+   <span class="l f1"><span>그래서 도구를</span></span>
+   <span class="l f3"><span><span class="y">2개</span>로 줄였어요</span></span>
+  </div>
+  <div class="box" id="s7a" style="left:90px;top:720px;width:430px;height:330px;border-color:#D8F36A;padding:44px 0;text-align:center">
+   <div class="t56" style="font-size:68px;color:#D8F36A">search()</div><div class="t44" style="margin-top:26px">쓸 기능 찾기</div></div>
+  <div class="box" id="s7b" style="left:560px;top:720px;width:430px;height:330px;border-color:#7FE3FF;padding:44px 0;text-align:center">
+   <div class="t56" style="font-size:68px;color:#7FE3FF">execute()</div><div class="t44" style="margin-top:26px">API 부르기</div></div>
+  <div class="stamp" id="s7st" style="left:340px;top:640px;color:#D8F36A;border-color:#D8F36A">코드 모드</div>
+  <div class="t34 dim" id="s7n" style="position:absolute;left:0;right:0;top:1100px;text-align:center">문서 검색용 docs()는 따로 있어요</div>
+ </div>
+
+ <!-- 8 search -->
+ <div class="sc" id="s8">
+  <div class="cap">
+   <span class="l f1"><span><span class="y">search</span>는</span></span>
+   <span class="l f1"><span>필요한 기능만 찾아요</span></span>
+  </div>
+  <div class="win" style="top:640px">
+   <div class="bar"><i></i><i></i><i></i>search<em>AI가 짠 코드 (예시)</em></div>
+   <div class="code"><div class="s8c">async () =&gt; {</div><div class="s8c">  return paths.filter(</div><div class="s8c">    p =&gt; p.includes(<span class="y">"dns"</span>))</div><div class="s8c">}</div></div>
+  </div>
+  <div class="row s8r" style="position:absolute;left:90px;width:900px;top:1020px;height:82px;border-color:#D8F36A">DNS 레코드 조회<span class="d">찾음</span></div>
+  <div class="row s8r" style="position:absolute;left:90px;width:900px;top:1112px;height:82px;border-color:#D8F36A">DNS 레코드 추가<span class="d">찾음</span></div>
+ </div>
+
+ <!-- 9 설명서 전체는 안 넘어가요 -->
+ <div class="sc" id="s9">
+  <div class="cap">
+   <span class="l f1"><span>설명서 전체는</span></span>
+   <span class="l f1"><span>AI한테 <span class="y">안 넘어가요</span></span></span>
+  </div>
+  <div class="box" id="s9srv" style="left:80px;top:680px;width:420px;height:500px;padding:26px 30px">
+   <div class="t38" style="color:#7FE3FF">Cloudflare 서버</div>
+   <div id="s9doc" style="position:absolute;left:70px;top:110px;width:280px;height:340px;border-radius:18px;background:#F3F6EC;color:#0C241D;text-align:center;padding-top:112px;font-size:40px;font-weight:900;line-height:1.25">API 설명서<br>전체</div>
+  </div>
+  <div id="s9wall" style="position:absolute;left:536px;top:660px;width:10px;height:540px;border-radius:5px;background:repeating-linear-gradient(#FF8FA3 0 26px,transparent 26px 44px);transform-origin:50% 0"></div>
+  <div class="box" id="s9ai" style="left:590px;top:680px;width:410px;height:500px;padding:26px 30px;border-color:#D8F36A">
+   <div class="t38" style="color:#D8F36A">AI 기억 공간</div>
+  </div>
+  <div id="s9slip" class="pill pY" style="left:190px;top:900px;font-size:38px">찾은 결과만</div>
+  <div class="stamp" id="s9st" style="left:150px;top:1060px;font-size:50px;color:#FF8FA3;border-color:#FF8FA3;border-width:6px">서버에 그대로</div>
+ </div>
+
+ <!-- 10 execute -->
+ <div class="sc" id="s10">
+  <div class="cap">
+   <span class="l f1"><span><span class="m">execute</span>는</span></span>
+   <span class="l f1"><span>AI가 짠 코드를 돌려요</span></span>
+  </div>
+  <div class="win" style="top:640px;height:470px">
+   <div class="bar"><i></i><i></i><i></i>execute<em>호출 한 번</em></div>
+   <div style="padding:22px 26px">
+    <div class="row s10r" style="margin-bottom:12px;height:86px"><div class="bx"><svg class="s10k" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#D8F36A"/></svg></div>목록 불러오기</div>
+    <div class="row s10r" style="margin-bottom:12px;height:86px"><div class="bx"><svg class="s10k" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#D8F36A"/></svg></div>다음 쪽 넘기기</div>
+    <div class="row s10r" style="height:86px"><div class="bx"><svg class="s10k" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#D8F36A"/></svg></div>응답 확인하기</div>
+   </div>
+  </div>
+  <div class="pill" id="s10run" style="left:700px;top:1140px;background:#7FE3FF;color:#06222B;font-size:42px;padding:16px 40px">실행</div>
+  <div class="pill pD" id="s10p" style="left:90px;top:1146px">여러 작업을 한 번에</div>
+  <svg class="cur" id="s10cur" viewBox="0 0 8 8" shape-rendering="crispEdges" style="left:980px;top:1300px"><path d="M1 0h1v1h1v1h1v1h1v1h1v1H4v1h1v2H4V7H3V6H2v1H1z" fill="#fff"/></svg>
+ </div>
+
+ <!-- 11 격리 -->
+ <div class="sc" id="s11">
+  <div class="cap">
+   <span class="l f1"><span>그 코드는</span></span>
+   <span class="l f2"><span><span class="y">격리된 공간</span>에서만 돌아요</span></span>
+  </div>
+  <div id="s11box" style="position:absolute;left:90px;top:650px;width:900px;height:250px;border-radius:30px;border:8px dashed #D8F36A;background:rgba(216,243,106,.07)">
+   <div class="t38" style="position:absolute;left:34px;top:24px;color:#D8F36A">Dynamic Worker 격리 공간</div>
+   <div class="box" id="s11code" style="left:300px;top:96px;width:300px;height:116px;background:#081A15;text-align:center;line-height:108px;font-size:44px;font-weight:900">{ 코드 }</div>
+  </div>
+  <div class="row s11r" style="position:absolute;left:90px;width:900px;top:930px;height:88px"><div class="bx"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="2" y="0" width="4" height="1" fill="#FF8FA3"/><rect x="1" y="1" width="1" height="2" fill="#FF8FA3"/><rect x="6" y="1" width="1" height="2" fill="#FF8FA3"/><rect x="0" y="3" width="8" height="5" fill="#FF8FA3"/></svg></div>파일 시스템<span class="d">없음</span></div>
+  <div class="row s11r" style="position:absolute;left:90px;width:900px;top:1030px;height:88px"><div class="bx"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="2" y="0" width="4" height="1" fill="#FF8FA3"/><rect x="1" y="1" width="1" height="2" fill="#FF8FA3"/><rect x="6" y="1" width="1" height="2" fill="#FF8FA3"/><rect x="0" y="3" width="8" height="5" fill="#FF8FA3"/></svg></div>환경 변수<span class="d">없음</span></div>
+  <div class="row s11r" style="position:absolute;left:90px;width:900px;top:1130px;height:88px"><div class="bx"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="2" y="0" width="4" height="1" fill="#FF8FA3"/><rect x="1" y="1" width="1" height="2" fill="#FF8FA3"/><rect x="6" y="1" width="1" height="2" fill="#FF8FA3"/><rect x="0" y="3" width="8" height="5" fill="#FF8FA3"/></svg></div>외부 요청<span class="d">기본은 차단</span></div>
+ </div>
+
+ <!-- 12 1,000 그대로 -->
+ <div class="sc" id="s12">
+  <div class="cap">
+   <span class="l f1"><span>기능이 늘어도</span></span>
+   <span class="l f1"><span><span class="y">약 1,000토큰</span> 그대로예요</span></span>
+  </div>
+  <div class="glabel" style="top:640px">AI 기억 공간</div>
+  <div class="gauge" style="top:700px"><b id="g12" style="background:#FF8FA3;width:100%"></b></div>
+  <div class="num" id="s12n" style="top:880px;font-size:190px;color:#D8F36A">1,170,000</div>
+  <div class="stamp" id="s12st" style="left:300px;top:1090px;color:#D8F36A;border-color:#D8F36A">99.9% 줄어요</div>
+ </div>
+
+ <!-- 13 Anthropic -->
+ <div class="sc" id="s13">
+  <div class="cap">
+   <span class="l f1"><span><span class="m">Anthropic</span> 글에도</span></span>
+   <span class="l f1"><span>같은 방식이 나와요</span></span>
+  </div>
+  <div class="box" id="s13c" style="left:90px;top:660px;width:900px;height:520px;padding:40px 44px">
+   <div class="t34 dim">Anthropic 엔지니어링 글 · 2025-11-04</div>
+   <div class="t56" style="margin-top:10px">Code execution with MCP</div>
+   <div style="display:flex;align-items:baseline;gap:22px;margin-top:44px;font-weight:900;letter-spacing:-3px">
+    <span id="s13a" style="font-size:96px;color:#FF8FA3">150,000</span>
+    <span id="s13ar" style="font-size:70px;color:#F3F6EC;display:inline-block">→</span>
+    <span id="s13b" style="font-size:118px;color:#D8F36A;display:inline-block">2,000</span>
+   </div>
+   <div class="t38 dim" style="margin-top:6px">토큰 (글에 나온 예시)</div>
+   <div class="pill pY" id="s13p" style="left:44px;top:410px">98.7% 절감</div>
+  </div>
+ </div>
+
+ <!-- 14 명령 두 줄 -->
+ <div class="sc" id="s14">
+  <div class="cap">
+   <span class="l f1"><span>클로드 코드에서는</span></span>
+   <span class="l f1"><span>명령 <span class="y">두 줄</span>이에요</span></span>
+  </div>
+  <div class="win" style="top:650px;height:420px">
+   <div class="bar"><i></i><i></i><i></i>Claude Code</div>
+   <div style="padding:26px 30px;font-size:36px;font-weight:700;line-height:1.3;white-space:nowrap">
+    <div class="dim" style="font-size:34px">1</div>
+    <div class="s14c y" style="margin-top:6px">/plugin marketplace add cloudflare/skills</div>
+    <div class="dim" style="font-size:34px;margin-top:30px">2 (1이 끝난 다음)</div>
+    <div class="s14c m" style="margin-top:6px">/plugin install cloudflare@cloudflare</div>
+   </div>
+  </div>
+  <div class="pill pD" id="s14p" style="left:176px;top:1110px">스킬과 MCP 서버가 같이 등록돼요</div>
+ </div>
+
+ <!-- 15 권한 -->
+ <div class="sc" id="s15">
+  <div class="cap">
+   <span class="l f1"><span>처음 연결할 때</span></span>
+   <span class="l f1"><span><span class="y">권한</span>을 직접 골라요</span></span>
+  </div>
+  <div class="win" style="top:640px">
+   <div class="bar"><i></i><i></i><i></i>권한 승인 (OAuth)<em>예시 화면</em></div>
+   <div style="padding:22px 26px 26px">
+    <div class="row s15r" style="margin-bottom:12px;height:86px">DNS 읽기<div class="tog" id="tg1"><u></u></div></div>
+    <div class="row s15r" style="margin-bottom:12px;height:86px">Workers 수정<div class="tog" id="tg2"><u></u></div></div>
+    <div class="row s15r" style="height:86px">R2 수정<div class="tog" id="tg3"><u></u></div></div>
+   </div>
+  </div>
+  <div class="pill pY" id="s15p" style="left:244px;top:1130px">AI는 승인한 권한만 써요</div>
+  <svg class="cur" id="s15cur" viewBox="0 0 8 8" shape-rendering="crispEdges" style="left:980px;top:1300px"><path d="M1 0h1v1h1v1h1v1h1v1h1v1H4v1h1v2H4V7H3V6H2v1H1z" fill="#fff"/></svg>
+ </div>
+
+ <!-- 16 다른 MCP는 그대로 -->
+ <div class="sc" id="s16">
+  <div class="cap">
+   <span class="l f1"><span>근데 다른 MCP는</span></span>
+   <span class="l f1"><span>설명서가 <span class="p">그대로예요</span></span></span>
+  </div>
+  <div style="position:absolute;left:90px;right:90px;top:1150px;height:5px;background:rgba(255,255,255,.35)"></div>
+  <div id="s16a" style="position:absolute;left:130px;top:1124px;width:220px;height:26px;border-radius:8px 8px 0 0;background:#D8F36A;transform-origin:50% 100%"></div>
+  <div id="s16b" style="position:absolute;left:430px;top:810px;width:220px;height:340px;border-radius:18px 18px 0 0;background:#FF8FA3;transform-origin:50% 100%"></div>
+  <div id="s16c" style="position:absolute;left:730px;top:900px;width:220px;height:250px;border-radius:18px 18px 0 0;background:#FF8FA3;transform-origin:50% 100%"></div>
+  <div class="t38 s16l" style="position:absolute;left:90px;width:300px;top:1166px;text-align:center;color:#D8F36A">Cloudflare</div>
+  <div class="t38 s16l" style="position:absolute;left:390px;width:300px;top:1166px;text-align:center">다른 MCP</div>
+  <div class="t38 s16l" style="position:absolute;left:690px;width:300px;top:1166px;text-align:center">또 다른 MCP</div>
+  <div class="pill pD" id="s16p" style="left:150px;top:660px">코드 모드는 API 하나만 줄여 줘요</div>
+  <svg id="s16w" style="position:absolute;left:790px;top:780px;width:100px;height:100px" viewBox="0 0 12 12" shape-rendering="crispEdges"><rect x="5" y="0" width="2" height="1" fill="#FFD45E"/><rect x="4" y="1" width="4" height="2" fill="#FFD45E"/><rect x="3" y="3" width="6" height="2" fill="#FFD45E"/><rect x="2" y="5" width="8" height="2" fill="#FFD45E"/><rect x="1" y="7" width="10" height="2" fill="#FFD45E"/><rect x="0" y="9" width="12" height="2" fill="#FFD45E"/><rect x="5" y="3" width="2" height="4" fill="#0C241D"/><rect x="5" y="8" width="2" height="2" fill="#0C241D"/></svg>
+ </div>
+
+ <!-- 17 SDK 공개 -->
+ <div class="sc" id="s17">
+  <div class="cap">
+   <span class="l f1"><span>내가 만든 MCP에도</span></span>
+   <span class="l f2"><span>쓸 수 있게 <span class="y">공개돼 있어요</span></span></span>
+  </div>
+  <div class="box" id="s17c" style="left:90px;top:660px;width:900px;height:330px;padding:38px 44px">
+   <div class="t34 dim">깃허브 저장소</div>
+   <div class="t56" style="margin-top:6px;font-size:64px">cloudflare/agents</div>
+   <div class="row" id="s17f" style="margin-top:26px;height:88px;border-color:#D8F36A"><svg width="50" height="50" viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="0" y="1" width="3" height="1" fill="#D8F36A"/><rect x="0" y="2" width="8" height="5" fill="#D8F36A"/></svg>packages/codemode</div>
+  </div>
+  <div class="pill pY" id="s17p" style="left:90px;top:1030px">Code Mode SDK</div>
+  <div id="s17ln" style="position:absolute;left:480px;top:1058px;width:150px;height:8px;background:#D8F36A;transform-origin:0 50%"></div>
+  <div class="pill pD" id="s17m" style="left:630px;top:1030px">내 MCP 서버</div>
+  <div class="t34 dim" id="s17n" style="position:absolute;left:0;right:0;top:1140px;text-align:center">Cloudflare 블로그에 나온 공개 저장소</div>
+ </div>
+
+ <!-- 18 정리 -->
+ <div class="sc" id="s18">
+  <div class="cap">
+   <span class="l f1"><span><span class="y">토큰</span> 아끼는 MCP,</span></span>
+   <span class="l f1"><span>이렇게 돌아가요</span></span>
+  </div>
+  <div style="position:absolute;left:90px;right:90px;top:650px">
+   <div class="row s18r" style="margin-bottom:14px;height:96px"><div class="bx"><svg class="s18k" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#D8F36A"/></svg></div>도구는 2개<span class="d">search · execute</span></div>
+   <div class="row s18r" style="margin-bottom:14px;height:96px"><div class="bx"><svg class="s18k" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#D8F36A"/></svg></div>코드는 격리 공간에서<span class="d">파일·환경 변수 없음</span></div>
+   <div class="row s18r" style="margin-bottom:14px;height:96px"><div class="bx"><svg class="s18k" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#D8F36A"/></svg></div>권한은 내가 고른 것만<span class="d">OAuth</span></div>
+   <div class="row s18r" style="margin-bottom:14px;height:96px"><div class="bx"><svg class="s18k" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#D8F36A"/></svg></div>다른 MCP는 그대로<span class="d">API 하나만</span></div>
+   <div class="row s18r" style="height:96px;border-color:#D8F36A"><div class="bx"><svg class="s18k" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#D8F36A"/></svg></div>117만 → 약 1,000토큰<span class="d">99.9%</span></div>
+  </div>
+ </div>
+
+ <!-- 19 저장 -->
+ <div class="sc" id="s19">
+  <div class="cap">
+   <span class="l f1"><span><span class="y">저장</span>해 두고</span></span>
+   <span class="l f2"><span>MCP 붙일 때 꺼내 보세요</span></span>
+  </div>
+  <div class="box" id="s19b" style="left:390px;top:700px;width:300px;height:340px;border-radius:44px;display:flex;align-items:center;justify-content:center">
+   <svg width="170" height="210" viewBox="0 0 8 10" shape-rendering="crispEdges">
+    <path d="M0 0h8v10H7V9H6V8H5V7H3v1H2v1H1v1H0z" fill="#F3F6EC"/>
+    <path id="s19fill" d="M1 1h6v7H6V7H5V6H3v1H2v1H1z" fill="#143A2E"/>
+   </svg>
+  </div>
+  <div class="pill pY" id="s19p" style="left:434px;top:1080px;font-size:44px">저장됨</div>
+  <svg class="cur" id="s19cur" viewBox="0 0 8 8" shape-rendering="crispEdges" style="left:980px;top:1300px"><path d="M1 0h1v1h1v1h1v1h1v1h1v1H4v1h1v2H4V7H3V6H2v1H1z" fill="#fff"/></svg>
+ </div>
+
+ <div class="floor"></div>
+ <div class="shadow" id="shadow"></div>
+ <div id="slime">
+  <img id="m_base" class="on" src="slime/base.png"><img id="m_glint" src="slime/glint.png"><img id="m_surprise" src="slime/surprise.png"><img id="m_excited" src="slime/excited.png"><img id="m_smile" src="slime/smile.png"><img id="m_think" src="slime/think.png"><img id="m_sweat" src="slime/sweat.png"><img id="m_serious" src="slime/serious.png"><img id="m_wink" src="slime/wink.png"><img id="m_sad" src="slime/sad.png"><img id="m_proud" src="slime/proud.png"><img id="m_doubt" src="slime/doubt.png"><img id="m_star" src="slime/star.png"><img id="m_dizzy" src="slime/dizzy.png">
+ </div>
+</div>
+<div class="flash" id="flash"></div>
+</div>
+
+<script>
+(function(){
+ const DUR=51.6;
+ const T=[0,3.3,5.9,8.5,11.2,14.0,16.6,19.2,22.0,24.6,27.2,29.9,32.6,35.2,38.0,40.6,43.3,46.0,48.8,DUR];
+ const tl=gsap.timeline({paused:true});
+ const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+ const fmt=n=>String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+ const moodAt=[[0,'base'],[1.9,'glint'],[3.3,'base'],[5.9,'sweat'],[8.5,'surprise'],[11.2,'dizzy'],[14.0,'sad'],[16.6,'smile'],[19.2,'base'],[22.0,'wink'],[24.6,'excited'],[27.2,'serious'],[29.9,'base'],[31.0,'star'],[32.6,'think'],[35.2,'base'],[40.6,'doubt'],[43.3,'base'],[46.0,'proud'],[48.8,'base']];
+ const imgs=$$('#slime img');
+ const setMood=t=>{let m='base';for(const [s,k] of moodAt) if(t>=s) m=k;imgs.forEach(i=>i.classList.toggle('on',i.id==='m_'+m));};
+ const clock={t:0};
+ tl.to(clock,{t:DUR,duration:DUR,ease:'none',onUpdate:()=>setMood(clock.t)},0);
+ tl.fromTo('#dots',{x:0},{x:-54,duration:DUR,ease:'none'},0);
+
+ const S='#slime',SH='#shadow';
+ const hop=(t,n,h=60,d=0.44)=>{for(let k=0;k<n;k++){const s=t+k*d;
+   tl.to(S,{y:-h,scaleY:1.06,scaleX:.95,duration:d*.45,ease:'power2.out'},s)
+     .to(S,{y:0,scaleY:1,scaleX:1,duration:d*.4,ease:'power2.in'},s+d*.45)
+     .to(S,{scaleY:.86,scaleX:1.12,duration:d*.07,ease:'none'},s+d*.85)
+     .to(S,{scaleY:1,scaleX:1,duration:d*.08,ease:'none'},s+d*.92)
+     .to(SH,{scale:.7,duration:d*.45},s).to(SH,{scale:1,duration:d*.4},s+d*.45);}};
+ const slideTo=(t,x,d=.45)=>{tl.to(S,{x,duration:d,ease:'power2.inOut'},t).to(SH,{x,duration:d,ease:'power2.inOut'},t);};
+ const dash=(t)=>{ // 뛰어나가며 장면 넘김, 왼쪽에서 다시 들어옴
+   tl.to(S,{scaleX:1.5,scaleY:.75,x:900,duration:.3,ease:'power3.in'},t-.3).to(SH,{x:900,opacity:0,duration:.3,ease:'power3.in'},t-.3)
+     .set(S,{x:-900,scaleX:1,scaleY:1},t).set(SH,{x:-900},t)
+     .to(S,{x:0,duration:.45,ease:'power3.out'},t+.02).to(SH,{x:0,opacity:1,duration:.45,ease:'power3.out'},t+.02)
+     .to(S,{scaleX:.82,scaleY:1.14,duration:.08},t+.42).to(S,{scaleX:1,scaleY:1,duration:.3,ease:'elastic.out(1,.4)'},t+.5);};
+
+ // 장면 켜고 끄기 + 자막
+ const outKinds=['left','fade','up','left','fade','dash','up','fade','left','up','fade','dash','left','up','fade','left','up','dash','end'];
+ for(let i=0;i<19;i++){
+   const id='#s'+(i+1), a=T[i], b=T[i+1];
+   tl.set(id,{opacity:1,x:0,y:0,scale:1},a);
+   $$(id+' .cap .l > span').forEach((el,k)=>{
+     tl.fromTo(el,{yPercent:115},{yPercent:0,duration:.38,ease:'power3.out'},a+(i===0?0.3+k*0.75:0.04+k*0.34));
+   });
+   const k=outKinds[i];
+   if(k==='left'||k==='dash') tl.to(id,{x:-1080,duration:.28,ease:'power3.in'},b-.28);
+   else if(k==='up') tl.to(id,{y:-160,opacity:0,duration:.26,ease:'power2.in'},b-.26);
+   else if(k==='fade') tl.to(id,{opacity:0,scale:.93,duration:.26,ease:'power2.in'},b-.26);
+   if(k!=='end') tl.set(id,{opacity:0},b);
+   if(k==='dash') dash(b);
+ }
+ const pop=(sel,t,o={})=>tl.fromTo(sel,{scale:.3,opacity:0},{scale:1,opacity:1,duration:.35,ease:'back.out(2.2)',...o},t);
+ const stamp=(sel,t,r=-8)=>{tl.fromTo(sel,{scale:2.6,opacity:0,rotation:r*2.4},{scale:1,opacity:1,rotation:r,duration:.26,ease:'power4.in'},t)
+   .to('#cam',{x:12,duration:.04,yoyo:true,repeat:5},t+.26);};
+ const typeIn=(sel,t,d,n)=>tl.fromTo(sel,{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0% 0 0)',duration:d,ease:'steps('+n+')'},t);
+ const count=(el,from,to,t,d,suf='',ease='power2.out')=>{const o={v:from};const e=$(el);
+   tl.fromTo(o,{v:from},{v:to,duration:d,ease,onUpdate:()=>{e.textContent=fmt(o.v)+suf;}},t);};
+
+ // ---- 1 hook (0~3.3)
+ tl.set(S,{y:-1500}).set(SH,{scale:.2,opacity:0});
+ tl.to(S,{y:0,duration:.45,ease:'power3.in'},.05).to(SH,{scale:1,opacity:1,duration:.45,ease:'power3.in'},.05)
+   .to(S,{scaleY:.72,scaleX:1.25,duration:.07},.5).to(S,{scaleY:1,scaleX:1,duration:.35,ease:'elastic.out(1,.4)'},.57);
+ tl.fromTo('#tag',{y:-40,opacity:0},{y:0,opacity:1,duration:.35,ease:'back.out(2)'},.2);
+ tl.fromTo('#barA',{scaleY:0},{scaleY:1,duration:.7,ease:'power3.out'},.45);
+ pop('#lbA',1.0);
+ tl.fromTo('#barB',{scaleY:0},{scaleY:1,duration:.3,ease:'back.out(3)'},1.2);
+ pop('#lbB',1.35);
+ tl.to('#barA',{scaleY:.03,duration:.8,ease:'power2.inOut'},1.95).to('#lbA',{y:426,duration:.8,ease:'power2.inOut'},1.95)
+   .to('#lbA',{opacity:.35,duration:.4},2.4).to('#lbB',{scale:1.25,duration:.25,yoyo:true,repeat:1},2.7);
+ slideTo(.9,330,.4); hop(1.9,3,50);
+ slideTo(3.05,0,.3);
+ // ---- 2 (3.3~5.9)
+ pop('#s2tool',3.45); hop(3.4,2,46);
+ tl.fromTo('#s2link',{scaleX:0},{scaleX:1,duration:.2},3.9);
+ tl.fromTo('#s2doc',{x:300,opacity:0,rotation:5},{x:0,opacity:1,rotation:0,duration:.4,ease:'back.out(1.4)'},4.0);
+ $$('.s2r').forEach((r,k)=>tl.fromTo(r,{x:60,opacity:0},{x:0,opacity:1,duration:.25,ease:'power3.out'},4.35+k*.3));
+ tl.to('#s2doc',{y:-10,duration:.3,yoyo:true,repeat:1,ease:'sine.inOut'},5.2);
+ slideTo(4.2,-250,.5); hop(4.8,2,40);
+ // ---- 3 (5.9~8.5)
+ const sh=$('#s3sheets');
+ for(let k=0;k<10;k++){const d=document.createElement('div');d.className='sheet';d.id='sh'+k;d.style.left=(130+k*84)+'px';d.style.top='1010px';sh.appendChild(d);
+   tl.fromTo(d,{y:260,opacity:0,rotation:(k%2?8:-8)},{y:0,opacity:1,rotation:0,duration:.25,ease:'back.out(1.6)'},6.05+k*.07)
+     .to(d,{x:(540-(130+k*84))*.6,y:-270,scale:.3,opacity:0,duration:.32,ease:'power2.in'},6.75+k*.12);}
+ tl.fromTo('#g3',{width:'0%'},{width:'62%',duration:1.3,ease:'none'},7.0);
+ tl.fromTo('#s3n',{opacity:0},{opacity:1,duration:.3},6.4);
+ pop('#s3q',7.7); tl.to('#s3q',{x:-14,duration:.12,yoyo:true,repeat:3},8.0);
+ slideTo(6.0,-280,.4); hop(6.5,4,36,.42);
+ // ---- 4 (8.5~11.2)
+ tl.fromTo('#s4grid',{clipPath:'inset(0 0 100% 0)'},{clipPath:'inset(0 0 0% 0)',duration:1.5,ease:'power1.inOut'},8.6);
+ count('#s4n',0,2500,8.7,1.4,'+');
+ tl.fromTo('#s4n',{scale:.6,opacity:0},{scale:1,opacity:1,duration:.35,ease:'back.out(2)'},8.65).to('#s4n',{scale:1.12,duration:.16,yoyo:true,repeat:1},10.1);
+ $$('.s4c').forEach((c,k)=>pop(c,10.2+k*.14));
+ slideTo(8.55,0,.4); hop(9.2,2,30); tl.to(S,{scaleY:.88,scaleX:1.1,duration:.12,yoyo:true,repeat:3},10.2);
+ // ---- 5 (11.2~14.0)
+ tl.fromTo('#g5',{width:'0%'},{width:'100%',duration:1.1,ease:'power1.in'},11.3);
+ count('#s5n',0,1170000,11.3,1.3,'','power1.in');
+ tl.fromTo('#s5n',{scale:.7,opacity:0},{scale:1,opacity:1,duration:.3},11.25);
+ stamp('#s5st',12.6,10);
+ tl.to('#s5gb',{borderColor:'#FF8FA3',duration:.2},12.6);
+ tl.fromTo('#s5s',{opacity:0,y:20},{opacity:1,y:0,duration:.3},12.2);
+ pop('#s5p',13.0); tl.to('#s5p',{y:-10,duration:.2,yoyo:true,repeat:1},13.4);
+ tl.to(S,{rotation:-8,duration:.12,yoyo:true,repeat:7,ease:'sine.inOut'},12.7);
+ // ---- 6 (14.0~16.6)
+ $$('.s6d').forEach((d,k)=>{tl.fromTo(d,{y:-80,opacity:0},{y:0,opacity:1,duration:.3,ease:'back.out(1.5)'},14.1+k*.1)
+   .to(d,{height:110,duration:.6,ease:'power2.inOut'},14.9+k*.1);});
+ tl.fromTo('#s6n',{opacity:0,scale:.8},{opacity:1,scale:1,duration:.3},14.2);
+ count('#s6n',1170000,244000,14.9,.9,'','power2.inOut');
+ tl.to('#s6n',{scale:1.1,duration:.15,yoyo:true,repeat:1},15.8);
+ pop('#s6p',15.6);
+ hop(14.3,1,40); tl.to(S,{scaleY:.9,duration:.4,yoyo:true,repeat:1,ease:'sine.inOut'},15.6);
+ // ---- 7 (16.6~19.2)
+ tl.fromTo('#s7a',{x:-500,rotation:-10},{x:0,rotation:-2,duration:.4,ease:'back.out(1.5)'},17.0);
+ tl.fromTo('#s7b',{x:500,rotation:10},{x:0,rotation:2,duration:.4,ease:'back.out(1.5)'},17.3);
+ stamp('#s7st',17.85,-6);
+ tl.fromTo('#s7n',{opacity:0},{opacity:1,duration:.3},18.3);
+ tl.to('#s7a',{y:-14,duration:.3,yoyo:true,repeat:1,ease:'sine.inOut'},18.3).to('#s7b',{y:-14,duration:.3,yoyo:true,repeat:1,ease:'sine.inOut'},18.5);
+ hop(17.9,2,56);
+ // ---- 8 (19.2~22.0)
+ $$('.s8c').forEach((c,k)=>typeIn(c,19.5+k*.38,.34,10));
+ $$('.s8r').forEach((r,k)=>tl.fromTo(r,{x:-200,opacity:0},{x:0,opacity:1,duration:.3,ease:'power3.out'},21.1+k*.25));
+ slideTo(19.25,-290,.4); hop(19.7,3,30,.5); tl.to(S,{y:-90,duration:.2,ease:'power2.out'},21.1).to(S,{y:0,duration:.2,ease:'power2.in'},21.3);
+ // ---- 9 (22.0~24.6)
+ tl.fromTo('#s9srv',{x:-300,opacity:0},{x:0,opacity:1,duration:.35,ease:'power3.out'},22.1);
+ tl.fromTo('#s9ai',{x:300,opacity:0},{x:0,opacity:1,duration:.35,ease:'power3.out'},22.2);
+ tl.fromTo('#s9wall',{scaleY:0},{scaleY:1,duration:.35},22.4);
+ tl.to('#s9doc',{x:60,duration:.25,ease:'power2.out'},22.8).to('#s9doc',{x:0,duration:.3,ease:'elastic.out(1,.4)'},23.05);
+ stamp('#s9st',23.1,-5);
+ tl.fromTo('#s9slip',{opacity:0,scale:.4},{opacity:1,scale:1,duration:.25,ease:'back.out(2)'},23.5)
+   .to('#s9slip',{x:480,y:-20,duration:.5,ease:'power2.inOut'},23.8);
+ slideTo(22.05,0,.4); hop(23.3,2,44);
+ // ---- 10 (24.6~27.2)
+ $$('.s10r').forEach((r,k)=>tl.fromTo(r,{opacity:0,x:80},{opacity:1,x:0,duration:.25,ease:'power3.out'},24.75+k*.14));
+ tl.set('.s10k',{opacity:0},0);
+ pop('#s10run',25.0);
+ tl.fromTo('#s10cur',{opacity:0,x:0,y:0},{opacity:1,x:-170,y:-120,duration:.45,ease:'power2.out'},25.2)
+   .to('#s10cur',{scale:.8,duration:.08,yoyo:true,repeat:1},25.7).to('#s10run',{scale:.9,duration:.08,yoyo:true,repeat:1},25.7)
+   .to('#s10cur',{opacity:0,duration:.2},26.6);
+ $$('.s10k').forEach((c,k)=>tl.fromTo(c,{opacity:0,scale:2.2},{opacity:1,scale:1,duration:.18,ease:'power4.in'},25.9+k*.28));
+ pop('#s10p',26.5);
+ slideTo(24.65,-300,.4); hop(25.9,3,50,.3);
+ // ---- 11 (27.2~29.9)
+ tl.fromTo('#s11box',{scale:1.25,opacity:0},{scale:1,opacity:1,duration:.4,ease:'back.out(1.8)'},27.3);
+ tl.to('#s11code',{x:150,duration:.25,ease:'power2.out'},27.9).to('#s11code',{x:0,duration:.2,ease:'power2.in'},28.15)
+   .to('#s11code',{x:-150,duration:.25,ease:'power2.out'},28.4).to('#s11code',{x:0,duration:.3,ease:'elastic.out(1,.5)'},28.65);
+ $$('.s11r').forEach((r,k)=>tl.fromTo(r,{y:60,opacity:0},{y:0,opacity:1,duration:.28,ease:'back.out(1.6)'},28.0+k*.4));
+ slideTo(27.25,0,.4); hop(28.0,3,24,.4);
+ // ---- 12 (29.9~32.6)
+ tl.fromTo('#s12n',{scale:.7,opacity:0},{scale:.62,opacity:1,duration:.3},30.2);
+ count('#s12n',1170000,1000,30.6,.9,'','power3.inOut');
+ tl.to('#s12n',{scale:1,duration:.9,ease:'power3.inOut'},30.6);
+ tl.to('#g12',{width:'1.2%',backgroundColor:'#D8F36A',duration:.9,ease:'power3.inOut'},30.6);
+ stamp('#s12st',31.7,-5);
+ tl.to(S,{y:-150,duration:.25,ease:'power2.out'},31.5).to(S,{y:0,duration:.22,ease:'power2.in'},31.75); hop(32.0,1,30);
+ // ---- 13 (32.6~35.2)
+ tl.fromTo('#s13c',{y:120,opacity:0},{y:0,opacity:1,duration:.4,ease:'back.out(1.4)'},32.9);
+ tl.fromTo('#s13a',{opacity:0},{opacity:1,duration:.25},33.3);
+ tl.fromTo('#s13ar',{opacity:0,x:-30},{opacity:1,x:0,duration:.25},33.7);
+ tl.fromTo('#s13b',{opacity:0,scale:1.8},{opacity:1,scale:1,duration:.25,ease:'power4.in'},34.0);
+ pop('#s13p',34.4); tl.to('#s13p',{rotation:-4,duration:.2,yoyo:true,repeat:1},34.8);
+ slideTo(33.2,280,.4); hop(34.0,2,44);
+ // ---- 14 (35.2~38.0)
+ $$('.s14c').forEach((c,k)=>typeIn(c,35.6+k*1.0,.8,20));
+ pop('#s14p',37.3);
+ slideTo(35.25,300,.4); hop(35.7,4,26,.5);
+ slideTo(37.75,-300,.25);
+ // ---- 15 (38.0~40.6)
+ $$('.s15r').forEach((r,k)=>tl.fromTo(r,{opacity:0,x:-80},{opacity:1,x:0,duration:.25,ease:'power3.out'},38.2+k*.12));
+ tl.fromTo('#s15cur',{opacity:0,x:0,y:0},{opacity:1,x:-110,y:-520,duration:.5,ease:'power2.out'},38.5)
+   .to('#s15cur',{scale:.8,duration:.08,yoyo:true,repeat:1},39.05)
+   .to('#tg1',{backgroundColor:'#D8F36A',duration:.15},39.1).to('#tg1 u',{x:50,duration:.15},39.1)
+   .to('#s15cur',{y:-420,duration:.3},39.35).to('#s15cur',{y:-322,duration:.3},39.7).to('#s15cur',{opacity:0,duration:.2},40.1);
+ pop('#s15p',39.8);
+ slideTo(38.05,-300,.3); hop(39.1,3,40);
+ // ---- 16 (40.6~43.3)
+ tl.fromTo('#s16a',{scaleY:0},{scaleY:1,duration:.3,ease:'back.out(3)'},40.9);
+ tl.fromTo('#s16b',{scaleY:0},{scaleY:1,duration:.6,ease:'power3.out'},41.2);
+ tl.fromTo('#s16c',{scaleY:0},{scaleY:1,duration:.6,ease:'power3.out'},41.45);
+ $$('.s16l').forEach((l,k)=>tl.fromTo(l,{opacity:0},{opacity:1,duration:.2},40.9+k*.3));
+ tl.fromTo('#s16w',{scale:0,rotation:-30},{scale:1,rotation:0,duration:.3,ease:'back.out(3)'},42.0).to('#s16w',{y:-14,duration:.22,yoyo:true,repeat:3,ease:'sine.inOut'},42.3);
+ pop('#s16p',42.4);
+ slideTo(40.65,0,.3); hop(41.3,2,36); tl.to(S,{rotation:6,duration:.15,yoyo:true,repeat:3},42.2);
+ // ---- 17 (43.3~46.0)
+ tl.fromTo('#s17c',{rotationX:80,opacity:0},{rotationX:0,opacity:1,duration:.4,ease:'power3.out'},43.5);
+ tl.fromTo('#s17f',{x:-80,opacity:0},{x:0,opacity:1,duration:.3,ease:'power3.out'},44.0);
+ pop('#s17p',44.5);
+ tl.fromTo('#s17ln',{scaleX:0},{scaleX:1,duration:.3},44.9);
+ pop('#s17m',45.1);
+ tl.fromTo('#s17n',{opacity:0},{opacity:1,duration:.3},45.2);
+ slideTo(43.4,270,.4); hop(44.5,3,40);
+ // ---- 18 (46.0~48.8)
+ tl.set('.s18k',{opacity:0},0);
+ $$('.s18r').forEach((r,k)=>{tl.fromTo(r,{x:-140,opacity:0},{x:0,opacity:1,duration:.26,ease:'power3.out'},46.35+k*.3);});
+ $$('.s18k').forEach((c,k)=>tl.fromTo(c,{opacity:0,scale:2.2},{opacity:1,scale:1,duration:.18,ease:'power4.in'},46.65+k*.3));
+ hop(46.6,4,34,.5);
+ // ---- 19 (48.8~51.6)
+ pop('#s19b',49.0);
+ tl.set('#s19p',{opacity:0},0);
+ tl.fromTo('#s19cur',{opacity:0,x:0,y:0},{opacity:1,x:-390,y:-360,duration:.5,ease:'power2.out'},49.4)
+   .to('#s19cur',{scale:.8,duration:.08,yoyo:true,repeat:1},49.95).to('#s19b',{scale:.9,duration:.08,yoyo:true,repeat:1},49.95)
+   .to('#s19fill',{fill:'#D8F36A',duration:.12},50.03).to('#s19b',{borderColor:'#D8F36A',duration:.12},50.03)
+   .to('#s19cur',{opacity:0,duration:.25},50.5);
+ pop('#s19p',50.15);
+ slideTo(48.85,-290,.4); hop(50.05,3,60);
+ tl.to('#cam',{scale:1.12,duration:1.0,ease:'power2.in'},50.6);
+
+ window.__timelines=window.__timelines||{};
+ window.__timelines['main']=tl;
+ tl.seek(0);
+})();
+</script>
+</body>
+</html>
