@@ -37,6 +37,7 @@
 - 만드는 법: 영상(`reel.mp4`)과 `events.json`, `narration.json` 을 초안 폴더에 둔 뒤
   `python3 templates/reel-free/narrate.py drafts/<날짜>-reel-<slug>` → 같은 폴더에 `reel_narrated.mp4`, `narration_result.json`.
   기본이 구글 Despina 다. 타입캐스트로 만들 때만 `--engine typecast` 를 붙인다. `narration.json` 형식은 `narrate.py` 맨 위 설명 그대로.
+- 숫자는 "이천오백 개"처럼 읽혀야 한다(2026-11-24 채널 주인: "2,500개를 '이 오백 개'로 읽는다"). `narrate.py` 가 음성으로 보낼 때만 천 단위 쉼표를 뺀다(`2,500` → `2500`). 자막의 숫자 표기는 그대로 둔다.
 - 문장은 장면 길이에 맞게 짧게 쓴다. `narration_result.json` 의 `overflow_sec` 가 0.3초를 넘는 줄은 문장을 줄여 다시 만든다.
 - 키는 Default 환경의 네트워크 시크릿(texttospeech.googleapis.com, X-Goog-Api-Key)이 자동으로 붙인다.
 - API 키는 어디에도 적지 않는다(작업 지시문, 저장소, Notion, 대화 모두).

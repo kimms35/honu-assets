@@ -25,7 +25,7 @@ narration.json 형식:
           narration_result.json (줄마다 실제 길이, 속도 조정 배율, 겹침 여부, 쓴 voice_id).
 reel.mp4 는 건드리지 않는다. 바꿔 끼우는 건 부르는 쪽이 결과를 확인한 뒤에 한다.
 """
-import argparse, base64, json, os, subprocess, sys, tempfile, urllib.request, urllib.error
+import argparse, base64, json, os, re, subprocess, sys, tempfile, urllib.request, urllib.error
 import numpy as np
 from scipy.io import wavfile
 
@@ -64,6 +64,7 @@ def find_voice(name):
 
 
 def tts(voice_id, text, prev_text, next_text, tempo):
+    text, prev_text, next_text = speakable(text), speakable(prev_text), speakable(next_text)
     base = {"voice_id": voice_id, "text": text, "model": "ssfm-v30", "language": "kor",
             "output": {"audio_format": "wav", "audio_tempo": tempo, "volume": 100}}
     tries = [dict(base, prompt={"emotion_type": "smart", "previous_text": prev_text, "next_text": next_text}),
@@ -82,7 +83,15 @@ def tts(voice_id, text, prev_text, next_text, tempo):
     raise SystemExit(f"음성 생성 실패: {last}")
 
 
+def speakable(text):
+    """음성으로 보낼 문장만 다듬는다(화면 자막은 그대로).
+    채널 주인(2026-11-24): "2,500개를 '이 오백 개'로 읽는다. 숫자는 '이천오백 개'처럼 읽게."
+    → 숫자 속 천 단위 쉼표를 뺀다(2,500 → 2500, 1,170,000 → 1170000)."""
+    return re.sub(r"(?<=\d),(?=\d{3}(?!\d))", "", text)
+
+
 def google_tts(voice, text, tempo):
+    text = speakable(text)
     lang = "-".join(voice.split("-")[:2])
     audio = {"audioEncoding": "LINEAR16", "sampleRateHertz": SR}
     tries = [dict(audio, speakingRate=tempo), audio]   # 속도 지정을 못 받는 목소리면 기본 속도로 다시 한 번
