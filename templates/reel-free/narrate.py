@@ -7,6 +7,13 @@ api.typecast.ai 요청에 프록시가 자동으로 붙인다. 이 스크립트�
 
   python3 templates/reel-free/narrate.py drafts/<날짜>-reel-<slug>
 
+구글 TTS로 만들 때 (채널 주인 결정 2026-11-24: 타입캐스트 무료 계정 차단 뒤 구글 Achernar 로 바꿈.
+키는 같은 환경의 네트워크 시크릿이 texttospeech.googleapis.com 요청에 X-Goog-Api-Key 로 붙인다):
+
+  python3 templates/reel-free/narrate.py drafts/<날짜>-reel-<slug> --engine google --voice ko-KR-Chirp3-HD-Achernar
+
+  --voice 를 주면 narration.json 의 voice 대신 그 목소리를 쓴다. 문장 앞뒤 맥락(smart 감정)은 구글에선 쓰지 않는다.
+
 그 폴더에 있어야 하는 것: reel.mp4(영상, 지금 소리는 무엇이든 상관없음), events.json(효과음 시각), narration.json
 narration.json 형식:
   {"voice": "필재", "tempo": 1.1,
@@ -17,20 +24,21 @@ narration.json 형식:
           narration_result.json (줄마다 실제 길이, 속도 조정 배율, 겹침 여부, 쓴 voice_id).
 reel.mp4 는 건드리지 않는다. 바꿔 끼우는 건 부르는 쪽이 결과를 확인한 뒤에 한다.
 """
-import json, os, subprocess, sys, tempfile, urllib.request, urllib.error
+import argparse, base64, json, os, subprocess, sys, tempfile, urllib.request, urllib.error
 import numpy as np
 from scipy.io import wavfile
 
 API = "https://api.typecast.ai"
+GOOGLE_API = "https://texttospeech.googleapis.com"
 SR = 44100
 HERE = os.path.dirname(os.path.abspath(__file__))
 MAX_TEMPO = 1.3      # 장면에 안 들어가면 이 배율까지만 빠르게 한다
 GAP = 0.12           # 문장 사이 최소 쉼(초)
 
 
-def call(method, path, body=None, timeout=90):
+def call(method, path, body=None, timeout=90, base=API):
     data = None if body is None else json.dumps(body).encode()
-    req = urllib.request.Request(API + path, data=data, method=method,
+    req = urllib.request.Request(base + path, data=data, method=method,
                                  headers={"Content-Type": "application/json"} if data else {})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.status, r.headers.get("Content-Type", ""), r.read()
@@ -73,6 +81,24 @@ def tts(voice_id, text, prev_text, next_text, tempo):
     raise SystemExit(f"음성 생성 실패: {last}")
 
 
+def google_tts(voice, text, tempo):
+    lang = "-".join(voice.split("-")[:2])
+    audio = {"audioEncoding": "LINEAR16", "sampleRateHertz": SR}
+    tries = [dict(audio, speakingRate=tempo), audio]   # 속도 지정을 못 받는 목소리면 기본 속도로 다시 한 번
+    last = None
+    for cfg in tries:
+        body = {"input": {"text": text}, "voice": {"languageCode": lang, "name": voice}, "audioConfig": cfg}
+        try:
+            _, _, raw = call("POST", "/v1/text:synthesize", body, base=GOOGLE_API)
+            return base64.b64decode(json.loads(raw)["audioContent"])
+        except urllib.error.HTTPError as e:
+            err = json.loads(e.read() or b"{}").get("error", {})
+            last = f"HTTP {e.code} {err.get('status')}: {str(err.get('message'))[:200]}"
+            if e.code != 400:
+                break
+    raise SystemExit(f"구글 음성 생성 실패: {last}")
+
+
 def to_mono(path):
     sr, x = wavfile.read(path)
     x = x.astype(np.float32)
@@ -96,19 +122,23 @@ def trim_silence(x, thr=0.01):
     return x[max(0, idx[0] - int(0.02 * SR)): min(len(x), idx[-1] + int(0.06 * SR))]
 
 
-def main(folder):
+def main(folder, engine="typecast", voice=None):
     n = json.load(open(os.path.join(folder, "narration.json")))
+    if voice: n["voice"] = voice
     video = os.path.join(folder, "reel.mp4")
     dur = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration",
                                          "-of", "csv=p=0", video]).decode().strip())
-    voice_id, _ = find_voice(n.get("voice", "필재"))
+    voice_id = n["voice"] if engine == "google" else find_voice(n.get("voice", "필재"))[0]
     tempo = float(n.get("tempo", 1.1))
     lines = n["lines"]
     tmp = tempfile.mkdtemp()
     narr = np.zeros(int((dur + 2) * SR), np.float32)
     report, cursor = [], 0.0
     for i, ln in enumerate(lines):
-        raw = tts(voice_id, ln["text"], lines[i - 1]["text"] if i else "", lines[i + 1]["text"] if i + 1 < len(lines) else "", tempo)
+        if engine == "google":
+            raw = google_tts(voice_id, ln["text"], tempo)
+        else:
+            raw = tts(voice_id, ln["text"], lines[i - 1]["text"] if i else "", lines[i + 1]["text"] if i + 1 < len(lines) else "", tempo)
         p = os.path.join(tmp, f"l{i}.wav"); open(p, "wb").write(raw)
         x = trim_silence(to_mono(p))
         start = max(float(ln["start"]) + 0.08, cursor + GAP)
@@ -142,7 +172,7 @@ def main(folder):
     out = os.path.join(folder, "reel_narrated.mp4")
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", video, "-i", out_wav, "-map", "0:v", "-map", "1:a",
                     "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest", out], check=True)
-    res = {"voice_id": voice_id, "voice": n.get("voice", "필재"), "tempo": tempo, "duration": round(dur, 2),
+    res = {"engine": engine, "voice_id": voice_id, "voice": n.get("voice", "필재"), "tempo": tempo, "duration": round(dur, 2),
            "lines": report, "max_overflow_sec": max([r["overflow_sec"] for r in report] or [0]),
            "chars": sum(len(l["text"]) for l in lines)}
     json.dump(res, open(os.path.join(folder, "narration_result.json"), "w"), ensure_ascii=False, indent=1)
@@ -150,4 +180,9 @@ def main(folder):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    ap = argparse.ArgumentParser()
+    ap.add_argument("folder")
+    ap.add_argument("--engine", choices=["typecast", "google"], default="typecast")
+    ap.add_argument("--voice", help="narration.json 의 voice 대신 쓸 목소리 (구글은 ko-KR-Chirp3-HD-Achernar 같은 이름)")
+    a = ap.parse_args()
+    main(a.folder, a.engine, a.voice)
