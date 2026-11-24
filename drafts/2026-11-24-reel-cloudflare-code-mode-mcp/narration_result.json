@@ -1,0 +1,143 @@
+{
+ "voice_id": "tc_68257f68bc6e3c161ab5078d",
+ "voice": "필재",
+ "tempo": 1.1,
+ "duration": 51.6,
+ "lines": [
+  {
+   "i": 0,
+   "start": 0.12,
+   "len": 3.12,
+   "speedup": 1.05,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 1,
+   "start": 3.38,
+   "len": 2.16,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 2,
+   "start": 5.98,
+   "len": 2.16,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 3,
+   "start": 8.58,
+   "len": 2.56,
+   "speedup": 1.19,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 4,
+   "start": 11.28,
+   "len": 2.52,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 5,
+   "start": 14.08,
+   "len": 2.48,
+   "speedup": 1.14,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 6,
+   "start": 16.68,
+   "len": 2.37,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 7,
+   "start": 19.28,
+   "len": 1.57,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 8,
+   "start": 22.08,
+   "len": 2.46,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 9,
+   "start": 24.68,
+   "len": 2.14,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 10,
+   "start": 27.28,
+   "len": 2.35,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 11,
+   "start": 29.98,
+   "len": 1.95,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 12,
+   "start": 32.68,
+   "len": 1.67,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 13,
+   "start": 35.28,
+   "len": 1.95,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 14,
+   "start": 38.08,
+   "len": 2.31,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 15,
+   "start": 40.68,
+   "len": 1.82,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 16,
+   "start": 43.38,
+   "len": 2.05,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 17,
+   "start": 46.08,
+   "len": 1.92,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 18,
+   "start": 48.88,
+   "len": 2.13,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  }
+ ],
+ "max_overflow_sec": 0.0,
+ "chars": 396
+}
