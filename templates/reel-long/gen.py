@@ -14,7 +14,7 @@ N = len(C["items"])
 if not 3 <= N <= 4:
     raise SystemExit("항목은 3개나 4개여야 합니다")
 F = "file://" + os.path.join(HERE, "fonts")
-BRAND = "TENBY LABS"
+BRAND = "slimebot.ai"
 
 def sprite(mood):
     im = M.slime_sprite(False, mood).resize((256, 224), Image.NEAREST)

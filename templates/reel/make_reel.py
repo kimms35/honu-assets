@@ -308,7 +308,7 @@ def frame(fn, t, T, gt, first):
     if fade < 1:
         img = Image.blend(bg_only, img, fade)
     hl = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ImageDraw.Draw(hl).text((60, 130), "TENBY LABS", font=font(FONT_M, 40), fill=INK + (140,))
+    ImageDraw.Draw(hl).text((60, 130), "slimebot.ai", font=font(FONT_M, 40), fill=INK + (140,))
     img.alpha_composite(hl)
     return img.convert("RGB")
 
