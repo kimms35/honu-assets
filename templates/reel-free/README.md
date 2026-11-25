@@ -120,6 +120,16 @@
 - **동시성은 여러 커서·지하철 노선 갈래로, 고르기는 이정표·지도로, 비교는 같은 화면 9장 격자로**.
 - **전환은 대각선 점무늬 띠가 쓸고 지나가기**, 큰 순위 숫자는 배경에 크고 흐리게.
 
+### 모션 부품 (2026-11-26, motions/)
+레퍼런스 5에서 모은 움직임을 우리가 바로 쓸 수 있게 만든 함수 모음이다. `python3 kit.py` 가 `motions.js`·`motions.css` 를 project/ 에 같이 넣는다. 쓰는 법: index.html 에 `<link rel="stylesheet" href="motions.css">`, gsap 다음에 `<script src="motions.js"></script>`, 그리고 타임라인에 `M.이름(tl, 시작초, {옵션})`. 색은 `:root` 의 `--m-accent`·`--m-hi` 등을 그날 팔레트로 덮어쓴다. 시연 영상: `motions/demo.mp4`, 시연 코드: `motions/demo.html`(`python3 kit.py --motions`).
+- `capGrow` 자막 칩이 낱말 단위로 자람 · `tagCount` 매달린 태그 카운트업 · `priceToZero` 가격→취소선→0원 도장 · `stamp` 도장 쾅+화면 흔들림
+- `rankClimb` 순위 줄이 올라가 1위에 붙음 · `barSpike` 그래프 끝 막대만 솟기+손그림 원 · `versus` 1P vs 2P 막대 대결 · `loaderStar` 선버스트+로딩→별→반짝이→막대
+- `iconRain` 아이콘이 쏟아지며 개수 세기 · `docStack` 서류가 쌓여 기둥 · `phoneStory` 폰 틀 하나로 이야기 진행 · `arcThrow` 포물선으로 날아가는 물건
+- `multiCursor` 커서 여러 개가 동시에 토글 · `branchLines` 지하철 노선처럼 갈라지는 선 · `tierDrop` 티어표에 카드 꽂기 · `shelf` 선반에 한 권씩 꽂히는 진행
+- `vaultOpen` 금고 문이 열림 · `graphGrow` 그래프가 그려지며 초 타이머 · `sameGrid` 같은 화면 9장 격자 · `signpost` 이정표로 상황별 고르기
+- `bigBgNumber` 배경에 큰 순위 숫자 · `frameSwap` 모니터→레트로 TV 프레임 바꾸기 · `halftoneWipe` 대각선 점무늬 와이프 · `sectionColor` 장마다 배경색 바꾸기
+숫자를 보여 주는 부품(태그·카운터·막대)에는 확인한 숫자만 넣는다. 부품 안 글자도 34px 이상, 안전 영역 규칙을 지킨다(시연 영상의 위쪽 이름표는 설명용이라 작다).
+
 ## 기술 규칙 (HyperFrames가 프레임마다 정확히 찍기 위해)
 
 - `project/index.html` 하나. 루트 `<div id="root" data-composition-id="main" data-start="0" data-duration="<초>" data-width="1080" data-height="1920" data-fps="30">`.

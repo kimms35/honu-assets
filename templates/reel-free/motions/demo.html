@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko" data-resolution="portrait">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, height=1920">
+<script src="gsap.min.js"></script>
+<link rel="stylesheet" href="motions.css">
+<style>
+@font-face{font-family:P;font-weight:900;src:url("fonts/Pretendard-Black.ttf")}
+@font-face{font-family:P;font-weight:800;src:url("fonts/Pretendard-ExtraBold.ttf")}
+@font-face{font-family:P;font-weight:700;src:url("fonts/Pretendard-Bold.ttf")}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1920px;overflow:hidden;background:#120B12;font-family:P;color:#F6F2EA}
+#root{position:absolute;inset:0;overflow:hidden}
+#cam{position:absolute;inset:0}
+#bgc{position:absolute;inset:0;background:#120B12}
+.scene{position:absolute;inset:0;opacity:0;overflow:hidden}
+.name{position:absolute;left:64px;top:150px;font:900 44px/1 P;color:#FFCE54}
+.no{position:absolute;right:140px;top:150px;font:900 44px/1 P;color:rgba(246,242,234,.5)}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="92" data-width="1080" data-height="1920" data-fps="30">
+<div id="cam"><div id="bgc"></div></div>
+</div>
+<script src="motions.js"></script>
+<script>
+const tl = gsap.timeline({paused:true});
+const cam = document.getElementById('cam');
+const S = [
+ ['자막 칩이 낱말 단위로 자람', (p,t)=>M.capGrow(tl,t,{parent:p,y:640,words:['아이폰으로','찍은','영상,','어떻게','옮겨요?']})],
+ ['매달린 태그 카운트업', (p,t)=>{M.tagCount(tl,t,{parent:p,x:300,y:820,from:4874,to:10000,suffix:'번'});}],
+ ['가격 → 취소선 → 0원 도장', (p,t)=>M.priceToZero(tl,t,{parent:p,x:120,y:760,from:343301,to:399000})],
+ ['도장 쾅 + 화면 흔들림', (p,t)=>M.stamp(tl,t+0.3,{parent:p,x:300,y:860,text:'확인됨'})],
+ ['순위 줄이 위로 올라가 1위에', (p,t)=>M.rankClimb(tl,t,{parent:p,rows:['도구 A','도구 B','도구 C','도구 D','도구 E'],fromRank:11})],
+ ['그래프 끝 막대만 솟기', (p,t)=>M.barSpike(tl,t,{parent:p,x:150,y:1300,n:12})],
+ ['1P vs 2P 대결 막대', (p,t)=>M.versus(tl,t,{parent:p,y:820,a:{name:'1P',to:12062},b:{name:'2P',to:12031}})],
+ ['로딩 → 별 → 반짝이 → 막대', (p,t)=>M.loaderStar(tl,t,{parent:p})],
+ ['아이콘이 쏟아지며 개수 세기', (p,t)=>M.iconRain(tl,t,{parent:p,to:48,suffix:'명'})],
+ ['서류가 쌓여 기둥이 됨', (p,t)=>M.docStack(tl,t,{parent:p,n:30,count:30})],
+ ['폰 틀 하나로 이야기 진행', (p,t)=>M.phoneStory(tl,t,{parent:p,pages:['녹화 중','4K 영상','공유하기','채팅방'],bgs:['#2B3B6B','#F6F2EA','#211521','#FFE36A'],every:0.75})],
+ ['포물선으로 날아가는 물건', (p,t)=>M.arcThrow(tl,t,{parent:p,from:{x:260,y:900},to:{x:800,y:1100}})],
+ ['커서 여러 개가 동시에 일함', (p,t)=>M.multiCursor(tl,t,{parent:p,n:3})],
+ ['지하철 노선처럼 갈라지는 선', (p,t)=>M.branchLines(tl,t,{parent:p,n:3})],
+ ['티어표에 카드 꽂기', (p,t)=>M.tierDrop(tl,t,{parent:p,items:[{t:'S',name:'스킬1'},{t:'B',name:'스킬2'},{t:'A',name:'스킬3'},{t:'C',name:'스킬4'},{t:'S',name:'스킬5'}]})],
+ ['선반에 한 권씩 꽂히는 진행', (p,t)=>M.shelf(tl,t,{parent:p,y:1200})],
+ ['금고 문이 열림', (p,t)=>M.vaultOpen(tl,t,{parent:p,inside:'노트 40개'})],
+ ['그래프가 그려지며 초 타이머', (p,t)=>M.graphGrow(tl,t,{parent:p})],
+ ['같은 화면 9장 격자', (p,t)=>M.sameGrid(tl,t,{parent:p})],
+ ['이정표로 상황별 고르기', (p,t)=>M.signpost(tl,t,{parent:p,signs:[{text:'옆에 있으면'},{text:'멀리 있으면',color:'#5FB2FF'},{text:'설치 싫으면',color:'#53D68A'}]})],
+ ['배경에 큰 순위 숫자', (p,t)=>{M.bigBgNumber(tl,t,{parent:p,text:'8'});M.tagCount(tl,t+0.5,{parent:p,x:340,y:1150,from:0,to:7539,label:'★+'});}],
+ ['기기 프레임 바꾸기', (p,t)=>M.frameSwap(tl,t,{parent:p,text:'모니터',text2:'레트로 TV'})],
+];
+const D = 3.9;
+const cols = ['#120B12','#14202B','#1B1410','#122018'];
+S.forEach(([name, fn], i) => {
+  const sc = document.createElement('div'); sc.className = 'scene'; cam.appendChild(sc);
+  const t = 0.3 + i*D;
+  sc.innerHTML = `<div class="name">${name}</div><div class="no">${i+1}/${S.length+1}</div>`;
+  tl.set(sc, {opacity:1}, t); tl.set(sc, {opacity:0}, t + D);
+  M.sectionColor(tl, t, {el:document.getElementById('bgc'), color:cols[i%cols.length], dur:0.3});
+  fn(sc, t + 0.2);
+});
+// 마지막: 점무늬 와이프
+{ const sc = document.createElement('div'); sc.className='scene'; cam.appendChild(sc);
+  const t = 0.3 + S.length*D; sc.innerHTML = `<div class="name">대각선 점무늬 와이프</div><div class="no">${S.length+1}/${S.length+1}</div>`;
+  tl.set(sc,{opacity:1},t); M.halftoneWipe(tl, t+1.2, {parent:sc}); M.halftoneWipe(tl, t+2.6, {parent:sc}); }
+tl.set({}, {}, 92);
+window.__timelines = window.__timelines || {};
+window.__timelines['main'] = tl;
+</script>
+</body>
+</html>
