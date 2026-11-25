@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="ko" data-resolution="portrait">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, height=1920">
+<script src="gsap.min.js"></script>
+<style>
+@font-face{font-family:P;font-weight:900;src:url("fonts/Pretendard-Black.ttf")}
+@font-face{font-family:P;font-weight:800;src:url("fonts/Pretendard-ExtraBold.ttf")}
+@font-face{font-family:P;font-weight:700;src:url("fonts/Pretendard-Bold.ttf")}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1920px;overflow:hidden;background:#0B1622;font-family:P;color:#F2F7F5}
+#root{position:absolute;inset:0;overflow:hidden}
+#cam{position:absolute;inset:0;transform-origin:50% 50%}
+.bg{position:absolute;inset:0;background:radial-gradient(60% 30% at 50% 70%,rgba(94,234,212,.16),transparent 70%),linear-gradient(#0E1C2B,#0B1622 55%,#08111A)}
+.dots{position:absolute;inset:0;opacity:.6;background-image:radial-gradient(rgba(255,255,255,.07) 3px,transparent 3px);background-size:54px 54px}
+.brand{position:absolute;left:64px;top:150px;display:block}
+.src{position:absolute;right:64px;top:150px;font-size:30px;font-weight:700;color:rgba(242,247,245,.6);text-align:right;line-height:1.25}
+.pbar{position:absolute;left:64px;right:64px;top:232px;height:8px;border-radius:4px;background:rgba(255,255,255,.1)}
+.pbar b{display:block;height:100%;width:0;border-radius:4px;background:#5EEAD4}
+.sc{position:absolute;inset:0;opacity:0}
+.cap{position:absolute;left:0;right:0;top:290px;text-align:center;font-weight:900;font-size:84px;letter-spacing:-3px;line-height:1.14}
+.cap .l{display:block;overflow:hidden;padding:4px 0;white-space:nowrap}
+.cap .l span{display:inline-block}
+.cap b{color:#FFD166;font-weight:900}
+.hook .l{font-size:100px}.hook .l.big{font-size:110px}
+.tag{position:absolute;left:50%;top:272px;transform:translateX(-50%);background:#5EEAD4;color:#0B1622;font-size:40px;font-weight:900;padding:10px 28px;border-radius:14px;white-space:nowrap}
+.prop{position:absolute;left:90px;right:90px;top:650px;height:580px}
+.card{position:absolute;border-radius:32px;background:#13283A;border:4px solid #24465F}
+.row{display:flex;align-items:center;justify-content:space-between;height:120px;padding:0 40px;border-radius:26px;background:#13283A;border:4px solid #24465F;margin-bottom:22px;font-weight:900}
+.row .k{font-size:38px;color:rgba(242,247,245,.6);font-weight:800}
+.row .v{font-size:50px;letter-spacing:-1px}
+.mint{color:#5EEAD4}.yel{color:#FFD166}.cor{color:#FF7B72}
+.bigN{position:absolute;left:0;right:0;text-align:center;font-weight:900;font-size:300px;letter-spacing:-10px;line-height:1;color:#FFD166}
+.bigN small{font-size:90px;letter-spacing:-2px;color:#F2F7F5;margin-left:10px}
+.sub{position:absolute;left:0;right:0;text-align:center;font-size:38px;font-weight:800;color:rgba(242,247,245,.7)}
+.chip{position:absolute;font-size:40px;font-weight:900;padding:12px 26px;border-radius:16px;background:#FFD166;color:#0B1622;white-space:nowrap}
+.stamp{position:absolute;font-weight:900;font-size:54px;padding:10px 26px;border:7px solid;border-radius:18px;background:rgba(11,22,34,.75);white-space:nowrap}
+.track{position:relative;height:30px;border-radius:15px;background:#0B1622;overflow:hidden;flex:1;margin-left:30px}
+.track i{position:absolute;left:0;top:0;bottom:0;width:0;background:#5EEAD4;border-radius:15px}
+.phone{position:absolute;width:300px;height:520px;border-radius:44px;background:#13283A;border:6px solid #3A6A8C}
+.phone:before{content:"";position:absolute;left:105px;top:18px;width:90px;height:16px;border-radius:8px;background:#0B1622}
+.lbl{font-size:38px;font-weight:900;text-align:center}
+.tile{position:absolute;border-radius:22px;background:#13283A;border:4px solid #24465F;display:flex;align-items:center;justify-content:center}
+.node{position:absolute;height:110px;border-radius:24px;background:#13283A;border:4px solid #5EEAD4;font-size:42px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.line{position:absolute;background:#5EEAD4;transform-origin:50% 0}
+.chk{width:60px;height:60px;border-radius:14px;background:#0B1622;flex:none;position:relative;margin-right:26px}
+.chk svg{position:absolute;inset:6px}
+.floor{position:absolute;left:120px;right:120px;top:1496px;height:6px;border-radius:3px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent)}
+#slime{position:absolute;left:412px;top:1272px;width:256px;height:224px;transform-origin:50% 100%}
+#slime img{position:absolute;inset:0;width:256px;height:224px;image-rendering:pixelated;opacity:0}
+#slime img.on{opacity:1}
+.shadow{position:absolute;left:440px;top:1486px;width:200px;height:26px;border-radius:50%;background:rgba(0,0,0,.45)}
+.flash{position:absolute;inset:0;background:#fff;opacity:0}
+svg.px{shape-rendering:crispEdges}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="52.5" data-width="1080" data-height="1920" data-fps="30">
+<div id="cam">
+ <div class="bg"></div><div class="dots"></div>
+ <svg class="brand" viewBox="0 0 63 8" width="252" height="32" shape-rendering="crispEdges" aria-label="slimebot.ai"><g fill="rgba(0,0,0,.35)"><rect x="2" y="3" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/><rect x="4" y="3" width="1" height="1"/><rect x="5" y="3" width="1" height="1"/><rect x="1" y="4" width="1" height="1"/><rect x="2" y="5" width="1" height="1"/><rect x="3" y="5" width="1" height="1"/><rect x="4" y="5" width="1" height="1"/><rect x="5" y="6" width="1" height="1"/><rect x="1" y="7" width="1" height="1"/><rect x="2" y="7" width="1" height="1"/><rect x="3" y="7" width="1" height="1"/><rect x="4" y="7" width="1" height="1"/><rect x="8" y="1" width="1" height="1"/><rect x="9" y="1" width="1" height="1"/><rect x="9" y="2" width="1" height="1"/><rect x="9" y="3" width="1" height="1"/><rect x="9" y="4" width="1" height="1"/><rect x="9" y="5" width="1" height="1"/><rect x="9" y="6" width="1" height="1"/><rect x="8" y="7" width="1" height="1"/><rect x="9" y="7" width="1" height="1"/><rect x="10" y="7" width="1" height="1"/><rect x="15" y="1" width="1" height="1"/><rect x="14" y="3" width="1" height="1"/><rect x="15" y="3" width="1" height="1"/><rect x="15" y="4" width="1" height="1"/><rect x="15" y="5" width="1" height="1"/><rect x="15" y="6" width="1" height="1"/><rect x="14" y="7" width="1" height="1"/><rect x="15" y="7" width="1" height="1"/><rect x="16" y="7" width="1" height="1"/><rect x="19" y="3" width="1" height="1"/><rect x="20" y="3" width="1" height="1"/><rect x="22" y="3" width="1" height="1"/><rect x="19" y="4" width="1" height="1"/><rect x="21" y="4" width="1" height="1"/><rect x="23" y="4" width="1" height="1"/><rect x="19" y="5" width="1" height="1"/><rect x="21" y="5" width="1" height="1"/><rect x="23" y="5" width="1" height="1"/><rect x="19" y="6" width="1" height="1"/><rect x="21" y="6" width="1" height="1"/><rect x="23" y="6" width="1" height="1"/><rect x="19" y="7" width="1" height="1"/><rect x="21" y="7" width="1" height="1"/><rect x="23" y="7" width="1" height="1"/><rect x="26" y="3" width="1" height="1"/><rect x="27" y="3" width="1" height="1"/><rect x="28" y="3" width="1" height="1"/><rect x="25" y="4" width="1" height="1"/><rect x="29" y="4" width="1" height="1"/><rect x="25" y="5" width="1" height="1"/><rect x="26" y="5" width="1" height="1"/><rect x="27" y="5" width="1" height="1"/><rect x="28" y="5" width="1" height="1"/><rect x="29" y="5" width="1" height="1"/><rect x="25" y="6" width="1" height="1"/><rect x="26" y="7" width="1" height="1"/><rect x="27" y="7" width="1" height="1"/><rect x="28" y="7" width="1" height="1"/><rect x="31" y="1" width="1" height="1"/><rect x="31" y="2" width="1" height="1"/><rect x="31" y="3" width="1" height="1"/><rect x="32" y="3" width="1" height="1"/><rect x="33" y="3" width="1" height="1"/><rect x="34" y="3" width="1" height="1"/><rect x="31" y="4" width="1" height="1"/><rect x="35" y="4" width="1" height="1"/><rect x="31" y="5" width="1" height="1"/><rect x="35" y="5" width="1" height="1"/><rect x="31" y="6" width="1" height="1"/><rect x="35" y="6" width="1" height="1"/><rect x="31" y="7" width="1" height="1"/><rect x="32" y="7" width="1" height="1"/><rect x="33" y="7" width="1" height="1"/><rect x="34" y="7" width="1" height="1"/><rect x="38" y="3" width="1" height="1"/><rect x="39" y="3" width="1" height="1"/><rect x="40" y="3" width="1" height="1"/><rect x="37" y="4" width="1" height="1"/><rect x="41" y="4" width="1" height="1"/><rect x="37" y="5" width="1" height="1"/><rect x="41" y="5" width="1" height="1"/><rect x="37" y="6" width="1" height="1"/><rect x="41" y="6" width="1" height="1"/><rect x="38" y="7" width="1" height="1"/><rect x="39" y="7" width="1" height="1"/><rect x="40" y="7" width="1" height="1"/><rect x="44" y="1" width="1" height="1"/><rect x="44" y="2" width="1" height="1"/><rect x="43" y="3" width="1" height="1"/><rect x="44" y="3" width="1" height="1"/><rect x="45" y="3" width="1" height="1"/><rect x="46" y="3" width="1" height="1"/><rect x="44" y="4" width="1" height="1"/><rect x="44" y="5" width="1" height="1"/><rect x="44" y="6" width="1" height="1"/><rect x="47" y="6" width="1" height="1"/><rect x="45" y="7" width="1" height="1"/><rect x="46" y="7" width="1" height="1"/><rect x="49" y="7" width="1" height="1"/><rect x="52" y="3" width="1" height="1"/><rect x="53" y="3" width="1" height="1"/><rect x="54" y="3" width="1" height="1"/><rect x="55" y="4" width="1" height="1"/><rect x="52" y="5" width="1" height="1"/><rect x="53" y="5" width="1" height="1"/><rect x="54" y="5" width="1" height="1"/><rect x="55" y="5" width="1" height="1"/><rect x="51" y="6" width="1" height="1"/><rect x="55" y="6" width="1" height="1"/><rect x="52" y="7" width="1" height="1"/><rect x="53" y="7" width="1" height="1"/><rect x="54" y="7" width="1" height="1"/><rect x="55" y="7" width="1" height="1"/><rect x="59" y="1" width="1" height="1"/><rect x="58" y="3" width="1" height="1"/><rect x="59" y="3" width="1" height="1"/><rect x="59" y="4" width="1" height="1"/><rect x="59" y="5" width="1" height="1"/><rect x="59" y="6" width="1" height="1"/><rect x="58" y="7" width="1" height="1"/><rect x="59" y="7" width="1" height="1"/><rect x="60" y="7" width="1" height="1"/></g><g fill="rgba(255,255,255,.6)"><rect x="1" y="2" width="1" height="1"/><rect x="2" y="2" width="1" height="1"/><rect x="3" y="2" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="0" y="3" width="1" height="1"/><rect x="1" y="4" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="3" y="4" width="1" height="1"/><rect x="4" y="5" width="1" height="1"/><rect x="0" y="6" width="1" height="1"/><rect x="1" y="6" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="3" y="6" width="1" height="1"/><rect x="7" y="0" width="1" height="1"/><rect x="8" y="0" width="1" height="1"/><rect x="8" y="1" width="1" height="1"/><rect x="8" y="2" width="1" height="1"/><rect x="8" y="3" width="1" height="1"/><rect x="8" y="4" width="1" height="1"/><rect x="8" y="5" width="1" height="1"/><rect x="7" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="9" y="6" width="1" height="1"/><rect x="14" y="0" width="1" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="14" y="2" width="1" height="1"/><rect x="14" y="3" width="1" height="1"/><rect x="14" y="4" width="1" height="1"/><rect x="14" y="5" width="1" height="1"/><rect x="13" y="6" width="1" height="1"/><rect x="14" y="6" width="1" height="1"/><rect x="15" y="6" width="1" height="1"/><rect x="18" y="2" width="1" height="1"/><rect x="19" y="2" width="1" height="1"/><rect x="21" y="2" width="1" height="1"/><rect x="18" y="3" width="1" height="1"/><rect x="20" y="3" width="1" height="1"/><rect x="22" y="3" width="1" height="1"/><rect x="18" y="4" width="1" height="1"/><rect x="20" y="4" width="1" height="1"/><rect x="22" y="4" width="1" height="1"/><rect x="18" y="5" width="1" height="1"/><rect x="20" y="5" width="1" height="1"/><rect x="22" y="5" width="1" height="1"/><rect x="18" y="6" width="1" height="1"/><rect x="20" y="6" width="1" height="1"/><rect x="22" y="6" width="1" height="1"/><rect x="25" y="2" width="1" height="1"/><rect x="26" y="2" width="1" height="1"/><rect x="27" y="2" width="1" height="1"/><rect x="24" y="3" width="1" height="1"/><rect x="28" y="3" width="1" height="1"/><rect x="24" y="4" width="1" height="1"/><rect x="25" y="4" width="1" height="1"/><rect x="26" y="4" width="1" height="1"/><rect x="27" y="4" width="1" height="1"/><rect x="28" y="4" width="1" height="1"/><rect x="24" y="5" width="1" height="1"/><rect x="25" y="6" width="1" height="1"/><rect x="26" y="6" width="1" height="1"/><rect x="27" y="6" width="1" height="1"/><rect x="30" y="0" width="1" height="1"/><rect x="30" y="1" width="1" height="1"/><rect x="30" y="2" width="1" height="1"/><rect x="31" y="2" width="1" height="1"/><rect x="32" y="2" width="1" height="1"/><rect x="33" y="2" width="1" height="1"/><rect x="30" y="3" width="1" height="1"/><rect x="34" y="3" width="1" height="1"/><rect x="30" y="4" width="1" height="1"/><rect x="34" y="4" width="1" height="1"/><rect x="30" y="5" width="1" height="1"/><rect x="34" y="5" width="1" height="1"/><rect x="30" y="6" width="1" height="1"/><rect x="31" y="6" width="1" height="1"/><rect x="32" y="6" width="1" height="1"/><rect x="33" y="6" width="1" height="1"/><rect x="37" y="2" width="1" height="1"/><rect x="38" y="2" width="1" height="1"/><rect x="39" y="2" width="1" height="1"/><rect x="36" y="3" width="1" height="1"/><rect x="40" y="3" width="1" height="1"/><rect x="36" y="4" width="1" height="1"/><rect x="40" y="4" width="1" height="1"/><rect x="36" y="5" width="1" height="1"/><rect x="40" y="5" width="1" height="1"/><rect x="37" y="6" width="1" height="1"/><rect x="38" y="6" width="1" height="1"/><rect x="39" y="6" width="1" height="1"/><rect x="43" y="0" width="1" height="1"/><rect x="43" y="1" width="1" height="1"/><rect x="42" y="2" width="1" height="1"/><rect x="43" y="2" width="1" height="1"/><rect x="44" y="2" width="1" height="1"/><rect x="45" y="2" width="1" height="1"/><rect x="43" y="3" width="1" height="1"/><rect x="43" y="4" width="1" height="1"/><rect x="43" y="5" width="1" height="1"/><rect x="46" y="5" width="1" height="1"/><rect x="44" y="6" width="1" height="1"/><rect x="45" y="6" width="1" height="1"/><rect x="48" y="6" width="1" height="1"/><rect x="51" y="2" width="1" height="1"/><rect x="52" y="2" width="1" height="1"/><rect x="53" y="2" width="1" height="1"/><rect x="54" y="3" width="1" height="1"/><rect x="51" y="4" width="1" height="1"/><rect x="52" y="4" width="1" height="1"/><rect x="53" y="4" width="1" height="1"/><rect x="54" y="4" width="1" height="1"/><rect x="50" y="5" width="1" height="1"/><rect x="54" y="5" width="1" height="1"/><rect x="51" y="6" width="1" height="1"/><rect x="52" y="6" width="1" height="1"/><rect x="53" y="6" width="1" height="1"/><rect x="54" y="6" width="1" height="1"/><rect x="58" y="0" width="1" height="1"/><rect x="57" y="2" width="1" height="1"/><rect x="58" y="2" width="1" height="1"/><rect x="58" y="3" width="1" height="1"/><rect x="58" y="4" width="1" height="1"/><rect x="58" y="5" width="1" height="1"/><rect x="57" y="6" width="1" height="1"/><rect x="58" y="6" width="1" height="1"/><rect x="59" y="6" width="1" height="1"/></g></svg>
+ <div class="src">Claude 블로그<br>2026-11-25 확인</div>
+ <div class="pbar"><b id="pb"></b></div>
+
+ <!-- 0 hook -->
+ <div class="sc" id="s0">
+  <div class="tag pi">AI로 첫 앱 만드는 분</div>
+  <div class="cap hook" style="top:360px">
+   <span class="l"><span>코드 한 줄</span></span>
+   <span class="l"><span>안 써 본 PM이</span></span>
+   <span class="l big"><span id="h3"><b>6주</b> 만에 앱 출시</span></span>
+  </div>
+  <div class="prop" style="top:760px;height:470px">
+   <div class="phone pi" id="ph0" style="left:300px;top:0;height:460px">
+    <div class="tile" id="app0" style="left:72px;top:110px;width:150px;height:150px;border-radius:36px;background:#5EEAD4;border:0">
+     <svg class="px" viewBox="0 0 10 10" width="100" height="100"><path d="M0 5h2V3h1V1h1v7h1V4h1v3h1V5h3v1H8v2H6V6H5v3H3V5H2v1H0z" fill="#0B1622"/></svg></div>
+    <div class="lbl" style="position:absolute;left:0;right:0;top:280px">Respiro</div>
+    <div class="chip" id="rel0" style="left:38px;top:350px;font-size:36px;background:#7CE38B">앱스토어 출시</div>
+   </div>
+  </div>
+ </div>
+
+ <!-- 1 -->
+ <div class="sc" id="s1">
+  <div class="cap"><span class="l"><span>직업은 프로젝트 매니저</span></span><span class="l"><span>코딩 경험은 <b>0</b>이었어요</span></span></div>
+  <div class="prop">
+   <div class="row pi"><span class="k">직업</span><span class="v">게임 회사 PM</span></div>
+   <div class="row pi"><span class="k">PM 경력</span><span class="v mint">10년</span></div>
+   <div class="row pi" id="r1c"><span class="k">짜 본 코드</span><span class="v cor">0줄</span></div>
+  </div>
+ </div>
+
+ <!-- 2 -->
+ <div class="sc" id="s2">
+  <div class="cap"><span class="l"><span>2월 해커톤에 나가서</span></span><span class="l"><span><b>72시간</b> 만에 첫 버전</span></span></div>
+  <div class="prop">
+   <div class="bigN pi" style="top:40px"><span id="n72">0</span><small>시간</small></div>
+   <div class="card pi" style="left:60px;right:60px;top:380px;height:50px;border-radius:25px;overflow:hidden"><i id="b72" style="position:absolute;left:0;top:0;bottom:0;width:0;background:#FFD166"></i></div>
+   <div class="sub pi" style="top:460px">2026년 2월 · Claude Code 해커톤</div>
+  </div>
+ </div>
+
+ <!-- 3 -->
+ <div class="sc" id="s3">
+  <div class="cap"><span class="l"><span>스트레스 신호가 보이면</span></span><span class="l"><span><b>호흡</b>을 권하는 아이폰 앱</span></span></div>
+  <div class="prop">
+   <div class="card pi" style="left:0;right:0;top:0;height:300px">
+    <div style="position:absolute;left:36px;top:24px;font-size:36px;font-weight:800;color:rgba(242,247,245,.6)">Respiro · 스트레스 신호</div>
+    <svg viewBox="0 0 820 180" width="820" height="180" style="position:absolute;left:40px;top:96px"><polyline id="pulse" points="0,120 120,120 160,100 200,130 260,120 330,120 370,60 400,150 430,20 470,160 510,70 560,120 820,120" fill="none" stroke="#FF7B72" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="1500" stroke-dashoffset="1500"/></svg>
+   </div>
+   <div class="card" id="noti" style="left:60px;right:60px;top:340px;height:150px;border-color:#5EEAD4;display:flex;align-items:center;padding:0 36px">
+    <div style="width:76px;height:76px;border-radius:20px;background:#5EEAD4;flex:none;margin-right:28px"></div>
+    <div style="font-size:44px;font-weight:900;letter-spacing:-1px">짧게 호흡 한 번 어때요?</div>
+   </div>
+  </div>
+ </div>
+
+ <!-- 4 -->
+ <div class="sc" id="s4">
+  <div class="cap"><span class="l"><span>방법은 늘 하던 일 그대로</span></span><span class="l"><span>사람 대신 <b>에이전트</b> 관리</span></span></div>
+  <div class="prop">
+   <div class="node pi" style="left:310px;top:10px;width:280px;border-color:#FFD166;color:#FFD166">나 (PM)</div>
+   <div class="line" id="ln0" style="left:447px;top:120px;width:6px;height:110px"></div>
+   <div class="line" id="ln1" style="left:130px;top:230px;width:640px;height:6px;transform-origin:50% 50%"></div>
+   <div class="line lnv" style="left:130px;top:230px;width:6px;height:80px"></div>
+   <div class="line lnv" style="left:447px;top:230px;width:6px;height:80px"></div>
+   <div class="line lnv" style="left:764px;top:230px;width:6px;height:80px"></div>
+   <div class="node ag" style="left:0;top:310px;width:266px">에이전트</div>
+   <div class="node ag" style="left:317px;top:310px;width:266px">에이전트</div>
+   <div class="node ag" style="left:634px;top:310px;width:266px">에이전트</div>
+   <div class="sub" id="s4sub" style="top:460px">맡기고, 확인하고, 다시 맡기기</div>
+  </div>
+ </div>
+
+ <!-- 5 -->
+ <div class="sc" id="s5">
+  <div class="cap"><span class="l"><span>서브에이전트 <b>15개</b> 넘게</span></span><span class="l"><span>직접 짜서 굴렸어요</span></span></div>
+  <div class="prop"><div id="grid5"></div>
+   <div class="chip" id="c15" style="right:-10px;top:-50px;font-size:64px;padding:10px 30px">15+</div>
+  </div>
+ </div>
+
+ <!-- 6 -->
+ <div class="sc" id="s6">
+  <div class="cap"><span class="l"><span>설계, 개발, 그래픽, 리뷰</span></span><span class="l"><span>역할별로 <b>동시에</b> 일해요</span></span></div>
+  <div class="prop">
+   <div class="row pi" style="height:108px"><span class="v" style="font-size:42px;width:330px">설계 (TCA)</span><span class="track"><i class="t6"></i></span></div>
+   <div class="row pi" style="height:108px"><span class="v" style="font-size:42px;width:330px">Swift 개발</span><span class="track"><i class="t6"></i></span></div>
+   <div class="row pi" style="height:108px"><span class="v" style="font-size:42px;width:330px">Metal 그래픽</span><span class="track"><i class="t6"></i></span></div>
+   <div class="row pi" style="height:108px"><span class="v" style="font-size:42px;width:330px">코드 리뷰</span><span class="track"><i class="t6"></i></span></div>
+  </div>
+ </div>
+
+ <!-- 7 -->
+ <div class="sc" id="s7">
+  <div class="cap"><span class="l"><span>첫 버전은 React Native</span></span><span class="l"><span><b>안드로이드폰</b>이 없었어요</span></span></div>
+  <div class="prop">
+   <div class="phone pi" style="left:90px;top:20px"><div class="lbl" style="margin-top:200px">아이폰</div><div class="lbl mint" style="margin-top:16px;font-size:36px">테스트 됨</div></div>
+   <div class="phone pi" id="andr" style="left:510px;top:20px"><div class="lbl" style="margin-top:200px">안드로이드</div><div class="lbl" style="margin-top:16px;font-size:36px;color:rgba(242,247,245,.6)">테스트 못 함</div></div>
+   <div class="stamp cor" id="st7" style="left:520px;top:90px;border-color:#FF7B72">폰이 없음</div>
+  </div>
+ </div>
+
+ <!-- 8 -->
+ <div class="sc" id="s8">
+  <div class="cap"><span class="l"><span>Swift로 처음부터 다시</span></span><span class="l"><span><b>몇 시간</b> 만에 짰어요</span></span></div>
+  <div class="prop">
+   <div class="card pi" id="rn8" style="left:0;top:90px;width:400px;height:220px;display:flex;align-items:center;justify-content:center;font-size:46px;font-weight:900">React Native</div>
+   <svg class="px pi" viewBox="0 0 9 7" width="108" height="84" style="position:absolute;left:400px;top:158px"><path d="M0 3h5V1h1v1h1v1h1v1H7v1H6v1H5V4H0z" fill="#FFD166"/></svg>
+   <div class="card" id="sw8" style="left:510px;top:90px;width:390px;height:220px;border-color:#5EEAD4;display:flex;align-items:center;justify-content:center;font-size:64px;font-weight:900;color:#5EEAD4">Swift</div>
+   <div class="chip" id="c8" style="left:280px;top:370px">다시 쓰는 데 몇 시간</div>
+  </div>
+ </div>
+
+ <!-- 9 -->
+ <div class="sc" id="s9">
+  <div class="cap"><span class="l"><span>애플 개발자 등록은</span></span><span class="l"><span><b>처음</b>이라 막혔어요</span></span></div>
+  <div class="prop">
+   <div class="card pi" style="left:60px;right:60px;top:0;height:520px;padding:36px 40px">
+    <div style="font-size:42px;font-weight:900;margin-bottom:26px">개발자 계정 등록</div>
+    <div class="f9" style="height:92px;border-radius:18px;background:#0B1622;margin-bottom:22px"></div>
+    <div class="f9" style="height:92px;border-radius:18px;background:#0B1622;margin-bottom:22px"></div>
+    <div class="f9" style="height:92px;border-radius:18px;background:#0B1622"></div>
+   </div>
+   <div class="chip q9" style="left:690px;top:108px;background:#FF7B72;font-size:54px;padding:4px 26px">?</div>
+   <div class="chip q9" style="left:560px;top:222px;background:#FF7B72;font-size:54px;padding:4px 26px">?</div>
+   <div class="chip q9" style="left:700px;top:336px;background:#FF7B72;font-size:54px;padding:4px 26px">?</div>
+  </div>
+ </div>
+
+ <!-- 10 -->
+ <div class="sc" id="s10">
+  <div class="cap"><span class="l"><span>막히면 화면을 <b>캡처</b>해서</span></span><span class="l"><span>Claude한테 물었어요</span></span></div>
+  <div class="prop">
+   <div class="card pi" id="shot" style="left:0;top:20px;width:400px;height:460px;padding:30px">
+    <div style="font-size:36px;font-weight:800;color:rgba(242,247,245,.6);margin-bottom:20px">막힌 화면</div>
+    <div style="height:70px;border-radius:14px;background:#0B1622;margin-bottom:18px"></div><div style="height:70px;border-radius:14px;background:#0B1622;margin-bottom:18px"></div><div id="btn10" style="height:70px;width:200px;border-radius:14px;background:#24465F"></div>
+   </div>
+   <div id="corners" style="position:absolute;left:-14px;top:6px;width:428px;height:488px;border:8px dashed #FFD166;border-radius:36px;opacity:0"></div>
+   <div class="card" id="thumb" style="left:120px;top:160px;width:160px;height:180px;border-color:#FFD166;opacity:0"></div>
+   <div class="card pi" style="left:480px;top:20px;width:420px;height:200px;border-color:#5EEAD4;display:flex;align-items:center;justify-content:center;font-size:56px;font-weight:900;color:#5EEAD4">Claude</div>
+   <div class="chip" id="ans10" style="left:500px;top:280px;background:#5EEAD4">다음 단계 안내</div>
+   <div id="pin10" style="position:absolute;left:226px;top:316px;width:56px;height:56px;border-radius:50%;border:8px solid #FF7B72;opacity:0"></div>
+  </div>
+ </div>
+
+ <!-- 11 -->
+ <div class="sc" id="s11">
+  <div class="cap"><span class="l"><span>본인 말로는 <b>99%</b>가</span></span><span class="l"><span>한 번에 해결됐대요</span></span></div>
+  <div class="prop">
+   <div class="bigN pi" style="top:30px;color:#5EEAD4"><span id="n99">0</span><small>%</small></div>
+   <div class="card pi" style="left:60px;right:60px;top:370px;height:50px;border-radius:25px;overflow:hidden"><i id="b99" style="position:absolute;left:0;top:0;bottom:0;width:0;background:#5EEAD4"></i></div>
+   <div class="sub pi" style="top:450px">계정·도구 설정 기준 · 본인 추정</div>
+  </div>
+ </div>
+
+ <!-- 12 -->
+ <div class="sc" id="s12">
+  <div class="cap"><span class="l"><span>오류 기록, 사용자 분석도</span></span><span class="l"><span><b>같은 방법</b>으로 붙였어요</span></span></div>
+  <div class="prop">
+   <div class="row pi"><div style="display:flex;align-items:center"><div class="chk"><svg class="ck12" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#7CE38B"/></svg></div><span class="v">Sentry</span></div><span class="k">오류 기록</span></div>
+   <div class="row pi"><div style="display:flex;align-items:center"><div class="chk"><svg class="ck12" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#7CE38B"/></svg></div><span class="v">Amplitude</span></div><span class="k">사용자 분석</span></div>
+   <div class="row pi"><div style="display:flex;align-items:center"><div class="chk"><svg class="ck12" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#7CE38B"/></svg></div><span class="v">Meta API</span></div><span class="k">토큰 발급</span></div>
+  </div>
+ </div>
+
+ <!-- 13 -->
+ <div class="sc" id="s13">
+  <div class="cap"><span class="l"><span>앱스토어에 낼 버전까지</span></span><span class="l"><span><b>6주</b>가 채 안 걸렸어요</span></span></div>
+  <div class="prop">
+   <div id="weeks" style="position:absolute;left:0;right:0;top:120px;display:flex;gap:14px"></div>
+   <div class="sub pi" style="top:40px;text-align:left">아이디어</div>
+   <div class="chip" id="flag13" style="right:0;top:290px;background:#7CE38B">출시 준비 끝</div>
+  </div>
+ </div>
+
+ <!-- 14 -->
+ <div class="sc" id="s14">
+  <div class="cap"><span class="l"><span>근데 진짜 어려운 건</span></span><span class="l"><span><b>따로</b> 있었대요</span></span></div>
+  <div class="prop">
+   <div class="card pi" id="qbox" style="left:270px;top:40px;width:360px;height:400px;border-color:#FFD166;display:flex;align-items:center;justify-content:center;font-size:280px;font-weight:900;color:#FFD166">?</div>
+  </div>
+ </div>
+
+ <!-- 15 -->
+ <div class="sc" id="s15">
+  <div class="cap"><span class="l"><span>만드는 건 쉬운 편이고</span></span><span class="l"><span><b>알리는 게</b> 훨씬 어렵대요</span></span></div>
+  <div class="prop">
+   <div class="lbl pi" style="text-align:left;font-size:44px">만들기</div>
+   <div class="card pi" style="left:0;right:0;top:70px;height:90px;border-radius:24px;overflow:hidden"><i id="bm" style="position:absolute;left:0;top:0;bottom:0;width:0;background:#5EEAD4"></i></div>
+   <div class="lbl pi" style="position:absolute;left:0;top:220px;font-size:44px">가치 알리기</div>
+   <div class="card pi" style="left:0;right:0;top:290px;height:90px;border-radius:24px;overflow:hidden"><i id="ba" style="position:absolute;left:0;top:0;bottom:0;width:0;background:#FF7B72"></i></div>
+   <div class="sub pi" style="top:430px">개발자 본인이 돌아본 말</div>
+  </div>
+ </div>
+
+ <!-- 16 -->
+ <div class="sc" id="s16">
+  <div class="cap"><span class="l"><span>Claude가 알려 준 방법은</span></span><span class="l"><span><b>전문가</b>한테 연락해 보기</span></span></div>
+  <div class="prop">
+   <svg class="px" id="mail" viewBox="0 0 12 8" width="168" height="112" style="position:absolute;left:0;top:150px"><rect width="12" height="8" fill="#FFD166"/><path d="M0 0h1v1h1v1h1v1h1v1h1v1h2V4h1V3h1V2h1V1h1V0h1v1h-1v1h-1v1H9v1H8v1H7v1H5V5H4V4H3V3H2V2H1V1H0z" fill="#0B1622"/></svg>
+   <div class="card pi" style="left:470px;top:20px;width:430px;height:190px;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:900">심리 상담가</div>
+   <div class="card pi" style="left:470px;top:240px;width:430px;height:190px;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:900">명상 지도자</div>
+   <div class="stamp" id="st16" style="left:150px;top:440px;color:#7CE38B;border-color:#7CE38B">효과 있었대요</div>
+  </div>
+ </div>
+
+ <!-- 17 -->
+ <div class="sc" id="s17">
+  <div class="cap"><span class="l"><span>지금 사용자는 <b>수백 명</b></span></span><span class="l"><span>퇴근 후 7~8시간씩 작업</span></span></div>
+  <div class="prop"><div id="users"></div>
+   <div class="chip" id="c17" style="left:250px;top:440px">퇴근 후 7~8시간</div>
+  </div>
+ </div>
+
+ <!-- 18 -->
+ <div class="sc" id="s18">
+  <div class="cap"><span class="l"><span><b>코드 한 줄</b> 몰라도</span></span><span class="l"><span>이 3가지는 써먹어요</span></span></div>
+  <div class="prop">
+   <div class="row pi" style="justify-content:flex-start"><div class="chk"><svg class="ck18" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#7CE38B"/></svg></div><span class="v">역할 나눠서 맡기기</span></div>
+   <div class="row pi" style="justify-content:flex-start"><div class="chk"><svg class="ck18" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#7CE38B"/></svg></div><span class="v">막히면 캡처해서 묻기</span></div>
+   <div class="row pi" style="justify-content:flex-start"><div class="chk"><svg class="ck18" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#7CE38B"/></svg></div><span class="v">알릴 방법도 같이 찾기</span></div>
+  </div>
+ </div>
+
+ <!-- 19 -->
+ <div class="sc" id="s19">
+  <div class="cap"><span class="l"><span><b>저장</b>해 두고</span></span><span class="l"><span>첫 앱 만들 때 꺼내 보세요</span></span></div>
+  <div class="prop">
+   <svg class="px" id="bm19" viewBox="0 0 10 13" width="260" height="338" style="position:absolute;left:320px;top:60px"><path id="bmfill" d="M1 1h8v11H8v-1H7v-1H6V9H4v1H3v1H2v1H1z" fill="#13283A"/><path d="M0 0h10v13H8v-1H7v-1H6v-1H4v1H3v1H2v1H0zM1 1v11h1v-1h1v-1h1V9h2v1h1v1h1v1h1V1z" fill="#FFD166"/></svg>
+  </div>
+ </div>
+
+ <div class="floor"></div>
+ <div class="shadow" id="shadow"></div>
+ <div id="slime"></div>
+</div>
+<div class="flash" id="flash"></div>
+</div>
+
+<script>
+(function(){
+ const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+ const MOODS=['base','glint','surprise','excited','smile','think','sweat','serious','wink','sad','sleepy','proud','doubt','star','dizzy'];
+ $('#slime').innerHTML=MOODS.map(m=>'<img id="m_'+m+'" src="slime/'+m+'.png"'+(m==='base'?' class="on"':'')+'>').join('');
+ // generated props
+ let g='';for(let k=0;k<15;k++){const c=k%5,r=Math.floor(k/5);g+='<div class="tile t5" style="left:'+(c*184)+'px;top:'+(40+r*170)+'px;width:164px;height:150px"><svg class="px" viewBox="0 0 8 7" width="96" height="84"><rect x="1" y="1" width="6" height="5" fill="#5EEAD4"/><rect x="3" y="0" width="2" height="1" fill="#5EEAD4"/><rect x="2" y="3" width="1" height="1" fill="#0B1622"/><rect x="5" y="3" width="1" height="1" fill="#0B1622"/><rect x="0" y="3" width="1" height="2" fill="#5EEAD4"/><rect x="7" y="3" width="1" height="2" fill="#5EEAD4"/></svg></div>';}
+ $('#grid5').innerHTML=g;
+ let w='';for(let k=1;k<=6;k++)w+='<div style="flex:1;height:140px;border-radius:20px;background:#13283A;border:4px solid #24465F;position:relative;overflow:hidden"><i class="wk" style="position:absolute;left:0;top:0;bottom:0;width:0;background:#FFD166"></i><span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:900">'+k+'주</span></div>';
+ $('#weeks').innerHTML=w;
+ let u='';for(let k=0;k<40;k++){const c=k%10,r=Math.floor(k/10);u+='<div class="ud" style="position:absolute;left:'+(18+c*88)+'px;top:'+(30+r*96)+'px;width:66px;height:66px;border-radius:50%;background:#24465F"></div>';}
+ $('#users').innerHTML=u;
+
+ const T=[0,3.3,5.9,8.5,11.1,13.7,16.3,18.9,21.5,24.1,26.7,29.3,31.9,34.5,37.1,39.7,42.3,44.9,47.5,49.9,52.5];
+ const DUR=52.5, N=20;
+ const tl=gsap.timeline({paused:true});
+ const moodAt=[[0,'base'],[1.9,'star'],[3.3,'think'],[5.9,'surprise'],[8.5,'smile'],[11.1,'glint'],[13.7,'excited'],[16.3,'base'],[18.9,'sweat'],[21.5,'base'],[24.1,'dizzy'],[26.7,'wink'],[29.3,'base'],[34.5,'proud'],[37.1,'doubt'],[39.7,'serious'],[42.3,'base'],[49.9,'base']];
+ const setMood=t=>{let m='base';for(const [s,k] of moodAt) if(t>=s) m=k;$$('#slime img').forEach(i=>i.classList.toggle('on',i.id==='m_'+m));};
+ const clock={t:0};
+ const counters=[];
+ tl.to(clock,{t:DUR,duration:DUR,ease:'none',onUpdate:()=>{setMood(clock.t);counters.forEach(f=>f(clock.t));}},0);
+ const count=(id,t0,d,to)=>counters.push(t=>{const p=Math.min(1,Math.max(0,(t-t0)/d));$(id).textContent=Math.round(to*(1-Math.pow(1-p,2)));});
+ tl.to('#pb',{width:'100%',duration:DUR,ease:'none'},0);
+
+ const S='#slime',SH='#shadow';
+ const jump=(t,x,h=110)=>{tl.to([S,SH],{x,duration:.42,ease:'power2.inOut'},t)
+   .to(S,{y:-h,scaleY:1.08,scaleX:.94,duration:.2,ease:'power2.out'},t).to(S,{y:0,scaleY:1,scaleX:1,duration:.2,ease:'power2.in'},t+.21)
+   .to(S,{scaleY:.82,scaleX:1.14,duration:.05},t+.41).to(S,{scaleY:1,scaleX:1,duration:.22,ease:'back.out(3)'},t+.46)
+   .to(SH,{scale:.7,duration:.2},t).to(SH,{scale:1,duration:.2},t+.21);};
+ const hop=(t,h=60)=>{tl.to(S,{y:-h,duration:.17,ease:'power2.out'},t).to(S,{y:0,duration:.16,ease:'power2.in'},t+.17)
+   .to(S,{scaleY:.86,scaleX:1.1,duration:.05},t+.33).to(S,{scaleY:1,scaleX:1,duration:.18},t+.38);};
+ const SX=[0,-280,280,-280,280,0,-280,280,-280,280,-280,280,0,-280,280,-280,280,-280,280,0];
+
+ // generic in/out
+ const outs=['x','s','y'];
+ for(let i=0;i<N;i++){
+  const id='#s'+i, t=T[i], e=T[i+1];
+  tl.set(id,{opacity:1},t);
+  $$(id+' .cap .l > span').forEach((el,k)=>tl.from(el,{yPercent:115,duration:.36,ease:'power3.out'},t+.04+k*(i===0?.75:.3)));
+  $$(id+' .pi').forEach((el,k)=>tl.from(el,{y:50,scale:.8,opacity:0,duration:.34,ease:'back.out(1.8)'},t+.22+k*.14));
+  if(i<N-1){const m=outs[i%3];
+   tl.to(id,m==='x'?{x:-140,opacity:0,duration:.2,ease:'power2.in'}:m==='s'?{scale:.9,opacity:0,duration:.2,ease:'power2.in'}:{y:-90,opacity:0,duration:.2,ease:'power2.in'},e-.2);
+   tl.set(id,{opacity:0},e);}
+  if(i>0) jump(t-.02,SX[i]); if(i>0&&i<N-1) hop(t+1.55);
+ }
+ // slime entrance
+ tl.set(S,{y:-1500},0).set(SH,{scale:.2,opacity:0},0);
+ tl.to(S,{y:0,duration:.42,ease:'power3.in'},.05).to(SH,{scale:1,opacity:1,duration:.42,ease:'power3.in'},.05)
+   .to(S,{scaleY:.72,scaleX:1.25,duration:.07},.47).to(S,{scaleY:1,scaleX:1,duration:.35,ease:'elastic.out(1,.4)'},.54);
+ hop(2.0,80);hop(2.62,50);
+
+ // 0 hook
+ tl.from('#h3',{scale:1.3,duration:.5,ease:'back.out(2.5)'},1.6);
+ tl.from('#app0',{scale:0,rotation:-30,duration:.45,ease:'back.out(2.2)'},1.0);
+ tl.from('#rel0',{scale:0,opacity:0,duration:.35,ease:'back.out(3)'},2.0);
+ tl.to('#ph0',{y:-14,duration:.5,yoyo:true,repeat:1,ease:'sine.inOut'},2.3);
+ // 1
+ tl.to('#r1c',{borderColor:'#FF7B72',duration:.2},4.3).to('#r1c',{x:10,duration:.05,yoyo:true,repeat:5},4.3);
+ // 2
+ count('#n72',6.2,1.2,72); tl.to('#b72',{width:'100%',duration:1.2,ease:'power2.out'},6.2);
+ tl.to('#s2 .bigN',{scale:1.08,duration:.15,yoyo:true,repeat:1},7.4);
+ // 3
+ tl.to('#pulse',{strokeDashoffset:0,duration:1.1,ease:'none'},8.8);
+ tl.fromTo('#noti',{y:60,opacity:0,scale:.9},{y:0,opacity:1,scale:1,duration:.35,ease:'back.out(2)'},9.9);
+ // 4
+ tl.from('#ln0',{scaleY:0,duration:.2},11.6).from('#ln1',{scaleX:0,duration:.25},11.8).from('.lnv',{scaleY:0,duration:.15},12.05);
+ tl.from('.ag',{scale:0,opacity:0,duration:.3,ease:'back.out(2.2)',stagger:.14},12.2);
+ tl.from('#s4sub',{opacity:0,y:20,duration:.3},12.8);
+ // 5
+ tl.from('.t5',{scale:0,opacity:0,duration:.22,ease:'back.out(2.5)',stagger:.085},14.0);
+ tl.from('#c15',{scale:0,rotation:-20,duration:.35,ease:'back.out(3)'},15.35);
+ // 6
+ $$('.t6').forEach((el,k)=>tl.to(el,{width:[92,78,64,86][k]+'%',duration:1.4,ease:'power1.inOut'},17.1));
+ // 7
+ tl.to('#andr',{filter:'grayscale(1) brightness(.6)',duration:.3},19.9);
+ tl.fromTo('#st7',{scale:2.4,opacity:0,rotation:-16},{scale:1,opacity:1,rotation:-8,duration:.25,ease:'power4.in'},20.0).to('#cam',{x:12,duration:.04,yoyo:true,repeat:5},20.25);
+ // 8
+ tl.to('#rn8',{opacity:.35,filter:'grayscale(1)',duration:.3},22.3);
+ tl.fromTo('#sw8',{x:120,opacity:0,scale:.8},{x:0,opacity:1,scale:1,duration:.4,ease:'back.out(2)'},22.3);
+ tl.fromTo('#c8',{scale:0,opacity:0},{scale:1,opacity:1,duration:.3,ease:'back.out(3)'},23.0);
+ // 9
+ tl.from('.q9',{scale:0,opacity:0,rotation:40,duration:.28,ease:'back.out(3)',stagger:.22},24.8);
+ tl.to('#s9 .prop',{x:8,duration:.05,yoyo:true,repeat:5},25.5);
+ // 10
+ tl.to('#corners',{opacity:1,duration:.12},27.3).to('#flash',{opacity:.55,duration:.06},27.5).to('#flash',{opacity:0,duration:.2},27.56).to('#corners',{opacity:0,duration:.2},27.8);
+ tl.fromTo('#thumb',{opacity:1,x:0,y:0,scale:1},{x:490,y:-110,scale:.5,opacity:0,duration:.5,ease:'power2.inOut'},27.75);
+ tl.fromTo('#ans10',{scale:0,opacity:0},{scale:1,opacity:1,duration:.3,ease:'back.out(2.5)'},28.3);
+ tl.to('#pin10',{opacity:1,duration:.15},28.5).fromTo('#pin10',{scale:2},{scale:1,duration:.25,ease:'power3.out'},28.5).to('#btn10',{background:'#FF7B72',duration:.2},28.6);
+ // 11
+ count('#n99',29.6,1.1,99); tl.to('#b99',{width:'99%',duration:1.1,ease:'power2.out'},29.6);
+ // 12
+ tl.from('.ck12',{scale:2.4,opacity:0,duration:.2,ease:'power4.in',stagger:.3},32.7);
+ // 13
+ $$('.wk').forEach((el,k)=>tl.to(el,{width:k===5?'80%':'100%',duration:.2,ease:'none'},34.9+k*.2));
+ tl.fromTo('#flag13',{scale:0,opacity:0},{scale:1,opacity:1,duration:.3,ease:'back.out(3)'},36.1);
+ // 14
+ tl.to('#qbox',{rotation:6,duration:.22,yoyo:true,repeat:5,ease:'sine.inOut'},37.8).to('#cam',{scale:1.06,duration:1.6,ease:'power1.in'},37.4).set('#cam',{scale:1},39.7);
+ // 15
+ tl.to('#bm',{width:'28%',duration:.5,ease:'power2.out'},40.3).to('#ba',{width:'94%',duration:1.0,ease:'power2.out'},40.7);
+ // 16
+ tl.to('#mail',{x:300,y:-90,duration:.6,ease:'power2.inOut'},42.9).to('#mail',{y:110,duration:.5,ease:'power2.inOut'},43.5);
+ tl.fromTo('#st16',{scale:2.4,opacity:0,rotation:10},{scale:1,opacity:1,rotation:-5,duration:.25,ease:'power4.in'},44.0);
+ // 17
+ tl.to('.ud',{background:'#5EEAD4',duration:.12,stagger:.03},45.2);
+ tl.fromTo('#c17',{scale:0,opacity:0},{scale:1,opacity:1,duration:.3,ease:'back.out(3)'},46.4);
+ // 18
+ tl.from('.ck18',{scale:2.4,opacity:0,duration:.2,ease:'power4.in',stagger:.4},48.2);
+ // 19
+ tl.from('#bm19',{y:-80,opacity:0,duration:.35,ease:'back.out(2)'},50.1);
+ tl.to('#bm19',{scale:.86,duration:.1},50.9).to('#bmfill',{fill:'#FFD166',duration:.05},50.98).to('#bm19',{scale:1.08,duration:.14,ease:'back.out(3)'},51.0).to('#bm19',{scale:1,duration:.15},51.14);
+ hop(50.6,90);hop(51.2,70);hop(51.75,50);
+ tl.to('#cam',{scale:1.05,duration:.9,ease:'power2.in'},51.6);
+
+ window.__timelines=window.__timelines||{};
+ window.__timelines['main']=tl;
+ tl.seek(0);
+})();
+</script>
+</body>
+</html>
