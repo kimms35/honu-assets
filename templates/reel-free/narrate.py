@@ -1,4 +1,7 @@
-"""slimebot.ai 릴스 나레이션 입히기 (기본: 구글 TTS, 목소리 ko-KR-Chirp3-HD-Despina).
+"""slimebot.ai 릴스 나레이션 입히기 (기본: 타입캐스트 필재, 실패하면 구글 Despina).
+
+채널 주인 결정(2026-11-26): 타입캐스트 API 결제 완료, 오늘부터 필재 목소리. 기본 엔진 auto 가 필재로 입히고,
+인증 거절·크레딧 부족 등으로 실패하면 구글 Despina 로 대신 입힌다(narration_result.json 의 engine 으로 확인).
 
 채널 주인 결정(2026-11-24): 배경음은 빼고, 효과음은 그대로, 나레이션을 넣는다.
 
@@ -213,7 +216,15 @@ def main(folder, engine="google", voice=None):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("folder")
-    ap.add_argument("--engine", choices=["google", "typecast"], default="google")
-    ap.add_argument("--voice", help="narration.json 의 voice 대신 쓸 목소리 (구글 기본 ko-KR-Chirp3-HD-Despina)")
+    ap.add_argument("--engine", choices=["auto", "google", "typecast"], default="auto",
+                    help="auto(기본): 타입캐스트 필재로 하고, 거절·크레딧 부족 등으로 실패하면 구글 Despina 로 대신 입힌다")
+    ap.add_argument("--voice", help="narration.json 의 voice 대신 쓸 목소리 (auto·typecast 기본 필재, google 기본 Despina)")
     a = ap.parse_args()
-    main(a.folder, a.engine, a.voice)
+    if a.engine != "auto":
+        main(a.folder, a.engine, a.voice)
+    else:
+        try:
+            main(a.folder, "typecast", a.voice or "필재")
+        except (SystemExit, urllib.error.URLError) as e:
+            print(f"[확인 필요] 필재 실패, Despina 로 대신 입힘: {e}", file=sys.stderr)
+            main(a.folder, "google", None)
