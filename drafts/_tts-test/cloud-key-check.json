@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-26T16:26:23+09:00",
+  "checked_at": "2026-11-26T16:31:51+09:00",
   "status": 401,
   "body_head": "{\"error_code\":\"AUTH_TOKEN_MISSING\",\"message\":\"Authentication required\"}",
   "pilje_found": null
