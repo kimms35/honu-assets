@@ -1,0 +1,137 @@
+{
+ "engine": "typecast",
+ "voice_id": "tc_68257f68bc6e3c161ab5078d",
+ "voice": "필재",
+ "tempo": 1.1,
+ "duration": 50.0,
+ "lines": [
+  {
+   "i": 0,
+   "start": 0.12,
+   "len": 2.71,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 1,
+   "start": 3.28,
+   "len": 2.58,
+   "speedup": 1.04,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 2,
+   "start": 5.98,
+   "len": 2.24,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 3,
+   "start": 8.68,
+   "len": 2.58,
+   "speedup": 1.06,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 4,
+   "start": 11.38,
+   "len": 2.36,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 5,
+   "start": 14.08,
+   "len": 2.16,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 6,
+   "start": 16.78,
+   "len": 1.52,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 7,
+   "start": 19.48,
+   "len": 2.58,
+   "speedup": 1.28,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 8,
+   "start": 22.18,
+   "len": 2.57,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 9,
+   "start": 24.88,
+   "len": 2.57,
+   "speedup": 1.02,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 10,
+   "start": 27.58,
+   "len": 2.44,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 11,
+   "start": 30.28,
+   "len": 2.59,
+   "speedup": 1.03,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 12,
+   "start": 32.99,
+   "len": 2.57,
+   "speedup": 1.25,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 13,
+   "start": 35.68,
+   "len": 1.9,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 14,
+   "start": 38.38,
+   "len": 2.58,
+   "speedup": 1.05,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 15,
+   "start": 41.08,
+   "len": 2.08,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 16,
+   "start": 43.78,
+   "len": 1.62,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 17,
+   "start": 46.48,
+   "len": 3.21,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  }
+ ],
+ "max_overflow_sec": 0.0,
+ "chars": 402
+}
