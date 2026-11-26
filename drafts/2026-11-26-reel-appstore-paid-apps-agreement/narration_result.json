@@ -1,0 +1,137 @@
+{
+ "engine": "google",
+ "voice_id": "ko-KR-Chirp3-HD-Despina",
+ "voice": "ko-KR-Chirp3-HD-Despina",
+ "tempo": 1.1,
+ "duration": 50.0,
+ "lines": [
+  {
+   "i": 0,
+   "start": 0.12,
+   "len": 3.04,
+   "speedup": 1.1,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 1,
+   "start": 3.28,
+   "len": 2.58,
+   "speedup": 1.09,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 2,
+   "start": 5.98,
+   "len": 2.58,
+   "speedup": 1.17,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 3,
+   "start": 8.68,
+   "len": 2.58,
+   "speedup": 1.15,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 4,
+   "start": 11.38,
+   "len": 1.91,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 5,
+   "start": 14.08,
+   "len": 2.58,
+   "speedup": 1.09,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 6,
+   "start": 16.78,
+   "len": 1.96,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 7,
+   "start": 19.48,
+   "len": 2.58,
+   "speedup": 1.09,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 8,
+   "start": 22.18,
+   "len": 2.35,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 9,
+   "start": 24.88,
+   "len": 2.49,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 10,
+   "start": 27.58,
+   "len": 2.58,
+   "speedup": 1.16,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 11,
+   "start": 30.28,
+   "len": 2.58,
+   "speedup": 1.1,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 12,
+   "start": 32.98,
+   "len": 2.58,
+   "speedup": 1.19,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 13,
+   "start": 35.68,
+   "len": 2.58,
+   "speedup": 1.19,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 14,
+   "start": 38.38,
+   "len": 2.59,
+   "speedup": 1.27,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 15,
+   "start": 41.09,
+   "len": 1.46,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 16,
+   "start": 43.78,
+   "len": 1.72,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  },
+  {
+   "i": 17,
+   "start": 46.48,
+   "len": 3.38,
+   "speedup": 1.0,
+   "overflow_sec": 0.0
+  }
+ ],
+ "max_overflow_sec": 0.0,
+ "chars": 402
+}
