@@ -130,6 +130,12 @@
 - `bigBgNumber` 배경에 큰 순위 숫자 · `frameSwap` 모니터→레트로 TV 프레임 바꾸기 · `halftoneWipe` 대각선 점무늬 와이프 · `sectionColor` 장마다 배경색 바꾸기
 숫자를 보여 주는 부품(태그·카운터·막대)에는 확인한 숫자만 넣는다. 부품 안 글자도 34px 이상, 안전 영역 규칙을 지킨다(시연 영상의 위쪽 이름표는 설명용이라 작다).
 
+## 내 맥(Claude Code)에서 다른 계정용 영상 만들기 (2026-11-26)
+vibestem·miribiz 같은 다른 프로젝트 홍보 영상도 이 틀로 만든다. 슬라임·slimebot.ai 표시는 slimebot.ai 계정 전용이니 다른 계정 영상에는 넣지 않고, 그 프로젝트의 이름·색으로 바꾼다.
+1. 이 저장소를 받아 `cd templates/reel-free && npm ci && python3 kit.py` (모션 부품이 project/ 에 같이 들어간다).
+2. 필재 목소리: 타입캐스트 유료 API 플랜 키를 맥 터미널 설정(~/.zshrc)에 `export TYPECAST_API_KEY=...` 로 넣는다. 키는 채팅·저장소에 붙여 넣지 않는다.
+3. Claude Code 에 "HyperFrames로 영상 만들고 필재 목소리로 나레이션 입혀 줘"라고 하면, `project/index.html` 작성 → `npm run render` → `narrate.py <폴더> --engine typecast` 순서로 만든다(narration.json 의 voice 는 "필재").
+
 ## 기술 규칙 (HyperFrames가 프레임마다 정확히 찍기 위해)
 
 - `project/index.html` 하나. 루트 `<div id="root" data-composition-id="main" data-start="0" data-duration="<초>" data-width="1080" data-height="1920" data-fps="30">`.

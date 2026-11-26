@@ -2,8 +2,13 @@
 
 채널 주인 결정(2026-11-24): 배경음은 빼고, 효과음은 그대로, 나레이션을 넣는다.
 
-쓰는 법 (Default 클라우드 환경의 Claude Code 루틴에서만 돈다. 키는 그 환경의 네트워크 시크릿으로
-구글·타입캐스트 요청에 프록시가 자동으로 붙인다. 이 스크립트는 키를 읽거나 넣거나 출력하지 않는다):
+쓰는 법:
+- 클라우드(Default 환경 루틴): 키는 그 환경의 네트워크 시크릿으로 구글·타입캐스트 요청에 프록시가 자동으로 붙인다.
+- 내 맥(Claude Code): 터미널 설정(~/.zshrc)에 환경 변수로 키를 넣어 두면 그 키를 요청 헤더에 붙인다.
+    export TYPECAST_API_KEY=...      # 타입캐스트(필재 등)
+    export GOOGLE_TTS_API_KEY=...    # 구글 TTS(Despina 등), 구글을 쓸 때만
+  환경 변수가 없으면 아무것도 붙이지 않는다(클라우드와 같은 동작).
+이 스크립트는 키를 출력하거나 파일에 쓰지 않는다. 키를 채팅·저장소·로그에 남기지 않는다.
 
   python3 templates/reel-free/narrate.py drafts/<날짜>-reel-<slug>
 
@@ -38,10 +43,20 @@ MAX_TEMPO = 1.3      # 장면에 안 들어가면 이 배율까지만 빠르게 
 GAP = 0.12           # 문장 사이 최소 쉼(초)
 
 
+def _auth_headers(base):
+    """맥에서 돌릴 때만: 환경 변수에 키가 있으면 헤더로 붙인다. 없으면 빈 값(클라우드는 프록시가 붙임)."""
+    if base == API and os.environ.get("TYPECAST_API_KEY"):
+        return {"X-API-KEY": os.environ["TYPECAST_API_KEY"]}
+    if base == GOOGLE_API and os.environ.get("GOOGLE_TTS_API_KEY"):
+        return {"X-Goog-Api-Key": os.environ["GOOGLE_TTS_API_KEY"]}
+    return {}
+
+
 def call(method, path, body=None, timeout=90, base=API):
     data = None if body is None else json.dumps(body).encode()
-    req = urllib.request.Request(base + path, data=data, method=method,
-                                 headers={"Content-Type": "application/json"} if data else {})
+    headers = {"Content-Type": "application/json"} if data else {}
+    headers.update(_auth_headers(base))
+    req = urllib.request.Request(base + path, data=data, method=method, headers=headers)
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.status, r.headers.get("Content-Type", ""), r.read()
 
@@ -52,7 +67,7 @@ def find_voice(name):
             _, _, raw = call("GET", path, timeout=30)
         except urllib.error.HTTPError as e:
             if e.code in (401, 403):
-                raise SystemExit(f"타입캐스트 인증 실패({e.code}): 이 환경에 네트워크 시크릿이 붙지 않음")
+                raise SystemExit(f"타입캐스트 인증 실패({e.code}): 클라우드면 네트워크 시크릿, 맥이면 TYPECAST_API_KEY 환경 변수와 유료 API 플랜을 확인")
             continue
         d = json.loads(raw)
         items = d if isinstance(d, list) else d.get("voices") or d.get("items") or d.get("data") or []
