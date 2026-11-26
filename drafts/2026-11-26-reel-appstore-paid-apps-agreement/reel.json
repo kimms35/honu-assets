@@ -1,0 +1,92 @@
+{
+ "slug": "appstore-paid-apps-agreement",
+ "source": [
+  "App Store Connect 도움말(Sign and update agreements, View agreements status, Provide tax information, Enter banking information, Overview of receiving payments, Minimum payment threshold, App Store Connect workflow)",
+  "2026-11-26 확인"
+ ],
+ "hook": {
+  "lines": [
+   "유료 앱·인앱결제",
+   "계약 서명 안 하면",
+   "제출부터 막혀요"
+  ]
+ },
+ "scenes": [
+  [
+   0,
+   "훅: 유료 앱·인앱결제 / 계약 서명 안 하면 / 제출부터 막혀요 (폰 화면 '심사에 제출' 버튼, 도장 '제출 불가')"
+  ],
+  [
+   3.2,
+   "무료 앱은 / 가입만 해도 올려요 (Apple Developer Program 가입, 도장 '배포 가능')"
+  ],
+  [
+   5.9,
+   "돈 받는 앱은 / 유료 앱 계약이 필요해요 (Paid Apps Agreement, 서명해야 제출·업데이트가 돼요)"
+  ],
+  [
+   8.6,
+   "할 일은 3단계 / 계약 → 세금 → 은행 (칸 3개, 전부 App Store Connect에서)"
+  ],
+  [
+   11.3,
+   "계약 서명은 / 계정 소유자만 해요 (Required role: Account Holder, 도장 '서명')"
+  ],
+  [
+   14.0,
+   "Business 메뉴 → / Agreements 탭 (가짜 화면: Paid Apps 행, View and Agree to Terms 버튼, 커서 클릭)"
+  ],
+  [
+   16.7,
+   "동의하면 못 되돌려요 / 약관부터 읽어 보세요 (Agree 버튼, 도장 '취소 안 됨')"
+  ],
+  [
+   19.4,
+   "서명만 하면 끝? / 상태는 아직 '정보 대기' (Pending User Info, 서명은 했지만 정보가 덜 들어간 상태)"
+  ],
+  [
+   22.1,
+   "세금 양식은 누구나 / 미국 양식을 내야 해요 (US tax form, All developers, 한국에 살아도 내요)"
+  ],
+  [
+   24.8,
+   "미국 밖 개발자는 / 답변에 따라 W-8 양식 (W-8BEN, W-8BEN-E, W-8ECI 중 하나가 필요할 수 있어요)"
+  ],
+  [
+   27.5,
+   "제출하면 직접 못 고쳐요 / 정정은 애플에 문의 (Submit, 자물쇠, 일부 나라 양식은 직접 수정돼요)"
+  ],
+  [
+   30.2,
+   "은행 계좌 처리는 / 세금 양식을 낸 다음 (세금 양식 제출 완료 → 은행 정보 처리 시작, Bank Accounts → Add Bank Account)"
+  ],
+  [
+   32.9,
+   "통장에 적힌 그대로 / 다르면 거절될 수 있어요 (통장 예금주와 입력한 이름 비교, 도장 '지급 거절')"
+  ],
+  [
+   35.6,
+   "상태가 Active면 / 이제 팔 수 있어요 (Pending User Info → Processing → Active, 유료 앱·인앱결제 제출 가능)"
+  ],
+  [
+   38.3,
+   "돈은 그달이 끝나고 / 45일 안에 들어와요 (숫자 0→45일, 판매한 회계월의 마지막 날부터)"
+  ],
+  [
+   41.0,
+   "최소 지급액을 넘겨야 / 통장으로 보내 줘요 (막대가 기준선을 넘음, 도장 '지급', 기준은 나라·통화마다 달라요)"
+  ],
+  [
+   43.7,
+   "받는 계좌는 한 곳만 / 나눠 받기는 안 돼요 (주 계좌 입금, 다른 계좌 분할 안 됨, 달마다 한 번에 모아서 입금)"
+  ],
+  [
+   46.4,
+   "정리: 계약 · 세금 · 은행 / 저장해 두고 출시 전에 (체크 4개: 계약 서명·세금 양식·은행 계좌·정산, 저장 표시)"
+  ]
+ ],
+ "music": {
+  "mood": "bright",
+  "seed": "appstore-paid-apps-agreement"
+ }
+}

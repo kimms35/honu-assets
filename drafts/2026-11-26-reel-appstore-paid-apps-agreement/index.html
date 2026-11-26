@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="ko" data-resolution="portrait">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, height=1920">
+<script src="gsap.min.js"></script>
+<style>
+@font-face{font-family:P;font-weight:900;src:url("fonts/Pretendard-Black.ttf")}
+@font-face{font-family:P;font-weight:800;src:url("fonts/Pretendard-ExtraBold.ttf")}
+@font-face{font-family:P;font-weight:700;src:url("fonts/Pretendard-Bold.ttf")}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1920px;overflow:hidden;background:#10201F;font-family:P;color:#F3F7F2}
+#root{position:absolute;inset:0;overflow:hidden}
+#cam{position:absolute;inset:0;transform-origin:50% 50%}
+#bg{position:absolute;inset:0;background-color:#10201F}
+.glow{position:absolute;inset:0;background:radial-gradient(60% 30% at 50% 72%,rgba(94,230,168,.16),transparent 70%)}
+.dots{position:absolute;inset:0;opacity:.5;background-image:radial-gradient(rgba(255,255,255,.07) 3px,transparent 3px);background-size:54px 54px}
+.brand{position:absolute;left:64px;top:150px;display:block}
+.src{position:absolute;right:64px;top:152px;font-size:26px;font-weight:700;color:rgba(243,247,242,.62);white-space:nowrap}
+#trk{position:absolute;left:0;right:0;top:214px;display:flex;justify-content:center;gap:16px;opacity:0}
+#trk div{font-size:34px;font-weight:900;padding:8px 26px;border-radius:30px;background:rgba(255,255,255,.08);color:rgba(243,247,242,.5);white-space:nowrap}
+#trk div.on{background:#5EE6A8;color:#0C1F1A}
+#trk div.done{background:rgba(94,230,168,.22);color:#5EE6A8}
+.sc{position:absolute;inset:0;opacity:0}
+.cap{position:absolute;left:0;right:0;top:310px;text-align:center;font-weight:900;letter-spacing:-3px;line-height:1.14;font-size:86px}
+.cap .l{display:block;overflow:hidden;padding:4px 0;white-space:nowrap}
+.cap .l span.t{display:inline-block;transform-origin:50% 50%}
+.cap.hook{font-size:96px}
+.cap.hook .big{font-size:118px}
+.m{color:#5EE6A8}.g{color:#FFD166}.r{color:#FF7B7B}
+.prop{position:absolute;left:90px;width:900px;top:640px;height:600px}
+.abs{position:absolute}
+.tile{position:absolute;border-radius:34px;background:#1B2F33;border:5px solid #2F4A4F;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-weight:900}
+.pill{position:absolute;font-size:38px;font-weight:900;padding:12px 28px;border-radius:40px;white-space:nowrap}
+.note{position:absolute;left:0;right:0;text-align:center;font-size:38px;font-weight:800;color:rgba(243,247,242,.78);white-space:nowrap}
+.stp{position:absolute;font-weight:900;font-size:62px;padding:10px 28px;border:8px solid;border-radius:18px;letter-spacing:-1px;background:rgba(10,20,20,.72);white-space:nowrap}
+.btn{position:absolute;font-size:40px;font-weight:900;padding:16px 34px;border-radius:18px;background:#5EE6A8;color:#0C1F1A;white-space:nowrap}
+.win{position:absolute;left:30px;right:30px;top:20px;height:500px;border-radius:30px;background:#F3F7F2;color:#16282B;overflow:hidden}
+.win .bar{height:86px;background:#DDE7E2;display:flex;align-items:center;gap:26px;padding:0 34px;font-size:36px;font-weight:800}
+.win .bar i{display:block;width:120px;height:22px;border-radius:11px;background:#B9C8C2}
+.win .row{position:absolute;left:34px;right:34px;height:110px;border-radius:20px;background:#fff;border:3px solid #CBD8D2;display:flex;align-items:center;padding:0 28px;font-size:40px;font-weight:900}
+.cur{position:absolute;width:60px;height:60px}
+.field{position:absolute;left:60px;right:60px;height:120px;border-radius:24px;background:#1B2F33;border:5px solid #2F4A4F;display:flex;align-items:center;padding:0 34px;font-size:40px;font-weight:900;gap:24px}
+.field b{margin-left:auto;display:flex;gap:12px}
+.field b i{display:block;width:34px;height:34px;border-radius:8px;background:#FFD166}
+.bigN{position:absolute;left:0;right:0;top:60px;text-align:center;font-size:300px;font-weight:900;letter-spacing:-8px;color:#FFD166;line-height:1}
+.floor{position:absolute;left:120px;right:120px;top:1500px;height:6px;border-radius:3px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)}
+#slime{position:absolute;left:412px;top:1276px;width:256px;height:224px;transform-origin:50% 100%}
+#slime img{position:absolute;inset:0;width:256px;height:224px;image-rendering:pixelated;opacity:0}
+#slime img.on{opacity:1}
+.shadow{position:absolute;left:440px;top:1490px;width:200px;height:26px;border-radius:50%;background:rgba(0,0,0,.45);transform-origin:50% 50%}
+.chk{position:absolute;left:60px;right:60px;height:118px;border-radius:26px;background:#1B2F33;border:4px solid #2F4A4F;display:flex;align-items:center;gap:26px;padding:0 30px}
+.chk .bx{width:62px;height:62px;border-radius:14px;background:#0F2023;position:relative;flex:none}
+.chk .bx svg{position:absolute;inset:7px}
+.chk .t{font-size:48px;font-weight:900}
+.chk .d{font-size:36px;font-weight:800;color:rgba(243,247,242,.62);margin-left:auto}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="50" data-width="1080" data-height="1920" data-fps="30">
+<div id="cam">
+ <div id="bg"></div><div class="glow"></div><div class="dots"></div>
+ <svg class="brand" viewBox="0 0 63 8" width="252" height="32" shape-rendering="crispEdges" aria-label="slimebot.ai"><g fill="rgba(0,0,0,.35)"><rect x="2" y="3" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/><rect x="4" y="3" width="1" height="1"/><rect x="5" y="3" width="1" height="1"/><rect x="1" y="4" width="1" height="1"/><rect x="2" y="5" width="1" height="1"/><rect x="3" y="5" width="1" height="1"/><rect x="4" y="5" width="1" height="1"/><rect x="5" y="6" width="1" height="1"/><rect x="1" y="7" width="1" height="1"/><rect x="2" y="7" width="1" height="1"/><rect x="3" y="7" width="1" height="1"/><rect x="4" y="7" width="1" height="1"/><rect x="8" y="1" width="1" height="1"/><rect x="9" y="1" width="1" height="1"/><rect x="9" y="2" width="1" height="1"/><rect x="9" y="3" width="1" height="1"/><rect x="9" y="4" width="1" height="1"/><rect x="9" y="5" width="1" height="1"/><rect x="9" y="6" width="1" height="1"/><rect x="8" y="7" width="1" height="1"/><rect x="9" y="7" width="1" height="1"/><rect x="10" y="7" width="1" height="1"/><rect x="15" y="1" width="1" height="1"/><rect x="14" y="3" width="1" height="1"/><rect x="15" y="3" width="1" height="1"/><rect x="15" y="4" width="1" height="1"/><rect x="15" y="5" width="1" height="1"/><rect x="15" y="6" width="1" height="1"/><rect x="14" y="7" width="1" height="1"/><rect x="15" y="7" width="1" height="1"/><rect x="16" y="7" width="1" height="1"/><rect x="19" y="3" width="1" height="1"/><rect x="20" y="3" width="1" height="1"/><rect x="22" y="3" width="1" height="1"/><rect x="19" y="4" width="1" height="1"/><rect x="21" y="4" width="1" height="1"/><rect x="23" y="4" width="1" height="1"/><rect x="19" y="5" width="1" height="1"/><rect x="21" y="5" width="1" height="1"/><rect x="23" y="5" width="1" height="1"/><rect x="19" y="6" width="1" height="1"/><rect x="21" y="6" width="1" height="1"/><rect x="23" y="6" width="1" height="1"/><rect x="19" y="7" width="1" height="1"/><rect x="21" y="7" width="1" height="1"/><rect x="23" y="7" width="1" height="1"/><rect x="26" y="3" width="1" height="1"/><rect x="27" y="3" width="1" height="1"/><rect x="28" y="3" width="1" height="1"/><rect x="25" y="4" width="1" height="1"/><rect x="29" y="4" width="1" height="1"/><rect x="25" y="5" width="1" height="1"/><rect x="26" y="5" width="1" height="1"/><rect x="27" y="5" width="1" height="1"/><rect x="28" y="5" width="1" height="1"/><rect x="29" y="5" width="1" height="1"/><rect x="25" y="6" width="1" height="1"/><rect x="26" y="7" width="1" height="1"/><rect x="27" y="7" width="1" height="1"/><rect x="28" y="7" width="1" height="1"/><rect x="31" y="1" width="1" height="1"/><rect x="31" y="2" width="1" height="1"/><rect x="31" y="3" width="1" height="1"/><rect x="32" y="3" width="1" height="1"/><rect x="33" y="3" width="1" height="1"/><rect x="34" y="3" width="1" height="1"/><rect x="31" y="4" width="1" height="1"/><rect x="35" y="4" width="1" height="1"/><rect x="31" y="5" width="1" height="1"/><rect x="35" y="5" width="1" height="1"/><rect x="31" y="6" width="1" height="1"/><rect x="35" y="6" width="1" height="1"/><rect x="31" y="7" width="1" height="1"/><rect x="32" y="7" width="1" height="1"/><rect x="33" y="7" width="1" height="1"/><rect x="34" y="7" width="1" height="1"/><rect x="38" y="3" width="1" height="1"/><rect x="39" y="3" width="1" height="1"/><rect x="40" y="3" width="1" height="1"/><rect x="37" y="4" width="1" height="1"/><rect x="41" y="4" width="1" height="1"/><rect x="37" y="5" width="1" height="1"/><rect x="41" y="5" width="1" height="1"/><rect x="37" y="6" width="1" height="1"/><rect x="41" y="6" width="1" height="1"/><rect x="38" y="7" width="1" height="1"/><rect x="39" y="7" width="1" height="1"/><rect x="40" y="7" width="1" height="1"/><rect x="44" y="1" width="1" height="1"/><rect x="44" y="2" width="1" height="1"/><rect x="43" y="3" width="1" height="1"/><rect x="44" y="3" width="1" height="1"/><rect x="45" y="3" width="1" height="1"/><rect x="46" y="3" width="1" height="1"/><rect x="44" y="4" width="1" height="1"/><rect x="44" y="5" width="1" height="1"/><rect x="44" y="6" width="1" height="1"/><rect x="47" y="6" width="1" height="1"/><rect x="45" y="7" width="1" height="1"/><rect x="46" y="7" width="1" height="1"/><rect x="49" y="7" width="1" height="1"/><rect x="52" y="3" width="1" height="1"/><rect x="53" y="3" width="1" height="1"/><rect x="54" y="3" width="1" height="1"/><rect x="55" y="4" width="1" height="1"/><rect x="52" y="5" width="1" height="1"/><rect x="53" y="5" width="1" height="1"/><rect x="54" y="5" width="1" height="1"/><rect x="55" y="5" width="1" height="1"/><rect x="51" y="6" width="1" height="1"/><rect x="55" y="6" width="1" height="1"/><rect x="52" y="7" width="1" height="1"/><rect x="53" y="7" width="1" height="1"/><rect x="54" y="7" width="1" height="1"/><rect x="55" y="7" width="1" height="1"/><rect x="59" y="1" width="1" height="1"/><rect x="58" y="3" width="1" height="1"/><rect x="59" y="3" width="1" height="1"/><rect x="59" y="4" width="1" height="1"/><rect x="59" y="5" width="1" height="1"/><rect x="59" y="6" width="1" height="1"/><rect x="58" y="7" width="1" height="1"/><rect x="59" y="7" width="1" height="1"/><rect x="60" y="7" width="1" height="1"/></g><g fill="rgba(255,255,255,.6)"><rect x="1" y="2" width="1" height="1"/><rect x="2" y="2" width="1" height="1"/><rect x="3" y="2" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="0" y="3" width="1" height="1"/><rect x="1" y="4" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="3" y="4" width="1" height="1"/><rect x="4" y="5" width="1" height="1"/><rect x="0" y="6" width="1" height="1"/><rect x="1" y="6" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="3" y="6" width="1" height="1"/><rect x="7" y="0" width="1" height="1"/><rect x="8" y="0" width="1" height="1"/><rect x="8" y="1" width="1" height="1"/><rect x="8" y="2" width="1" height="1"/><rect x="8" y="3" width="1" height="1"/><rect x="8" y="4" width="1" height="1"/><rect x="8" y="5" width="1" height="1"/><rect x="7" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="9" y="6" width="1" height="1"/><rect x="14" y="0" width="1" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="14" y="2" width="1" height="1"/><rect x="14" y="3" width="1" height="1"/><rect x="14" y="4" width="1" height="1"/><rect x="14" y="5" width="1" height="1"/><rect x="13" y="6" width="1" height="1"/><rect x="14" y="6" width="1" height="1"/><rect x="15" y="6" width="1" height="1"/><rect x="18" y="2" width="1" height="1"/><rect x="19" y="2" width="1" height="1"/><rect x="21" y="2" width="1" height="1"/><rect x="18" y="3" width="1" height="1"/><rect x="20" y="3" width="1" height="1"/><rect x="22" y="3" width="1" height="1"/><rect x="18" y="4" width="1" height="1"/><rect x="20" y="4" width="1" height="1"/><rect x="22" y="4" width="1" height="1"/><rect x="18" y="5" width="1" height="1"/><rect x="20" y="5" width="1" height="1"/><rect x="22" y="5" width="1" height="1"/><rect x="18" y="6" width="1" height="1"/><rect x="20" y="6" width="1" height="1"/><rect x="22" y="6" width="1" height="1"/><rect x="25" y="2" width="1" height="1"/><rect x="26" y="2" width="1" height="1"/><rect x="27" y="2" width="1" height="1"/><rect x="24" y="3" width="1" height="1"/><rect x="28" y="3" width="1" height="1"/><rect x="24" y="4" width="1" height="1"/><rect x="25" y="4" width="1" height="1"/><rect x="26" y="4" width="1" height="1"/><rect x="27" y="4" width="1" height="1"/><rect x="28" y="4" width="1" height="1"/><rect x="24" y="5" width="1" height="1"/><rect x="25" y="6" width="1" height="1"/><rect x="26" y="6" width="1" height="1"/><rect x="27" y="6" width="1" height="1"/><rect x="30" y="0" width="1" height="1"/><rect x="30" y="1" width="1" height="1"/><rect x="30" y="2" width="1" height="1"/><rect x="31" y="2" width="1" height="1"/><rect x="32" y="2" width="1" height="1"/><rect x="33" y="2" width="1" height="1"/><rect x="30" y="3" width="1" height="1"/><rect x="34" y="3" width="1" height="1"/><rect x="30" y="4" width="1" height="1"/><rect x="34" y="4" width="1" height="1"/><rect x="30" y="5" width="1" height="1"/><rect x="34" y="5" width="1" height="1"/><rect x="30" y="6" width="1" height="1"/><rect x="31" y="6" width="1" height="1"/><rect x="32" y="6" width="1" height="1"/><rect x="33" y="6" width="1" height="1"/><rect x="37" y="2" width="1" height="1"/><rect x="38" y="2" width="1" height="1"/><rect x="39" y="2" width="1" height="1"/><rect x="36" y="3" width="1" height="1"/><rect x="40" y="3" width="1" height="1"/><rect x="36" y="4" width="1" height="1"/><rect x="40" y="4" width="1" height="1"/><rect x="36" y="5" width="1" height="1"/><rect x="40" y="5" width="1" height="1"/><rect x="37" y="6" width="1" height="1"/><rect x="38" y="6" width="1" height="1"/><rect x="39" y="6" width="1" height="1"/><rect x="43" y="0" width="1" height="1"/><rect x="43" y="1" width="1" height="1"/><rect x="42" y="2" width="1" height="1"/><rect x="43" y="2" width="1" height="1"/><rect x="44" y="2" width="1" height="1"/><rect x="45" y="2" width="1" height="1"/><rect x="43" y="3" width="1" height="1"/><rect x="43" y="4" width="1" height="1"/><rect x="43" y="5" width="1" height="1"/><rect x="46" y="5" width="1" height="1"/><rect x="44" y="6" width="1" height="1"/><rect x="45" y="6" width="1" height="1"/><rect x="48" y="6" width="1" height="1"/><rect x="51" y="2" width="1" height="1"/><rect x="52" y="2" width="1" height="1"/><rect x="53" y="2" width="1" height="1"/><rect x="54" y="3" width="1" height="1"/><rect x="51" y="4" width="1" height="1"/><rect x="52" y="4" width="1" height="1"/><rect x="53" y="4" width="1" height="1"/><rect x="54" y="4" width="1" height="1"/><rect x="50" y="5" width="1" height="1"/><rect x="54" y="5" width="1" height="1"/><rect x="51" y="6" width="1" height="1"/><rect x="52" y="6" width="1" height="1"/><rect x="53" y="6" width="1" height="1"/><rect x="54" y="6" width="1" height="1"/><rect x="58" y="0" width="1" height="1"/><rect x="57" y="2" width="1" height="1"/><rect x="58" y="2" width="1" height="1"/><rect x="58" y="3" width="1" height="1"/><rect x="58" y="4" width="1" height="1"/><rect x="58" y="5" width="1" height="1"/><rect x="57" y="6" width="1" height="1"/><rect x="58" y="6" width="1" height="1"/><rect x="59" y="6" width="1" height="1"/></g></svg>
+ <div class="src">App Store Connect 도움말 · 2026-11-26 확인</div>
+ <div id="trk"><div id="k1">1 계약</div><div id="k2">2 세금</div><div id="k3">3 은행</div><div id="k4">정산</div></div>
+
+ <!-- 1 hook -->
+ <div class="sc" id="s1">
+  <div class="cap hook"><span class="l"><span class="t">유료 앱·<span class="g">인앱결제</span></span></span><span class="l"><span class="t">계약 서명 안 하면</span></span><span class="l big"><span class="t"><span class="r">제출</span>부터 막혀요</span></span></div>
+  <div class="prop" style="top:720px">
+   <div class="tile pop" data-t="0.5" style="left:270px;top:0;width:360px;height:500px;border-radius:48px;justify-content:flex-start;padding-top:44px">
+    <div style="width:150px;height:150px;border-radius:36px;background:#5EE6A8"></div>
+    <div style="font-size:40px;margin-top:22px">내 앱 · 유료</div>
+    <div class="btn" style="position:static;margin-top:44px" id="h_btn">심사에 제출</div>
+   </div>
+   <div class="stp stamp" data-t="2.0" style="left:250px;top:330px;color:#FF7B7B;border-color:#FF7B7B">제출 불가</div>
+  </div>
+ </div>
+
+ <!-- 2 -->
+ <div class="sc" id="s2">
+  <div class="cap"><span class="l"><span class="t"><span class="m">무료 앱</span>은</span></span><span class="l"><span class="t">가입만 해도 올려요</span></span></div>
+  <div class="prop">
+   <div class="tile slide" data-t="0.3" style="left:60px;top:60px;width:780px;height:300px">
+    <div style="font-size:64px">무료 앱</div>
+    <div style="font-size:38px;margin-top:16px;color:rgba(243,247,242,.75)">Apple Developer Program 가입</div>
+   </div>
+   <div class="stp stamp" data-t="1.3" style="left:520px;top:300px;color:#5EE6A8;border-color:#5EE6A8">배포 가능</div>
+  </div>
+ </div>
+
+ <!-- 3 -->
+ <div class="sc" id="s3">
+  <div class="cap"><span class="l"><span class="t">돈 받는 앱은</span></span><span class="l"><span class="t"><span class="g">유료 앱 계약</span>이 필요해요</span></span></div>
+  <div class="prop">
+   <div class="tile slide" data-t="0.3" style="left:60px;top:30px;width:780px;height:230px">
+    <div style="font-size:58px">유료 앱 · 인앱결제</div>
+   </div>
+   <div class="tile drop" data-t="1.0" style="left:20px;top:300px;width:860px;height:150px;background:#3A1F25;border-color:#FF7B7B">
+    <div style="font-size:50px;color:#FFD9D9">Paid Apps Agreement</div>
+   </div>
+   <div class="note pop" data-t="1.6" style="top:480px">서명해야 제출·업데이트가 돼요</div>
+  </div>
+ </div>
+
+ <!-- 4 -->
+ <div class="sc" id="s4">
+  <div class="cap"><span class="l"><span class="t">할 일은 <span class="m">3단계</span></span></span><span class="l"><span class="t">계약 → 세금 → 은행</span></span></div>
+  <div class="prop">
+   <div class="tile pop" data-t="0.4" id="q1" style="left:0;top:90px;width:270px;height:300px"><div style="font-size:90px;color:#5EE6A8">1</div><div style="font-size:52px">계약</div></div>
+   <div class="tile pop" data-t="0.9" id="q2" style="left:315px;top:90px;width:270px;height:300px"><div style="font-size:90px;color:#5EE6A8">2</div><div style="font-size:52px">세금</div></div>
+   <div class="tile pop" data-t="1.4" id="q3" style="left:630px;top:90px;width:270px;height:300px"><div style="font-size:90px;color:#5EE6A8">3</div><div style="font-size:52px">은행</div></div>
+   <div class="note pop" data-t="1.8" style="top:440px">전부 App Store Connect에서</div>
+  </div>
+ </div>
+
+ <!-- 5 -->
+ <div class="sc" id="s5">
+  <div class="cap"><span class="l"><span class="t">계약 서명은</span></span><span class="l"><span class="t"><span class="g">계정 소유자</span>만 해요</span></span></div>
+  <div class="prop">
+   <div class="note pop" data-t="0.3" style="top:10px">Required role</div>
+   <div class="tile pop" data-t="0.5" id="roleA" style="left:150px;top:90px;width:600px;height:170px;border-color:#FFD166"><div style="font-size:58px;color:#FFD166">Account Holder</div></div>
+   <div class="tile pop" data-t="0.9" style="left:60px;top:310px;width:370px;height:130px;opacity:.45"><div style="font-size:46px">Admin</div></div>
+   <div class="tile pop" data-t="1.05" style="left:470px;top:310px;width:370px;height:130px;opacity:.45"><div style="font-size:46px">Finance</div></div>
+   <div class="stp stamp" data-t="1.5" style="left:590px;top:40px;font-size:52px;color:#5EE6A8;border-color:#5EE6A8">서명</div>
+  </div>
+ </div>
+
+ <!-- 6 -->
+ <div class="sc" id="s6">
+  <div class="cap"><span class="l"><span class="t"><span class="m">Business</span> 메뉴 →</span></span><span class="l"><span class="t">Agreements 탭</span></span></div>
+  <div class="prop">
+   <div class="win slide" data-t="0.25">
+    <div class="bar"><i></i><i></i><span id="w_biz" style="padding:8px 18px;border-radius:12px">Business</span></div>
+    <div style="position:absolute;left:34px;top:112px;font-size:38px;font-weight:900;border-bottom:6px solid #16282B;padding-bottom:6px">Agreements</div>
+    <div class="row" style="top:200px">Paid Apps</div>
+    <div class="btn" id="w_btn" style="left:270px;top:350px;font-size:36px;background:#16282B;color:#F3F7F2">View and Agree to Terms</div>
+   </div>
+   <svg class="cur" id="cur6" viewBox="0 0 10 10" shape-rendering="crispEdges" style="left:700px;top:520px"><path d="M1 0h1v1h1v1h1v1h1v1h1v1h1v1H5v1h1v2H4V8H3v1H2V8H1z" fill="#16282B" stroke="#fff" stroke-width=".6"/></svg>
+  </div>
+ </div>
+
+ <!-- 7 -->
+ <div class="sc" id="s7">
+  <div class="cap"><span class="l"><span class="t">동의하면 <span class="r">못 되돌려요</span></span></span><span class="l"><span class="t">약관부터 읽어 보세요</span></span></div>
+  <div class="prop">
+   <div class="tile slide" data-t="0.3" style="left:90px;top:30px;width:720px;height:400px;justify-content:flex-start;padding-top:44px">
+    <div style="font-size:44px">Paid Apps Agreement</div>
+    <div style="width:560px;height:18px;border-radius:9px;background:#2F4A4F;margin-top:34px"></div>
+    <div style="width:560px;height:18px;border-radius:9px;background:#2F4A4F;margin-top:20px"></div>
+    <div style="width:380px;height:18px;border-radius:9px;background:#2F4A4F;margin-top:20px;align-self:flex-start;margin-left:75px"></div>
+    <div class="btn" id="agree" style="position:static;margin-top:40px">Agree</div>
+   </div>
+   <div class="stp stamp" data-t="1.5" style="left:330px;top:380px;color:#FF7B7B;border-color:#FF7B7B">취소 안 됨</div>
+  </div>
+ </div>
+
+ <!-- 8 -->
+ <div class="sc" id="s8">
+  <div class="cap"><span class="l"><span class="t">서명만 하면 끝?</span></span><span class="l"><span class="t">상태는 아직 <span class="g">'정보 대기'</span></span></span></div>
+  <div class="prop">
+   <div class="tile slide" data-t="0.3" style="left:40px;top:60px;width:820px;height:300px;align-items:flex-start;padding-left:50px">
+    <div style="font-size:44px;color:rgba(243,247,242,.7)">Paid Apps · Status</div>
+    <div class="pill" style="position:static;margin-top:26px;font-size:50px;background:#FFD166;color:#2B2105">Pending User Info</div>
+   </div>
+   <div class="note pop" data-t="1.3" style="top:410px">서명은 했지만 정보가 덜 들어간 상태</div>
+  </div>
+ </div>
+
+ <!-- 9 -->
+ <div class="sc" id="s9">
+  <div class="cap"><span class="l"><span class="t">세금 양식은 <span class="g">누구나</span></span></span><span class="l"><span class="t">미국 양식을 내야 해요</span></span></div>
+  <div class="prop">
+   <div class="tile drop" data-t="0.3" style="left:270px;top:10px;width:360px;height:430px;background:#F3F7F2;border-color:#CBD8D2;color:#16282B;justify-content:flex-start;padding-top:40px">
+    <div style="font-size:46px">US tax form</div>
+    <div style="width:240px;height:16px;border-radius:8px;background:#B9C8C2;margin-top:36px"></div>
+    <div style="width:240px;height:16px;border-radius:8px;background:#B9C8C2;margin-top:22px"></div>
+    <div style="width:240px;height:16px;border-radius:8px;background:#B9C8C2;margin-top:22px"></div>
+    <div style="width:150px;height:16px;border-radius:8px;background:#B9C8C2;margin-top:22px;align-self:flex-start;margin-left:55px"></div>
+   </div>
+   <div class="pill pop" data-t="1.2" style="left:470px;top:330px;background:#FFD166;color:#2B2105;font-size:44px">All developers</div>
+   <div class="note pop" data-t="1.6" style="top:480px">한국에 살아도 내요</div>
+  </div>
+ </div>
+
+ <!-- 10 -->
+ <div class="sc" id="s10">
+  <div class="cap"><span class="l"><span class="t">미국 밖 개발자는</span></span><span class="l"><span class="t">답변에 따라 <span class="m">W-8 양식</span></span></span></div>
+  <div class="prop">
+   <div class="note pop" data-t="0.3" style="top:10px">질문에 답하면 정해져요</div>
+   <div class="pill pop" data-t="0.7" style="left:60px;top:120px;font-size:54px;background:#1B2F33;border:5px solid #5EE6A8;color:#5EE6A8">W-8BEN</div>
+   <div class="pill pop" data-t="1.0" style="left:420px;top:120px;font-size:54px;background:#1B2F33;border:5px solid #5EE6A8;color:#5EE6A8">W-8BEN-E</div>
+   <div class="pill pop" data-t="1.3" style="left:270px;top:270px;font-size:54px;background:#1B2F33;border:5px solid #5EE6A8;color:#5EE6A8">W-8ECI</div>
+   <div class="note pop" data-t="1.7" style="top:430px">이 중 하나가 필요할 수 있어요</div>
+  </div>
+ </div>
+
+ <!-- 11 -->
+ <div class="sc" id="s11">
+  <div class="cap"><span class="l"><span class="t">제출하면 <span class="r">직접 못 고쳐요</span></span></span><span class="l"><span class="t">정정은 애플에 문의</span></span></div>
+  <div class="prop">
+   <div class="btn pop" data-t="0.3" id="submit" style="left:330px;top:60px;font-size:54px;padding:24px 50px">Submit</div>
+   <svg class="abs pop" data-t="1.1" viewBox="0 0 10 12" shape-rendering="crispEdges" style="left:370px;top:200px;width:160px;height:192px"><path d="M3 0h4v1h1v4h-1V2H3v3H2V1h1z" fill="#C9D6D0"/><rect x="1" y="5" width="8" height="7" fill="#FFD166"/><rect x="4" y="7" width="2" height="3" fill="#2B2105"/></svg>
+   <div class="note pop" data-t="1.6" style="top:440px">일부 나라 양식은 직접 수정돼요</div>
+  </div>
+ </div>
+
+ <!-- 12 -->
+ <div class="sc" id="s12">
+  <div class="cap"><span class="l"><span class="t">은행 계좌 처리는</span></span><span class="l"><span class="t"><span class="g">세금 양식</span>을 낸 다음</span></span></div>
+  <div class="prop">
+   <div class="tile pop" data-t="0.3" style="left:20px;top:80px;width:360px;height:260px"><div style="font-size:50px">세금 양식</div><div style="font-size:40px;margin-top:14px;color:#5EE6A8" class="pop" data-t="0.9">제출 완료</div></div>
+   <div class="abs pop" data-t="1.1" style="left:400px;top:170px;font-size:80px;font-weight:900;color:#5EE6A8">→</div>
+   <div class="tile pop" data-t="1.3" id="bankT" style="left:520px;top:80px;width:360px;height:260px"><div style="font-size:50px">은행 정보</div><div style="font-size:40px;margin-top:14px;color:#FFD166">처리 시작</div></div>
+   <div class="note pop" data-t="1.7" style="top:400px">Bank Accounts → Add Bank Account</div>
+  </div>
+ </div>
+
+ <!-- 13 -->
+ <div class="sc" id="s13">
+  <div class="cap"><span class="l"><span class="t"><span class="g">통장에 적힌 그대로</span></span></span><span class="l"><span class="t">다르면 거절될 수 있어요</span></span></div>
+  <div class="prop">
+   <div class="field slide" data-t="0.3" style="top:30px">통장 예금주<b><i></i><i></i><i></i><i></i><i></i></b></div>
+   <div class="field slide" data-t="0.7" style="top:190px">입력한 이름<b><i></i><i></i><i></i><i id="odd"></i><i></i></b></div>
+   <div class="stp stamp" data-t="1.6" style="left:270px;top:340px;color:#FF7B7B;border-color:#FF7B7B">지급 거절</div>
+  </div>
+ </div>
+
+ <!-- 14 -->
+ <div class="sc" id="s14">
+  <div class="cap"><span class="l"><span class="t">상태가 <span class="m">Active</span>면</span></span><span class="l"><span class="t">이제 팔 수 있어요</span></span></div>
+  <div class="prop">
+   <div class="tile slide" data-t="0.25" style="left:40px;top:60px;width:820px;height:300px;align-items:flex-start;padding-left:50px">
+    <div style="font-size:44px;color:rgba(243,247,242,.7)">Paid Apps · Status</div>
+    <div style="position:relative;height:90px;margin-top:26px;width:700px">
+     <div class="pill" id="st1" style="left:0;top:0;font-size:50px;background:#FFD166;color:#2B2105">Pending User Info</div>
+     <div class="pill" id="st2" style="left:0;top:0;font-size:50px;background:#8FC7FF;color:#0B2238;opacity:0">Processing</div>
+     <div class="pill" id="st3" style="left:0;top:0;font-size:50px;background:#5EE6A8;color:#0C1F1A;opacity:0">Active</div>
+    </div>
+   </div>
+   <div class="note pop" data-t="1.9" style="top:410px">유료 앱·인앱결제 제출 가능</div>
+  </div>
+ </div>
+
+ <!-- 15 -->
+ <div class="sc" id="s15">
+  <div class="cap"><span class="l"><span class="t">돈은 그달이 끝나고</span></span><span class="l"><span class="t"><span class="g">45일</span> 안에 들어와요</span></span></div>
+  <div class="prop">
+   <div class="bigN pop" data-t="0.3" id="n45">0일</div>
+   <div class="note pop" data-t="1.5" style="top:420px">판매한 회계월의 마지막 날부터</div>
+  </div>
+ </div>
+
+ <!-- 16 -->
+ <div class="sc" id="s16">
+  <div class="cap"><span class="l"><span class="t"><span class="g">최소 지급액</span>을 넘겨야</span></span><span class="l"><span class="t">통장으로 보내 줘요</span></span></div>
+  <div class="prop">
+   <div class="abs pop" data-t="0.3" style="left:60px;right:60px;top:150px;height:70px;border-radius:35px;background:#22262C;overflow:hidden"><div id="fill" style="position:absolute;left:0;top:0;bottom:0;width:0;background:#5EE6A8"></div></div>
+   <div class="abs pop" data-t="0.5" style="left:600px;top:110px;width:8px;height:150px;background:#FFD166"></div>
+   <div class="pill pop" data-t="0.5" style="left:480px;top:30px;background:#FFD166;color:#2B2105">최소 지급액</div>
+   <div class="stp stamp" data-t="1.7" style="left:580px;top:260px;font-size:52px;color:#5EE6A8;border-color:#5EE6A8">지급</div>
+   <div class="note pop" data-t="1.2" style="top:420px">기준은 나라·통화마다 달라요</div>
+  </div>
+ </div>
+
+ <!-- 17 -->
+ <div class="sc" id="s17">
+  <div class="cap"><span class="l"><span class="t">받는 계좌는 <span class="m">한 곳만</span></span></span><span class="l"><span class="t">나눠 받기는 안 돼요</span></span></div>
+  <div class="prop">
+   <div class="tile pop" data-t="0.3" style="left:60px;top:150px;width:360px;height:230px;border-color:#5EE6A8"><div style="font-size:52px">주 계좌</div><div style="font-size:40px;margin-top:10px;color:#5EE6A8">입금</div></div>
+   <div class="tile pop" data-t="0.5" id="acc2" style="left:480px;top:150px;width:360px;height:230px"><div style="font-size:52px">다른 계좌</div><div style="font-size:40px;margin-top:10px;color:rgba(243,247,242,.6)">분할 안 됨</div></div>
+   <div class="abs coin" style="left:200px;top:-10px;width:80px;height:80px;border-radius:50%;background:#FFD166;border:8px solid #C9962B;opacity:0"></div>
+   <div class="abs coin" style="left:200px;top:-10px;width:80px;height:80px;border-radius:50%;background:#FFD166;border:8px solid #C9962B;opacity:0"></div>
+   <div class="abs coin" style="left:200px;top:-10px;width:80px;height:80px;border-radius:50%;background:#FFD166;border:8px solid #C9962B;opacity:0"></div>
+   <div class="note pop" data-t="1.6" style="top:430px">달마다 한 번에 모아서 입금</div>
+  </div>
+ </div>
+
+ <!-- 18 -->
+ <div class="sc" id="s18">
+  <div class="cap"><span class="l"><span class="t"><span class="m">계약</span> · 세금 · 은행</span></span><span class="l"><span class="t"><span class="g">저장</span>해 두고 출시 전에</span></span></div>
+  <div class="prop" style="top:620px">
+   <div class="chk slide" data-t="0.3" style="top:0"><div class="bx"><svg class="ck" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#5EE6A8"/></svg></div><div class="t">계약 서명</div><div class="d">계정 소유자</div></div>
+   <div class="chk slide" data-t="0.55" style="top:138px"><div class="bx"><svg class="ck" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#5EE6A8"/></svg></div><div class="t">세금 양식</div><div class="d">미국 양식 필수</div></div>
+   <div class="chk slide" data-t="0.8" style="top:276px"><div class="bx"><svg class="ck" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#5EE6A8"/></svg></div><div class="t">은행 계좌</div><div class="d">통장 그대로</div></div>
+   <div class="chk slide" data-t="1.05" style="top:414px"><div class="bx"><svg class="ck" viewBox="0 0 8 8"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="#5EE6A8"/></svg></div><div class="t">정산</div><div class="d">45일 안</div></div>
+  </div>
+  <svg class="abs" id="bm" viewBox="0 0 8 10" shape-rendering="crispEdges" style="left:800px;top:1290px;width:120px;height:150px;opacity:0"><path d="M0 0h8v10H7V9H6V8H5V7H3v1H2v1H1v1H0z" fill="#FFD166" id="bmp"/></svg>
+ </div>
+
+ <div class="floor"></div>
+ <div class="shadow" id="shadow"></div>
+ <div id="slime"><img id="m_base" src="slime/base.png" class="on"><img id="m_glint" src="slime/glint.png"><img id="m_surprise" src="slime/surprise.png"><img id="m_excited" src="slime/excited.png"><img id="m_smile" src="slime/smile.png"><img id="m_think" src="slime/think.png"><img id="m_sweat" src="slime/sweat.png"><img id="m_serious" src="slime/serious.png"><img id="m_wink" src="slime/wink.png"><img id="m_sad" src="slime/sad.png"><img id="m_sleepy" src="slime/sleepy.png"><img id="m_proud" src="slime/proud.png"><img id="m_doubt" src="slime/doubt.png"><img id="m_star" src="slime/star.png"><img id="m_dizzy" src="slime/dizzy.png"></div>
+</div>
+</div>
+
+<script>
+(function(){
+ const tl = gsap.timeline({paused:true});
+ const DUR=50;
+ const T=[0,3.2,5.9,8.6,11.3,14.0,16.7,19.4,22.1,24.8,27.5,30.2,32.9,35.6,38.3,41.0,43.7,46.4,DUR];
+ const moodAt=[[0,'surprise'],[3.2,'smile'],[5.9,'base'],[8.6,'glint'],[11.3,'serious'],[14.0,'base'],[16.7,'sweat'],[19.4,'doubt'],[22.1,'think'],[24.8,'base'],[27.5,'base'],[30.2,'wink'],[32.9,'sad'],[35.6,'excited'],[38.3,'star'],[41.0,'base'],[43.7,'base'],[46.4,'proud']];
+ const chap=t=> t<8.6?0 : t<22.1?1 : t<30.2?2 : t<38.3?3 : t<46.4?4 : 5;
+ const imgs=document.querySelectorAll('#slime img');
+ const ks=['k1','k2','k3','k4'].map(i=>document.getElementById(i));
+ const n45=document.getElementById('n45');
+ const setState=t=>{
+   let m='base';for(const [s,k] of moodAt) if(t>=s) m=k;
+   imgs.forEach(i=>i.classList.toggle('on',i.id==='m_'+m));
+   const c=chap(t);
+   ks.forEach((el,i)=>{const n=i+1;el.classList.toggle('on',c===n);el.classList.toggle('done',c>n);});
+   const p=Math.min(1,Math.max(0,(t-38.7)/1.1));
+   n45.textContent=Math.round(45*p)+'일';
+ };
+ const clock={t:0};
+ tl.to(clock,{t:DUR,duration:DUR,ease:'none',onUpdate:()=>setState(clock.t)},0);
+
+ // fit captions into 940px
+ document.querySelectorAll('.cap .t').forEach(el=>{const w=el.getBoundingClientRect().width;if(w>940) el.style.transform='scale('+(940/w).toFixed(3)+')';});
+
+ const S='#slime', SH='#shadow';
+ const hop=(s,h,d)=>{
+   tl.to(S,{y:-h,scaleY:1.06,scaleX:.95,duration:d*.45,ease:'power2.out'},s)
+     .to(S,{y:0,scaleY:1,scaleX:1,duration:d*.4,ease:'power2.in'},s+d*.45)
+     .to(S,{scaleY:.86,scaleX:1.12,duration:d*.07,ease:'none'},s+d*.85)
+     .to(S,{scaleY:1,scaleX:1,duration:d*.08,ease:'none'},s+d*.92)
+     .to(SH,{scale:.7,opacity:.5,duration:d*.45},s).to(SH,{scale:1,opacity:1,duration:d*.4},s+d*.45);};
+
+ // slime entrance
+ tl.set(S,{y:-1500},0).set(SH,{scale:.2,opacity:0},0);
+ tl.to(S,{y:0,duration:.42,ease:'power3.in'},0.05).to(SH,{scale:1,opacity:1,duration:.42,ease:'power3.in'},0.05)
+   .to(S,{scaleY:.72,scaleX:1.25,duration:.07},0.47).to(S,{scaleY:1,scaleX:1,duration:.3,ease:'elastic.out(1,.4)'},0.54);
+
+ const xs=[0,-290,290,0,-300,300,-300,280,-290,290,-280,0,300,-290,300,-300,290,-300];
+ for(let i=0;i<18;i++){
+   const a=T[i], b=T[i+1], sc='#s'+(i+1), el=document.getElementById('s'+(i+1));
+   tl.set(sc,{opacity:1},a);
+   // captions
+   el.querySelectorAll('.cap .l .t').forEach((t,k)=>{
+     const gap = i===0 ? 0.75 : 0.4;
+     tl.from(t,{yPercent:115,duration:.36,ease:'power3.out'},a+0.06+k*gap);
+   });
+   if(i===0) tl.from('#s1 .big .t',{scale:1.3,duration:.45,ease:'back.out(2.5)'},a+1.56);
+   // generic props
+   el.querySelectorAll('.pop').forEach(p=>{const t=a+parseFloat(p.dataset.t);const o=parseFloat(p.style.opacity||1);
+     tl.fromTo(p,{scale:.5,opacity:0},{scale:1,opacity:o,duration:.34,ease:'back.out(2)'},t);});
+   el.querySelectorAll('.slide').forEach((p,k)=>{const t=a+parseFloat(p.dataset.t);
+     tl.fromTo(p,{x:(k%2?1:-1)*(i%2?-240:240),opacity:0},{x:0,opacity:1,duration:.36,ease:'power3.out'},t);});
+   el.querySelectorAll('.drop').forEach(p=>{const t=a+parseFloat(p.dataset.t);
+     tl.fromTo(p,{y:-260,opacity:0},{y:0,opacity:1,duration:.4,ease:'bounce.out'},t);});
+   el.querySelectorAll('.stamp').forEach(p=>{const t=a+parseFloat(p.dataset.t);
+     tl.fromTo(p,{scale:2.6,opacity:0,rotation:-18},{scale:1,opacity:1,rotation:-7,duration:.24,ease:'power4.in'},t)
+       .to('#cam',{x:12,duration:.04,yoyo:true,repeat:5},t+.24);});
+   // slime move + hops
+   if(i>0){
+     tl.to(S,{x:xs[i],duration:.4,ease:'power2.inOut'},a+0.02).to(SH,{x:xs[i],duration:.4,ease:'power2.inOut'},a+0.02);
+   }
+   hop(a+(i===0?1.1:0.55),i%3===0?90:55,.42); hop(a+1.5,45,.4); hop(a+2.1,i%2?70:40,.4);
+   if(i===0) hop(a+2.6,50,.4);
+   // exit
+   if(i<17){
+     const e=b-0.24, k=i%3;
+     if(k===0) tl.to(sc,{x:-1080,duration:.24,ease:'power3.in'},e);
+     else if(k===1) tl.to(sc,{opacity:0,scale:.9,duration:.24,ease:'power2.in'},e);
+     else tl.to(sc,{y:-260,opacity:0,duration:.24,ease:'power2.in'},e);
+     tl.set(sc,{opacity:0},b);
+   }
+ }
+ // tracker + chapter backgrounds
+ tl.to('#trk',{opacity:1,duration:.3},8.7);
+ tl.to('#bg',{backgroundColor:'#14233A',duration:.4},11.3)
+   .to('#bg',{backgroundColor:'#2A1A33',duration:.4},22.1)
+   .to('#bg',{backgroundColor:'#0F2A24',duration:.4},30.2)
+   .to('#bg',{backgroundColor:'#08090B',duration:.4},38.3)
+   .to('#bg',{backgroundColor:'#10201F',duration:.4},46.4);
+
+ // --- scene specifics
+ // 1: button press then blocked
+ tl.to('#h_btn',{scale:.9,duration:.1,yoyo:true,repeat:1},1.75).to('#h_btn',{backgroundColor:'#5B6B68',color:'#C9D6D0',duration:.2},2.25);
+ // 4: tiles light up one by one
+ ['#q1','#q2','#q3'].forEach((q,k)=>{tl.to(q,{borderColor:'#5EE6A8',y:-18,duration:.2},8.6+1.75+k*.22).to(q,{y:0,duration:.2},8.6+1.95+k*.22);});
+ // 5: role glow
+ tl.to('#roleA',{boxShadow:'0 0 60px rgba(255,209,102,.55)',duration:.3},11.3+1.4);
+ // 6: cursor path  (prop-local coords)
+ tl.fromTo('#cur6',{opacity:0},{opacity:1,duration:.15},14.5)
+   .to('#cur6',{x:-370,y:-460,duration:.4,ease:'power2.inOut'},14.6)
+   .to('#w_biz',{backgroundColor:'#16282B',color:'#F3F7F2',duration:.12},15.05)
+   .to('#cur6',{x:-180,y:-120,duration:.45,ease:'power2.inOut'},15.4)
+   .to('#w_btn',{scale:.93,duration:.1,yoyo:true,repeat:1},15.95)
+   .to('#w_btn',{backgroundColor:'#1F9D6B',duration:.15},16.0);
+ // 7: agree press
+ tl.to('#agree',{scale:.88,duration:.1,yoyo:true,repeat:1},16.7+1.15);
+ // 11: submit press
+ tl.to('#submit',{scale:.9,duration:.1,yoyo:true,repeat:1},27.5+0.85).to('#submit',{backgroundColor:'#5B6B68',color:'#C9D6D0',duration:.2},27.5+1.1);
+ // 12: bank tile lights
+ tl.to('#bankT',{borderColor:'#FFD166',boxShadow:'0 0 50px rgba(255,209,102,.4)',duration:.3},30.2+1.6);
+ // 13: one block differs
+ tl.to('#odd',{backgroundColor:'#FF7B7B',scale:1.25,duration:.2},32.9+1.25).to('#odd',{rotation:20,duration:.1,yoyo:true,repeat:3},32.9+1.3);
+ // 14: status changes
+ tl.to('#st1',{opacity:0,y:-30,duration:.2},35.6+0.8).fromTo('#st2',{opacity:0,y:30},{opacity:1,y:0,duration:.2},35.6+0.85)
+   .to('#st2',{opacity:0,y:-30,duration:.2},35.6+1.5).fromTo('#st3',{opacity:0,y:30,scale:1},{opacity:1,y:0,duration:.2},35.6+1.55)
+   .to('#st3',{scale:1.18,duration:.18,yoyo:true,repeat:1,transformOrigin:'0% 50%'},35.6+1.78);
+ // 15: number pulse at end of count
+ tl.to('#n45',{scale:1.12,duration:.15,yoyo:true,repeat:1},38.3+1.52);
+ // 16: bar fills past the line
+ tl.to('#fill',{width:'82%',duration:1.3,ease:'power1.inOut'},41.0+0.45);
+ // 17: coins fall into main account, other dims
+ document.querySelectorAll('#s17 .coin').forEach((c,k)=>{const t=43.7+0.75+k*.3;
+   tl.fromTo(c,{y:-120,opacity:0},{y:150,opacity:1,duration:.3,ease:'power2.in'},t).to(c,{opacity:0,scale:.4,duration:.1},t+.3);});
+ tl.to('#acc2',{opacity:.4,duration:.3},43.7+1.1);
+ // 18: checks, slime to centre, bookmark press, zoom
+ document.querySelectorAll('#s18 .ck').forEach((c,k)=>{tl.fromTo(c,{opacity:0,scale:2.2},{opacity:1,scale:1,duration:.2,ease:'power4.in'},46.4+1.35+k*.22);});
+ tl.fromTo('#bm',{opacity:0,y:-80},{opacity:1,y:0,duration:.35,ease:'back.out(2)'},46.4+2.2)
+   .to('#bm',{scale:1.3,duration:.14,yoyo:true,repeat:1},46.4+2.75)
+   .to('#cam',{scale:1.06,duration:.7,ease:'power2.in'},49.2);
+
+ window.__timelines = window.__timelines || {};
+ window.__timelines['main'] = tl;
+ tl.seek(0);
+})();
+</script>
+</body>
+</html>
