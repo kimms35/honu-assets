@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="ko" data-resolution="portrait">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, height=1920">
+<script src="gsap.min.js"></script>
+<style>
+@font-face{font-family:P;font-weight:900;src:url("fonts/Pretendard-Black.ttf")}
+@font-face{font-family:P;font-weight:800;src:url("fonts/Pretendard-ExtraBold.ttf")}
+@font-face{font-family:P;font-weight:700;src:url("fonts/Pretendard-Bold.ttf")}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1920px;overflow:hidden;background:#4630B8;font-family:P;color:#fff}
+#root{position:absolute;inset:0;overflow:hidden}
+#cam{position:absolute;inset:0}
+#bg{position:absolute;inset:0;background-color:#4630B8}
+.pat{position:absolute;inset:0;opacity:.55;background-image:linear-gradient(45deg,rgba(255,255,255,.05) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.05) 75%),linear-gradient(45deg,rgba(255,255,255,.05) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.05) 75%);background-size:96px 96px;background-position:0 0,48px 48px}
+.halo{position:absolute;left:140px;top:520px;width:800px;height:1000px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.16),transparent)}
+.brand{position:absolute;left:64px;top:150px;display:block}
+.src{position:absolute;right:64px;top:150px;font-size:27px;font-weight:700;color:rgba(255,255,255,.72);text-align:right;line-height:1.25}
+.prog{position:absolute;left:64px;right:64px;top:222px;display:flex;gap:10px}
+.prog i{display:block;flex:1;height:10px;border-radius:5px;background:rgba(255,255,255,.2);overflow:hidden}
+.prog i b{display:block;height:100%;width:0;background:#FFD84D}
+.cap{position:absolute;left:0;right:0;top:268px;text-align:center;font-weight:900;font-size:88px;letter-spacing:-3px;line-height:1.14;opacity:0}
+.cap.hook{font-size:90px;top:252px}
+.cap .l{display:block;overflow:hidden;padding:3px 0}
+.cap .l>span{display:inline-block;white-space:nowrap}
+.cap b{font-weight:900}
+.y{color:#FFD84D}.r{color:#FF8A80}
+#phone{position:absolute;left:250px;top:590px;width:690px;height:850px;border-radius:64px;background:#120E2A;box-shadow:0 30px 0 rgba(0,0,0,.22)}
+#screen{position:absolute;left:25px;top:25px;width:640px;height:800px;border-radius:42px;background:#F6F4FF;overflow:hidden;color:#231C52}
+.scr{position:absolute;inset:0;opacity:0;padding:34px 34px}
+.note{position:absolute;left:262px;top:1462px;max-width:740px;white-space:nowrap;font-size:34px;font-weight:800;padding:13px 24px;border-radius:18px;background:rgba(10,8,30,.6);border:2px solid rgba(255,255,255,.28);color:#fff;opacity:0}
+#slime{position:absolute;left:22px;top:1296px;width:256px;height:224px;transform-origin:50% 100%}
+#slime img{position:absolute;inset:0;width:256px;height:224px;image-rendering:pixelated;opacity:0}
+#slime img.on{opacity:1}
+#shadow{position:absolute;left:62px;top:1508px;width:176px;height:24px;border-radius:50%;background:rgba(0,0,0,.3)}
+.lk{width:34px;height:38px;flex:none;color:#6C4DFF;--lkhole:#F6F4FF}
+.ck{width:44px;height:44px;color:#1FB56B}
+.xx{width:40px;height:40px;color:#E5484D}
+#cur{position:absolute;left:0;top:0;width:54px;height:66px;opacity:0;z-index:9}
+/* list */
+.hd{font-size:44px;font-weight:900;padding:6px 6px 22px}
+.row{display:flex;align-items:center;gap:20px;height:112px;margin-bottom:16px;padding:0 24px;border-radius:26px;background:#fff;font-size:38px;font-weight:800;position:relative;white-space:nowrap;overflow:hidden}
+.av{display:block;width:48px;height:48px;border-radius:14px;background:#D9D2FF;flex:none}
+.rl{position:absolute;right:22px;top:35px}
+.share{position:absolute;right:30px;top:36px;display:flex;align-items:center;gap:12px;font-size:34px;font-weight:900;color:#fff;background:#E5484D;padding:8px 20px;border-radius:30px}
+.share i{display:block;width:16px;height:16px;border-radius:50%;background:#fff}
+/* cal */
+.cal{width:380px;margin:60px auto 0;border-radius:36px;background:#fff;overflow:hidden;box-shadow:0 12px 0 #D9D2FF}
+.calm{background:#E5484D;color:#fff;font-size:42px;font-weight:900;text-align:center;padding:18px 0}
+.cald{height:300px;position:relative;overflow:hidden}
+.cald span{position:absolute;inset:0;text-align:center;font-size:230px;font-weight:900;line-height:300px;letter-spacing:-8px}
+.pill{display:flex;align-items:center;gap:16px;width:max-content;margin:70px auto 0;font-size:46px;font-weight:900;background:#231C52;color:#fff;padding:18px 36px;border-radius:50px}
+.pill .lk{color:#FFD84D;--lkhole:#231C52}
+/* menu */
+.hd2{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:26px;padding:22px 26px;font-size:40px}
+.hd2 em{font-style:normal;font-size:44px;letter-spacing:2px;background:#E9E4FF;border-radius:16px;padding:0 16px;line-height:60px}
+.menu{position:absolute;right:34px;top:140px;width:380px;background:#fff;border-radius:28px;box-shadow:0 14px 40px rgba(35,28,82,.25);padding:12px;transform-origin:100% 0}
+.menu div{display:flex;align-items:center;gap:14px;font-size:40px;font-weight:800;padding:20px 22px;border-radius:18px}
+.sheet{position:absolute;left:34px;right:34px;bottom:34px;background:#fff;border-radius:34px;padding:34px;box-shadow:0 -10px 50px rgba(35,28,82,.25)}
+.sheet p{font-size:36px;font-weight:800;text-align:center;margin-bottom:24px;color:#5A5390}
+.btn{display:flex;justify-content:center;align-items:center;gap:14px;font-size:42px;font-weight:900;background:#6C4DFF;color:#fff;border-radius:22px;padding:22px 0;margin-bottom:14px}
+.btn .lk{color:#fff;--lkhole:#6C4DFF}
+.btn.ghost{background:#EEEAFE;color:#231C52;margin:0}
+.btn.sm{padding:12px 30px;font-size:38px;margin:0;background:#E5484D}
+/* pin */
+.ttl{position:relative;height:70px;text-align:center;font-size:46px;font-weight:900;margin-top:10px}
+.ttl span{position:absolute;left:0;right:0}
+.ttl.s{height:auto;margin:6px 0 30px}
+.pins{display:flex;justify-content:center;gap:26px;margin:26px 0 34px}
+.pins i{display:block;width:84px;height:96px;border-radius:22px;background:#fff;border:4px solid #D9D2FF;position:relative}
+.pins b{position:absolute;left:24px;top:30px;width:28px;height:28px;border-radius:50%;background:#231C52}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 60px}
+.keys i{font-style:normal;text-align:center;font-size:44px;font-weight:900;line-height:104px;height:104px;border-radius:26px;background:#fff}
+.keys i.e{background:transparent}
+.okb{position:absolute;right:54px;top:34px;width:76px;height:76px;border-radius:50%;background:#D8F5E5;display:flex;align-items:center;justify-content:center}
+/* panels */
+.pan{position:relative;background:#fff;border-radius:28px;padding:22px 26px;margin-bottom:22px;height:226px}
+.pan h5{font-size:36px;font-weight:900;color:#6C4DFF;margin-bottom:16px}
+.prow{position:relative;height:98px;border-radius:20px;background:#F1EEFF;font-size:38px;font-weight:800;line-height:98px;padding:0 24px}
+.prow u{position:absolute;left:24px;top:0;text-decoration:none;color:#A39DCB;opacity:0}
+.pck{position:absolute;right:26px;top:16px}
+/* side */
+.side div{display:flex;align-items:center;gap:16px;font-size:42px;font-weight:800;padding:26px 30px;border-radius:24px;margin-bottom:12px;background:#fff}
+.side .sub{margin-left:50px;font-size:40px}
+.side .sub2{margin-left:100px;font-size:36px;background:#E9E4FF}
+/* face */
+.face{position:relative;width:300px;height:300px;margin:26px auto 44px}
+.face svg:first-of-type{position:absolute;left:40px;top:40px;width:220px;height:220px}
+.face i{position:absolute;width:56px;height:56px;border:10px solid #6C4DFF}
+.b1{left:0;top:0;border-right:none!important;border-bottom:none!important}.b2{right:0;top:0;border-left:none!important;border-bottom:none!important}
+.b3{left:0;bottom:0;border-right:none!important;border-top:none!important}.b4{right:0;bottom:0;border-left:none!important;border-top:none!important}
+.sl{position:absolute;left:20px;right:20px;top:20px;height:10px;border-radius:5px;background:#FFB020}
+.fok{position:absolute;right:-30px;bottom:-24px;width:92px;height:92px;border-radius:50%;background:#1FB56B;display:flex;align-items:center;justify-content:center}
+.fok .ck{color:#fff;width:56px;height:56px}
+.dv{background:#fff;border-radius:24px;padding:24px 28px;margin-bottom:18px;font-size:38px;font-weight:800;display:flex;gap:22px;align-items:center;white-space:nowrap}
+.dv b{font-weight:900;color:#6C4DFF;width:150px}
+/* ring */
+.ring{position:absolute;left:110px;top:90px;width:420px;height:420px}
+.rnum{position:absolute;left:110px;top:206px;width:420px;text-align:center;font-size:74px;font-weight:900}
+.rnum span{font-size:170px;letter-spacing:-6px;line-height:1}
+.relock{position:absolute;left:150px;top:580px;width:340px;display:flex;align-items:center;justify-content:center;gap:16px;font-size:50px;font-weight:900;padding:22px 0;border-radius:26px;background:#231C52;color:#fff}
+.relock .lk{color:#FFD84D;--lkhole:#231C52}
+/* kv */
+.kv{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:26px;padding:0 28px;height:128px;margin-bottom:22px;font-size:42px;font-weight:900;white-space:nowrap}
+.kv em{font-style:normal;font-size:38px;background:#FFE1DE;color:#C9302C;border-radius:16px;padding:8px 22px;display:flex;align-items:center}
+.kv em .xx{width:44px;height:44px}
+/* mem */
+.row.solo{margin-top:8px}
+.arrow{width:12px;height:70px;background:#B9B2E6;margin:6px auto 22px;border-radius:6px}
+.mem{position:relative;background:#fff;border:5px solid #D9D2FF;border-radius:30px;padding:28px 32px 34px}
+.mem h5{font-size:40px;font-weight:900;color:#6C4DFF;margin-bottom:14px}
+.mem p{font-size:40px;font-weight:800;line-height:1.6}
+.stay{position:absolute;right:-6px;bottom:-34px;font-size:42px;font-weight:900;color:#fff;background:#E5484D;border-radius:18px;padding:10px 24px;white-space:nowrap}
+/* reset */
+.set{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:26px;padding:24px 26px;font-size:40px;font-weight:900;margin-bottom:40px}
+.lrow{display:flex;align-items:center;gap:22px;background:#fff;border-radius:24px;height:108px;padding:0 28px;margin-bottom:18px}
+.lrow i{display:block;height:22px;border-radius:11px;background:#D9D2FF}
+.stamp{position:absolute;left:120px;top:400px;font-size:76px;font-weight:900;color:#E5484D;border:9px solid #E5484D;border-radius:22px;padding:10px 30px;background:rgba(246,244,255,.9);white-space:nowrap;opacity:0}
+.hs{display:block;width:230px;height:230px;margin:10px auto 40px}
+/* tiles */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px}
+.tile{position:relative;height:300px;border-radius:32px;background:#fff;display:flex;align-items:center;justify-content:center;text-align:center;font-size:40px;font-weight:900;line-height:1.3}
+.tx{position:absolute;right:-10px;top:-14px;width:84px;height:84px;border-radius:50%;background:#E5484D;display:flex;align-items:center;justify-content:center}
+.tx .xx{color:#fff;width:44px;height:44px}
+.act{position:relative;height:300px;border-radius:32px;background:#fff;display:flex;flex-direction:column;gap:18px;align-items:center;justify-content:center;font-size:42px;font-weight:900;color:#6C4DFF}
+.act>svg{width:112px;height:112px}
+.al{position:absolute;right:20px;top:20px}.al .lk{color:#231C52;--lkhole:#fff;width:44px;height:50px}
+/* folder */
+.fold{position:relative;background:#E4DEFF;border-radius:10px 40px 40px 40px;padding:30px;margin-top:60px;height:330px}
+.fold:before{content:"";position:absolute;left:0;top:-44px;width:260px;height:54px;border-radius:24px 24px 0 0;background:#E4DEFF}
+.fold h5{position:absolute;left:30px;top:-36px;font-size:36px;font-weight:900;color:#6C4DFF}
+.fc{display:inline-block;font-size:38px;font-weight:900;background:#fff;border-radius:20px;padding:16px 30px;margin-right:14px}
+.ghost2{display:block;height:112px;margin-top:26px;background:transparent;border:5px dashed #A99BF0;opacity:0;margin-right:0}
+.fcard{position:absolute;left:64px;top:220px;width:512px;height:112px;border-radius:24px;background:#fff;display:flex;align-items:center;gap:18px;padding:0 26px;font-size:38px;font-weight:800;box-shadow:0 10px 30px rgba(35,28,82,.2);white-space:nowrap}
+.cut{position:absolute;left:278px;top:418px;width:84px;height:84px;border-radius:50%;background:#E5484D;display:flex;align-items:center;justify-content:center}
+.cut .xx{color:#fff}
+/* compare */
+.cmp{background:#fff;border-radius:32px;padding:30px 34px;margin-bottom:26px;border:6px solid #6C4DFF;height:340px}
+.cmp.dash{border:6px dashed #A39DCB;background:#FBFAFF;color:#6A6498}
+.cmp h5{display:flex;align-items:center;gap:14px;font-size:50px;font-weight:900;margin-bottom:20px}
+.cmp p{font-size:42px;font-weight:800;line-height:1.7}
+/* plans */
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:30px}
+.plans i{font-style:normal;text-align:center;font-size:60px;font-weight:900;line-height:170px;border-radius:30px;background:#fff;color:#231C52}
+.devs{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px;justify-content:center}
+.devs span{font-size:36px;font-weight:900;background:#231C52;color:#fff;border-radius:40px;padding:12px 28px}
+/* checklist */
+.chk{display:flex;align-items:center;gap:22px;background:#fff;border-radius:28px;height:150px;padding:0 26px;margin-bottom:22px;font-size:40px;font-weight:900;white-space:nowrap}
+.bx{width:68px;height:68px;border-radius:18px;background:#E9E4FF;flex:none;display:flex;align-items:center;justify-content:center}
+/* save */
+#save{position:absolute;left:400px;top:700px;width:280px;height:350px;opacity:0}
+#save svg{position:absolute;inset:0;width:100%;height:100%}
+.spk{position:absolute;left:530px;top:860px;width:20px;height:20px;background:#FFD84D;opacity:0}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="53" data-width="1080" data-height="1920" data-fps="30">
+<div id="cam">
+ <div id="bg"></div><div class="pat"></div><div class="halo"></div>
+ <svg class="brand" viewBox="0 0 63 8" width="252" height="32" shape-rendering="crispEdges" aria-label="slimebot.ai"><g fill="rgba(0,0,0,.35)"><rect x="2" y="3" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/><rect x="4" y="3" width="1" height="1"/><rect x="5" y="3" width="1" height="1"/><rect x="1" y="4" width="1" height="1"/><rect x="2" y="5" width="1" height="1"/><rect x="3" y="5" width="1" height="1"/><rect x="4" y="5" width="1" height="1"/><rect x="5" y="6" width="1" height="1"/><rect x="1" y="7" width="1" height="1"/><rect x="2" y="7" width="1" height="1"/><rect x="3" y="7" width="1" height="1"/><rect x="4" y="7" width="1" height="1"/><rect x="8" y="1" width="1" height="1"/><rect x="9" y="1" width="1" height="1"/><rect x="9" y="2" width="1" height="1"/><rect x="9" y="3" width="1" height="1"/><rect x="9" y="4" width="1" height="1"/><rect x="9" y="5" width="1" height="1"/><rect x="9" y="6" width="1" height="1"/><rect x="8" y="7" width="1" height="1"/><rect x="9" y="7" width="1" height="1"/><rect x="10" y="7" width="1" height="1"/><rect x="15" y="1" width="1" height="1"/><rect x="14" y="3" width="1" height="1"/><rect x="15" y="3" width="1" height="1"/><rect x="15" y="4" width="1" height="1"/><rect x="15" y="5" width="1" height="1"/><rect x="15" y="6" width="1" height="1"/><rect x="14" y="7" width="1" height="1"/><rect x="15" y="7" width="1" height="1"/><rect x="16" y="7" width="1" height="1"/><rect x="19" y="3" width="1" height="1"/><rect x="20" y="3" width="1" height="1"/><rect x="22" y="3" width="1" height="1"/><rect x="19" y="4" width="1" height="1"/><rect x="21" y="4" width="1" height="1"/><rect x="23" y="4" width="1" height="1"/><rect x="19" y="5" width="1" height="1"/><rect x="21" y="5" width="1" height="1"/><rect x="23" y="5" width="1" height="1"/><rect x="19" y="6" width="1" height="1"/><rect x="21" y="6" width="1" height="1"/><rect x="23" y="6" width="1" height="1"/><rect x="19" y="7" width="1" height="1"/><rect x="21" y="7" width="1" height="1"/><rect x="23" y="7" width="1" height="1"/><rect x="26" y="3" width="1" height="1"/><rect x="27" y="3" width="1" height="1"/><rect x="28" y="3" width="1" height="1"/><rect x="25" y="4" width="1" height="1"/><rect x="29" y="4" width="1" height="1"/><rect x="25" y="5" width="1" height="1"/><rect x="26" y="5" width="1" height="1"/><rect x="27" y="5" width="1" height="1"/><rect x="28" y="5" width="1" height="1"/><rect x="29" y="5" width="1" height="1"/><rect x="25" y="6" width="1" height="1"/><rect x="26" y="7" width="1" height="1"/><rect x="27" y="7" width="1" height="1"/><rect x="28" y="7" width="1" height="1"/><rect x="31" y="1" width="1" height="1"/><rect x="31" y="2" width="1" height="1"/><rect x="31" y="3" width="1" height="1"/><rect x="32" y="3" width="1" height="1"/><rect x="33" y="3" width="1" height="1"/><rect x="34" y="3" width="1" height="1"/><rect x="31" y="4" width="1" height="1"/><rect x="35" y="4" width="1" height="1"/><rect x="31" y="5" width="1" height="1"/><rect x="35" y="5" width="1" height="1"/><rect x="31" y="6" width="1" height="1"/><rect x="35" y="6" width="1" height="1"/><rect x="31" y="7" width="1" height="1"/><rect x="32" y="7" width="1" height="1"/><rect x="33" y="7" width="1" height="1"/><rect x="34" y="7" width="1" height="1"/><rect x="38" y="3" width="1" height="1"/><rect x="39" y="3" width="1" height="1"/><rect x="40" y="3" width="1" height="1"/><rect x="37" y="4" width="1" height="1"/><rect x="41" y="4" width="1" height="1"/><rect x="37" y="5" width="1" height="1"/><rect x="41" y="5" width="1" height="1"/><rect x="37" y="6" width="1" height="1"/><rect x="41" y="6" width="1" height="1"/><rect x="38" y="7" width="1" height="1"/><rect x="39" y="7" width="1" height="1"/><rect x="40" y="7" width="1" height="1"/><rect x="44" y="1" width="1" height="1"/><rect x="44" y="2" width="1" height="1"/><rect x="43" y="3" width="1" height="1"/><rect x="44" y="3" width="1" height="1"/><rect x="45" y="3" width="1" height="1"/><rect x="46" y="3" width="1" height="1"/><rect x="44" y="4" width="1" height="1"/><rect x="44" y="5" width="1" height="1"/><rect x="44" y="6" width="1" height="1"/><rect x="47" y="6" width="1" height="1"/><rect x="45" y="7" width="1" height="1"/><rect x="46" y="7" width="1" height="1"/><rect x="49" y="7" width="1" height="1"/><rect x="52" y="3" width="1" height="1"/><rect x="53" y="3" width="1" height="1"/><rect x="54" y="3" width="1" height="1"/><rect x="55" y="4" width="1" height="1"/><rect x="52" y="5" width="1" height="1"/><rect x="53" y="5" width="1" height="1"/><rect x="54" y="5" width="1" height="1"/><rect x="55" y="5" width="1" height="1"/><rect x="51" y="6" width="1" height="1"/><rect x="55" y="6" width="1" height="1"/><rect x="52" y="7" width="1" height="1"/><rect x="53" y="7" width="1" height="1"/><rect x="54" y="7" width="1" height="1"/><rect x="55" y="7" width="1" height="1"/><rect x="59" y="1" width="1" height="1"/><rect x="58" y="3" width="1" height="1"/><rect x="59" y="3" width="1" height="1"/><rect x="59" y="4" width="1" height="1"/><rect x="59" y="5" width="1" height="1"/><rect x="59" y="6" width="1" height="1"/><rect x="58" y="7" width="1" height="1"/><rect x="59" y="7" width="1" height="1"/><rect x="60" y="7" width="1" height="1"/></g><g fill="rgba(255,255,255,.6)"><rect x="1" y="2" width="1" height="1"/><rect x="2" y="2" width="1" height="1"/><rect x="3" y="2" width="1" height="1"/><rect x="4" y="2" width="1" height="1"/><rect x="0" y="3" width="1" height="1"/><rect x="1" y="4" width="1" height="1"/><rect x="2" y="4" width="1" height="1"/><rect x="3" y="4" width="1" height="1"/><rect x="4" y="5" width="1" height="1"/><rect x="0" y="6" width="1" height="1"/><rect x="1" y="6" width="1" height="1"/><rect x="2" y="6" width="1" height="1"/><rect x="3" y="6" width="1" height="1"/><rect x="7" y="0" width="1" height="1"/><rect x="8" y="0" width="1" height="1"/><rect x="8" y="1" width="1" height="1"/><rect x="8" y="2" width="1" height="1"/><rect x="8" y="3" width="1" height="1"/><rect x="8" y="4" width="1" height="1"/><rect x="8" y="5" width="1" height="1"/><rect x="7" y="6" width="1" height="1"/><rect x="8" y="6" width="1" height="1"/><rect x="9" y="6" width="1" height="1"/><rect x="14" y="0" width="1" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="14" y="2" width="1" height="1"/><rect x="14" y="3" width="1" height="1"/><rect x="14" y="4" width="1" height="1"/><rect x="14" y="5" width="1" height="1"/><rect x="13" y="6" width="1" height="1"/><rect x="14" y="6" width="1" height="1"/><rect x="15" y="6" width="1" height="1"/><rect x="18" y="2" width="1" height="1"/><rect x="19" y="2" width="1" height="1"/><rect x="21" y="2" width="1" height="1"/><rect x="18" y="3" width="1" height="1"/><rect x="20" y="3" width="1" height="1"/><rect x="22" y="3" width="1" height="1"/><rect x="18" y="4" width="1" height="1"/><rect x="20" y="4" width="1" height="1"/><rect x="22" y="4" width="1" height="1"/><rect x="18" y="5" width="1" height="1"/><rect x="20" y="5" width="1" height="1"/><rect x="22" y="5" width="1" height="1"/><rect x="18" y="6" width="1" height="1"/><rect x="20" y="6" width="1" height="1"/><rect x="22" y="6" width="1" height="1"/><rect x="25" y="2" width="1" height="1"/><rect x="26" y="2" width="1" height="1"/><rect x="27" y="2" width="1" height="1"/><rect x="24" y="3" width="1" height="1"/><rect x="28" y="3" width="1" height="1"/><rect x="24" y="4" width="1" height="1"/><rect x="25" y="4" width="1" height="1"/><rect x="26" y="4" width="1" height="1"/><rect x="27" y="4" width="1" height="1"/><rect x="28" y="4" width="1" height="1"/><rect x="24" y="5" width="1" height="1"/><rect x="25" y="6" width="1" height="1"/><rect x="26" y="6" width="1" height="1"/><rect x="27" y="6" width="1" height="1"/><rect x="30" y="0" width="1" height="1"/><rect x="30" y="1" width="1" height="1"/><rect x="30" y="2" width="1" height="1"/><rect x="31" y="2" width="1" height="1"/><rect x="32" y="2" width="1" height="1"/><rect x="33" y="2" width="1" height="1"/><rect x="30" y="3" width="1" height="1"/><rect x="34" y="3" width="1" height="1"/><rect x="30" y="4" width="1" height="1"/><rect x="34" y="4" width="1" height="1"/><rect x="30" y="5" width="1" height="1"/><rect x="34" y="5" width="1" height="1"/><rect x="30" y="6" width="1" height="1"/><rect x="31" y="6" width="1" height="1"/><rect x="32" y="6" width="1" height="1"/><rect x="33" y="6" width="1" height="1"/><rect x="37" y="2" width="1" height="1"/><rect x="38" y="2" width="1" height="1"/><rect x="39" y="2" width="1" height="1"/><rect x="36" y="3" width="1" height="1"/><rect x="40" y="3" width="1" height="1"/><rect x="36" y="4" width="1" height="1"/><rect x="40" y="4" width="1" height="1"/><rect x="36" y="5" width="1" height="1"/><rect x="40" y="5" width="1" height="1"/><rect x="37" y="6" width="1" height="1"/><rect x="38" y="6" width="1" height="1"/><rect x="39" y="6" width="1" height="1"/><rect x="43" y="0" width="1" height="1"/><rect x="43" y="1" width="1" height="1"/><rect x="42" y="2" width="1" height="1"/><rect x="43" y="2" width="1" height="1"/><rect x="44" y="2" width="1" height="1"/><rect x="45" y="2" width="1" height="1"/><rect x="43" y="3" width="1" height="1"/><rect x="43" y="4" width="1" height="1"/><rect x="43" y="5" width="1" height="1"/><rect x="46" y="5" width="1" height="1"/><rect x="44" y="6" width="1" height="1"/><rect x="45" y="6" width="1" height="1"/><rect x="48" y="6" width="1" height="1"/><rect x="51" y="2" width="1" height="1"/><rect x="52" y="2" width="1" height="1"/><rect x="53" y="2" width="1" height="1"/><rect x="54" y="3" width="1" height="1"/><rect x="51" y="4" width="1" height="1"/><rect x="52" y="4" width="1" height="1"/><rect x="53" y="4" width="1" height="1"/><rect x="54" y="4" width="1" height="1"/><rect x="50" y="5" width="1" height="1"/><rect x="54" y="5" width="1" height="1"/><rect x="51" y="6" width="1" height="1"/><rect x="52" y="6" width="1" height="1"/><rect x="53" y="6" width="1" height="1"/><rect x="54" y="6" width="1" height="1"/><rect x="58" y="0" width="1" height="1"/><rect x="57" y="2" width="1" height="1"/><rect x="58" y="2" width="1" height="1"/><rect x="58" y="3" width="1" height="1"/><rect x="58" y="4" width="1" height="1"/><rect x="58" y="5" width="1" height="1"/><rect x="57" y="6" width="1" height="1"/><rect x="58" y="6" width="1" height="1"/><rect x="59" y="6" width="1" height="1"/></g></svg>
+ <div class="src">OpenAI 도움말 · 릴리스 노트<br>2026-11-27 확인</div>
+ <div class="prog"><i><b id="p0"></b></i><i><b id="p1"></b></i><i><b id="p2"></b></i><i><b id="p3"></b></i><i><b id="p4"></b></i></div>
+<div class="cap hook" id="c1"><span class="l"><span><b class="y">ChatGPT</b> 대화</span></span><span class="l"><span>숫자 4자리로</span></span><span class="l"><span><b class="y">목록에서 숨겨요</b></span></span></div>
+<div class="cap " id="c2"><span class="l"><span><b class="y">화면 공유</b>할 때</span></span><span class="l"><span>대화 목록 다 보이죠</span></span></div>
+<div class="cap " id="c3"><span class="l"><span>10월 20일에 나온</span></span><span class="l"><span><b class="y">잠금 채팅</b>이에요</span></span></div>
+<div class="cap " id="c4"><span class="l"><span>대화 옆 ••• 누르고</span></span><span class="l"><span><b class="y">Lock chat</b>을 골라요</span></span></div>
+<div class="cap " id="c5"><span class="l"><span>처음 잠글 때</span></span><span class="l"><span><b class="y">PIN 4자리</b>를 정해요</span></span></div>
+<div class="cap " id="c6"><span class="l"><span>목록에서도 검색에서도</span></span><span class="l"><span><b class="y">안 보여요</b></span></span></div>
+<div class="cap " id="c7"><span class="l"><span>숨긴 대화는</span></span><span class="l"><span><b class="y">Projects</b> 안에 있어요</span></span></div>
+<div class="cap " id="c8"><span class="l"><span>폰에서는 얼굴이나</span></span><span class="l"><span><b class="y">지문</b>으로도 열어요</span></span></div>
+<div class="cap " id="c9"><span class="l"><span>앱에서 나가면</span></span><span class="l"><span><b class="y">1분 뒤</b>에 다시 잠겨요</span></span></div>
+<div class="cap " id="c10"><span class="l"><span>근데 이건</span></span><span class="l"><span><b class="r">암호화</b>가 아니에요</span></span></div>
+<div class="cap " id="c11"><span class="l"><span>ChatGPT가 이미 기억한 건</span></span><span class="l"><span>잠가도 <b class="r">그대로</b> 남아요</span></span></div>
+<div class="cap " id="c12"><span class="l"><span>PIN을 재설정하면</span></span><span class="l"><span>잠근 대화가 <b class="r">다 지워져요</b></span></span></div>
+<div class="cap " id="c13"><span class="l"><span>OpenAI 고객센터도</span></span><span class="l"><span><b class="r">대신 못 열어</b> 줘요</span></span></div>
+<div class="cap " id="c14"><span class="l"><span>이런 대화는</span></span><span class="l"><span><b class="y">아예</b> 못 잠가요</span></span></div>
+<div class="cap " id="c15"><span class="l"><span>잠근 채로는</span></span><span class="l"><span><b class="y">공유</b>도 고정도 안 돼요</span></span></div>
+<div class="cap " id="c16"><span class="l"><span>프로젝트 안 대화는</span></span><span class="l"><span>잠그면 <b class="y">밖으로</b> 빠져요</span></span></div>
+<div class="cap " id="c17"><span class="l"><span><b class="y">임시 채팅</b>이랑은</span></span><span class="l"><span>다른 기능이에요</span></span></div>
+<div class="cap " id="c18"><span class="l"><span><b class="y">무료</b>로 쓰는 사람도</span></span><span class="l"><span>잠글 수 있어요</span></span></div>
+<div class="cap " id="c19"><span class="l"><span><b class="y">숫자 4자리</b> 잠금,</span></span><span class="l"><span>이것만 기억하세요</span></span></div>
+<div class="cap " id="c20"><span class="l"><span><b class="y">저장</b>해 뒀다가</span></span><span class="l"><span>화면 공유 전에 쓰세요</span></span></div>
+
+ <div id="phone"><div id="screen">
+<div class="scr" id="s1"><div class="hd">ChatGPT</div><div class="list"><div class="row" id="ar0"><i class="av"></i><span>이직 자기소개서 고치기</span></div><div class="row" id="ar1"><i class="av"></i><span>연봉 협상 연습</span></div><div class="row" id="ar2"><i class="av"></i><span>주말 여행 일정 짜기</span></div><div class="row" id="ar3"><i class="av"></i><span>저녁 메뉴 추천</span></div></div></div>
+<div class="scr" id="s2"><div class="hd">ChatGPT</div><div class="share" id="share"><i></i>화면 공유 중</div><div class="list"><div class="row" id="br0"><i class="av"></i><span>이직 자기소개서 고치기</span></div><div class="row" id="br1"><i class="av"></i><span>연봉 협상 연습</span></div><div class="row" id="br2"><i class="av"></i><span>주말 여행 일정 짜기</span></div><div class="row" id="br3"><i class="av"></i><span>저녁 메뉴 추천</span></div></div><div class="scan" id="scan"></div></div>
+<div class="scr" id="s3"><div class="cal" id="cal"><div class="calm">2026년 10월</div><div class="cald"><span id="cal19">19</span><span id="cal20">20</span></div></div><div class="pill" id="lcpill"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg>Locked chats</div></div>
+<div class="scr" id="s4"><div class="hd hd2"><span>연봉 협상 연습</span><em id="dots">•••</em></div><div class="menu" id="menu"><div>Rename</div><div id="mLock"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg>Lock chat</div><div>Delete</div></div><div class="sheet" id="sheet"><p>한 번 더 눌러야 잠겨요</p><div class="btn" id="sBtn"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg>Lock chat</div><div class="btn ghost">Cancel</div></div></div>
+<div class="scr" id="s5"><div class="ttl"><span id="pinA">PIN 만들기</span><span id="pinB">한 번 더 입력</span></div><div class="pins"><i><b id="pd0"></b></i><i><b id="pd1"></b></i><i><b id="pd2"></b></i><i><b id="pd3"></b></i></div><div class="keys"><i id="k1">1</i><i id="k2">2</i><i id="k3">3</i><i id="k4">4</i><i id="k5">5</i><i id="k6">6</i><i id="k7">7</i><i id="k8">8</i><i id="k9">9</i><i class="e"></i><i id="k0">0</i><i class="e"></i></div><div class="okb" id="pinok"><svg class="ck" viewBox="0 0 8 8" shape-rendering="crispEdges"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="currentColor"/></svg></div></div>
+<div class="scr" id="s6"><div class="pan" id="pan0"><h5>대화 목록</h5><div class="prow"><span id="pt0">연봉 협상 연습</span><u id="pe0">없음</u></div><div class="pck" id="pk0"><svg class="ck" viewBox="0 0 8 8" shape-rendering="crispEdges"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="currentColor"/></svg></div></div><div class="pan" id="pan1"><h5>고정한 대화</h5><div class="prow"><span id="pt1">연봉 협상 연습</span><u id="pe1">없음</u></div><div class="pck" id="pk1"><svg class="ck" viewBox="0 0 8 8" shape-rendering="crispEdges"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="currentColor"/></svg></div></div><div class="pan" id="pan2"><h5>검색</h5><div class="prow"><span id="pt2">연봉 협상 연습</span><u id="pe2">없음</u></div><div class="pck" id="pk2"><svg class="ck" viewBox="0 0 8 8" shape-rendering="crispEdges"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="currentColor"/></svg></div></div></div>
+<div class="scr" id="s7"><div class="side"><div>새 채팅</div><div>검색</div><div id="sdP" class="sdP">Projects</div><div class="sub" id="sdL"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg>Locked chats</div><div class="sub2" id="sdR"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg>연봉 협상 연습</div></div></div>
+<div class="scr" id="s8"><div class="face" id="face"><i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><svg viewBox="0 0 10 10" shape-rendering="crispEdges"><rect x="1" y="1" width="8" height="8" fill="#D9D2FF"/><rect x="3" y="3" width="1" height="2" fill="#2A2160"/><rect x="6" y="3" width="1" height="2" fill="#2A2160"/><rect x="3" y="6" width="4" height="1" fill="#2A2160"/></svg><div class="sl" id="fsl"></div><div class="fok" id="fok"><svg class="ck" viewBox="0 0 8 8" shape-rendering="crispEdges"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="currentColor"/></svg></div></div><div class="dv" id="dv1"><b>iPhone</b>Face ID · Touch ID</div><div class="dv" id="dv2"><b>Android</b>기기 잠금 해제</div></div>
+<div class="scr" id="s9"><svg class="ring" viewBox="0 0 200 200"><circle cx="100" cy="100" r="84" fill="none" stroke="#E4DEFF" stroke-width="18"/><circle id="ringc" cx="100" cy="100" r="84" fill="none" stroke="#6C4DFF" stroke-width="18" stroke-dasharray="528" stroke-dashoffset="528" transform="rotate(-90 100 100)"/></svg><div class="rnum"><span id="rn">0</span>초</div><div class="relock" id="relock"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg>다시 잠김</div></div>
+<div class="scr" id="s10"><div class="ttl s">잠가도 그대로인 것</div><div class="kv" id="kv0"><span>종단간 암호화</span><em id="kt0">아님</em></div><div class="kv" id="kv1"><span>보관 기간</span><em id="kt1">그대로</em></div><div class="kv" id="kv2"><span>학습 설정</span><em id="kt2">그대로</em></div></div>
+<div class="scr" id="s11"><div class="row solo" id="mrow"><i class="av"></i><span>연봉 협상 연습</span><div class="rl" id="mlock"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg></div></div><div class="arrow" id="marr"></div><div class="mem" id="mem"><h5>메모리</h5><p>· 이직 준비 중</p><p>· 다음 달 연봉 협상</p><div class="stay" id="mstay">그대로 남음</div></div></div>
+<div class="scr" id="s12"><div class="set"><span>Account PIN</span><div class="btn sm" id="rbtn">Reset</div></div><div class="lrow" id="lr0"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg><i style="width:330px"></i></div><div class="lrow" id="lr1"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg><i style="width:260px"></i></div><div class="lrow" id="lr2"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg><i style="width:300px"></i></div><div class="stamp" id="st12">복구 안 됨</div></div>
+<div class="scr" id="s13"><svg class="hs" id="hs" viewBox="0 0 12 12" shape-rendering="crispEdges"><path d="M3 1h6v1h1v1h1v5h-2V4H8V3H4v1H3v4H1V3h1V2h1z" fill="#B9B2E6"/><rect x="1" y="5" width="2" height="4" fill="#8E84D6"/><rect x="9" y="5" width="2" height="4" fill="#8E84D6"/><rect x="6" y="9" width="4" height="1" fill="#8E84D6"/><rect x="5" y="9" width="2" height="2" fill="#B9B2E6"/></svg><div class="kv" id="kv3"><span>PIN 우회</span><em id="kt3"><svg class="xx" viewBox="0 0 7 7" shape-rendering="crispEdges"><path d="M0 0h1v1h1v1h1v1h1V2h1V1h1V0h1v1H6v1H5v1H4v1h1v1h1v1h1v1H6V6H5V5H4V4H3v1H2v1H1v1H0V6h1V5h1V4h1V3H2V2H1V1H0z" fill="currentColor"/></svg></em></div><div class="kv" id="kv4"><span>지워진 대화 복구</span><em id="kt4"><svg class="xx" viewBox="0 0 7 7" shape-rendering="crispEdges"><path d="M0 0h1v1h1v1h1v1h1V2h1V1h1V0h1v1H6v1H5v1H4v1h1v1h1v1h1v1H6V6H5V5H4V4H3v1H2v1H1v1H0V6h1V5h1V4h1V3H2V2H1V1H0z" fill="currentColor"/></svg></em></div></div>
+<div class="scr" id="s14"><div class="tiles"><div class="tile" id="tl0"><span>임시 채팅</span><div class="tx" id="tx0"><svg class="xx" viewBox="0 0 7 7" shape-rendering="crispEdges"><path d="M0 0h1v1h1v1h1v1h1V2h1V1h1V0h1v1H6v1H5v1H4v1h1v1h1v1h1v1H6V6H5V5H4V4H3v1H2v1H1v1H0V6h1V5h1V4h1V3H2V2H1V1H0z" fill="currentColor"/></svg></div></div><div class="tile" id="tl1"><span>그룹 채팅</span><div class="tx" id="tx1"><svg class="xx" viewBox="0 0 7 7" shape-rendering="crispEdges"><path d="M0 0h1v1h1v1h1v1h1V2h1V1h1V0h1v1H6v1H5v1H4v1h1v1h1v1h1v1H6V6H5V5H4V4H3v1H2v1H1v1H0V6h1V5h1V4h1V3H2V2H1V1H0z" fill="currentColor"/></svg></div></div><div class="tile" id="tl2"><span>보관한 대화</span><div class="tx" id="tx2"><svg class="xx" viewBox="0 0 7 7" shape-rendering="crispEdges"><path d="M0 0h1v1h1v1h1v1h1V2h1V1h1V0h1v1H6v1H5v1H4v1h1v1h1v1h1v1H6V6H5V5H4V4H3v1H2v1H1v1H0V6h1V5h1V4h1V3H2V2H1V1H0z" fill="currentColor"/></svg></div></div><div class="tile" id="tl3"><span>예약 작업이<br>걸린 대화</span><div class="tx" id="tx3"><svg class="xx" viewBox="0 0 7 7" shape-rendering="crispEdges"><path d="M0 0h1v1h1v1h1v1h1V2h1V1h1V0h1v1H6v1H5v1H4v1h1v1h1v1h1v1H6V6H5V5H4V4H3v1H2v1H1v1H0V6h1V5h1V4h1V3H2V2H1V1H0z" fill="currentColor"/></svg></div></div></div></div>
+<div class="scr" id="s15"><div class="tiles"><div class="act" id="ac0"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="3" y="0" width="2" height="5" fill="currentColor"/><rect x="2" y="1" width="4" height="1" fill="currentColor"/><rect x="1" y="2" width="1" height="1" fill="currentColor"/><rect x="6" y="2" width="1" height="1" fill="currentColor"/><path d="M0 4h2v3h4V4h2v4H0z" fill="currentColor"/></svg><span>공유</span><div class="al" id="al0"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg></div></div><div class="act" id="ac1"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="2" y="0" width="4" height="1" fill="currentColor"/><rect x="3" y="1" width="2" height="3" fill="currentColor"/><rect x="1" y="4" width="6" height="1" fill="currentColor"/><rect x="3" y="5" width="2" height="3" fill="currentColor"/></svg><span>고정</span><div class="al" id="al1"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg></div></div><div class="act" id="ac2"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><path d="M0 1h3v1h5v6H0z" fill="currentColor"/></svg><span>이동</span><div class="al" id="al2"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg></div></div><div class="act" id="ac3"><svg viewBox="0 0 8 8" shape-rendering="crispEdges"><rect x="0" y="0" width="8" height="2" fill="currentColor"/><path d="M1 3h6v5H1z" fill="currentColor"/><rect x="3" y="4" width="2" height="1" fill="#F6F4FF"/></svg><span>보관</span><div class="al" id="al3"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg></div></div></div></div>
+<div class="scr" id="s16"><div class="fold"><h5>프로젝트</h5><div class="fc">지침</div><div class="fc">파일</div><div class="fc ghost2" id="fgh"></div></div><div class="fcard" id="fcard"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg><span>연봉 협상 연습</span></div><div class="cut" id="fcut"><svg class="xx" viewBox="0 0 7 7" shape-rendering="crispEdges"><path d="M0 0h1v1h1v1h1v1h1V2h1V1h1V0h1v1H6v1H5v1H4v1h1v1h1v1h1v1H6V6H5V5H4V4H3v1H2v1H1v1H0V6h1V5h1V4h1V3H2V2H1V1H0z" fill="currentColor"/></svg></div></div>
+<div class="scr" id="s17"><div class="cmp dash" id="cmpA"><h5>임시 채팅</h5><p>기록에 안 남아요</p><p>학습에 안 써요</p></div><div class="cmp" id="cmpB"><h5><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg>잠금 채팅</h5><p>계정에 저장돼요</p><p>PIN으로 숨겨요</p></div></div>
+<div class="scr" id="s18"><div class="plans"><i id="pl0">Free</i><i id="pl1">Go</i><i id="pl2">Plus</i><i id="pl3">Pro</i></div><div class="devs" id="devs"><span>웹</span><span>iOS</span><span>Android</span><span>데스크톱 앱</span></div></div>
+<div class="scr" id="s19"><div class="chk" id="ch0"><div class="bx"><div id="cx0"><svg class="ck" viewBox="0 0 8 8" shape-rendering="crispEdges"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="currentColor"/></svg></div></div><span>••• → Lock chat</span></div><div class="chk" id="ch1"><div class="bx"><div id="cx1"><svg class="ck" viewBox="0 0 8 8" shape-rendering="crispEdges"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="currentColor"/></svg></div></div><span>열 때는 Projects에서</span></div><div class="chk" id="ch2"><div class="bx"><div id="cx2"><svg class="ck" viewBox="0 0 8 8" shape-rendering="crispEdges"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="currentColor"/></svg></div></div><span>암호화는 아니에요</span></div><div class="chk" id="ch3"><div class="bx"><div id="cx3"><svg class="ck" viewBox="0 0 8 8" shape-rendering="crispEdges"><path d="M1 4h1v1h1v1h1V5h1V4h1V3h1V2H6v1H5v1H4v1H3V4H2V3H1z" fill="currentColor"/></svg></div></div><span>PIN 재설정 = 전부 삭제</span></div></div>
+
+  <svg id="cur" viewBox="0 0 9 11" shape-rendering="crispEdges"><path d="M0 0h1v1h1v1h1v1h1v1h1v1h1v1h1v1H5v1h1v2H5v1H4V9H3v1H2V9H1v1H0z" fill="#120E2A"/><path d="M1 2h1v1h1v1h1v1h1v1H4v2H3V7H2v1H1z" fill="#fff"/></svg>
+ </div></div>
+<div class="note" id="n2">같이 쓰는 기기에서도 마찬가지예요</div>
+<div class="note" id="n3">ChatGPT 릴리스 노트 2026-10-20</div>
+<div class="note" id="n4">답변이 다 나온 뒤에 눌러요</div>
+<div class="note" id="n5">다른 기기에서도 같은 PIN을 써요</div>
+<div class="note" id="n6">검색에는 조금 늦게 반영될 수 있어요</div>
+<div class="note" id="n7">모바일은 Explore 안에 있을 수도 있어요</div>
+<div class="note" id="n8">기기마다 따로 켜야 해요</div>
+<div class="note" id="n9">웹은 탭을 닫거나 새로고침하면 잠겨요</div>
+<div class="note" id="n10">보관 기간도 학습 설정도 안 바뀌어요</div>
+<div class="note" id="n11">잠근 뒤 생긴 기억은 일반 대화로 안 넘어가요</div>
+<div class="note" id="n12">잊어버리기만 해서는 안 지워져요</div>
+<div class="note" id="n13">회사 계정 관리자도 못 풀어요</div>
+<div class="note" id="n14">임시 채팅은 저장하면 잠글 수 있어요</div>
+<div class="note" id="n15">하려면 잠금부터 풀어야 해요</div>
+<div class="note" id="n16">프로젝트 지침·파일을 더는 못 써요</div>
+<div class="note" id="n17">잠금 채팅은 학습 설정을 그대로 따라요</div>
+<div class="note" id="n18">10월 20일부터 순서대로 적용돼요</div>
+
+ <div id="save">
+  <svg viewBox="0 0 8 10" shape-rendering="crispEdges"><path d="M0 0h8v10H7V9H6V8H5V7H3v1H2v1H1v1H0z" fill="#fff"/><path id="savein" d="M1 1h6v7H6V7H5V6H3v1H2v1H1z" fill="#4630B8"/></svg>
+ </div>
+ <i class="spk" id="k1s"></i><i class="spk" id="k2s"></i><i class="spk" id="k3s"></i><i class="spk" id="k4s"></i><i class="spk" id="k5s"></i><i class="spk" id="k6s"></i>
+ <div id="shadow"></div>
+ <div id="slime"><img id="m_base" src="slime/base.png" class="on"><img id="m_glint" src="slime/glint.png"><img id="m_sweat" src="slime/sweat.png"><img id="m_wink" src="slime/wink.png"><img id="m_smile" src="slime/smile.png"><img id="m_excited" src="slime/excited.png"><img id="m_think" src="slime/think.png"><img id="m_serious" src="slime/serious.png"><img id="m_doubt" src="slime/doubt.png"><img id="m_surprise" src="slime/surprise.png"><img id="m_sad" src="slime/sad.png"><img id="m_dizzy" src="slime/dizzy.png"><img id="m_star" src="slime/star.png"><img id="m_proud" src="slime/proud.png"></div>
+</div>
+</div>
+<script>
+(function(){
+ const tl = gsap.timeline({paused:true});
+ const T=[0,3.2,5.8,8.4,11.0,13.6,16.2,18.8,21.4,24.0,26.6,29.2,32.0,34.6,37.2,39.8,42.4,45.0,47.6,50.4,53.0], DUR=53;
+ const $=s=>document.querySelector(s);
+ $('#ar1').insertAdjacentHTML('beforeend',`<div class="rl" id="alock"><svg class="lk" viewBox="0 0 8 9" shape-rendering="crispEdges"><path d="M2 0h4v1h1v3h-1V1H2v3H1V1h1z" fill="currentColor"/><rect x="0" y="4" width="8" height="5" fill="currentColor"/><rect x="3" y="5" width="2" height="2" fill="var(--lkhole,#fff)"/></svg></div>`);
+ const moodAt=[[0,'base'],[1.3,'glint'],[3.2,'sweat'],[5.8,'base'],[9.8,'wink'],[11,'base'],[14.9,'smile'],[16.2,'base'],[20.0,'excited'],[21.4,'think'],[24,'serious'],[26.6,'doubt'],[30.2,'surprise'],[32,'sad'],[34.6,'dizzy'],[37.2,'base'],[45.9,'star'],[47.6,'base'],[49.6,'proud'],[50.4,'base']];
+ const imgs=[...document.querySelectorAll('#slime img')];
+ const setMood=t=>{let m='base';for(const [s,k] of moodAt) if(t>=s) m=k;imgs.forEach(i=>i.classList.toggle('on',i.id==='m_'+m));};
+ const clock={t:0};
+ tl.to(clock,{t:DUR,duration:DUR,ease:'none',onUpdate:()=>{setMood(clock.t);
+   const v=Math.round(60*Math.min(1,Math.max(0,(clock.t-21.65)/1.5)));$('#rn').textContent=v;}},0);
+ const S='#slime',SH='#shadow',B=.8;
+ gsap.set(S,{scale:B});
+ const squash=t=>{tl.to(S,{scaleY:B*.82,scaleX:B*1.12,duration:.08,ease:'none'},t).to(S,{scaleY:B,scaleX:B,duration:.3,ease:'elastic.out(1,.4)'},t+.08);};
+ const hop=(t,h=70)=>{tl.to(S,{y:-h,duration:.2,ease:'power2.out'},t).to(S,{y:0,duration:.18,ease:'power2.in'},t+.2);squash(t+.38);
+   tl.to(SH,{scale:.7,duration:.2},t).to(SH,{scale:1,duration:.18},t+.2);};
+ const pop=(sel,t,o={})=>tl.fromTo(sel,{scale:o.from??0,opacity:0},{scale:1,opacity:1,duration:o.d??.3,ease:o.ease??'back.out(2.2)'},t);
+ const slideIn=(sel,t,x=-80)=>tl.fromTo(sel,{x,opacity:0},{x:0,opacity:1,duration:.3,ease:'power3.out'},t);
+ const cur=(t,x,y,d=.35)=>tl.to('#cur',{x,y,duration:d,ease:'power2.inOut'},t);
+ const click=t=>tl.to('#cur',{scale:.75,duration:.07,yoyo:true,repeat:1,transformOrigin:'0 0'},t);
+
+ // 공통: 자막·폰 화면·한 줄 메모
+ for(let i=1;i<=20;i++){
+   const a=T[i-1], b=T[i], gap=(i===1)?.75:.42;
+   tl.set('#c'+i,{opacity:1},a);
+   document.querySelectorAll('#c'+i+' .l>span').forEach((el,k)=>{
+     tl.fromTo(el,{yPercent:118},{yPercent:0,duration:.36,ease:'power3.out'},a+.06+k*gap);});
+   if(i<20) tl.to('#c'+i,{opacity:0,duration:.14},b-.15);
+   if(i<=19){
+     tl.set('#s'+i,{opacity:1},a);
+     if(i>1) tl.fromTo('#s'+i,{scale:.94},{scale:1,duration:.28,ease:'power2.out'},a);
+     if(i<19) tl.to('#s'+i,{opacity:0,duration:.14},b-.15);
+   }
+   if($('#n'+i)){ tl.fromTo('#n'+i,{opacity:0,y:24,scale:.9},{opacity:1,y:0,scale:1,duration:.3,ease:'back.out(2)'},a+1.25);
+     tl.to('#n'+i,{opacity:0,duration:.14},b-.15); }
+   if(i>1) squash(a+.02);
+ }
+ // 진행 막대
+ [[0,8.4],[8.4,24],[24,34.6],[34.6,45],[45,53]].forEach(([a,b],k)=>tl.fromTo('#p'+k,{width:'0%'},{width:'100%',duration:b-a,ease:'none'},a));
+ // 배경색
+ tl.to('#bg',{backgroundColor:'#15102E',duration:.35},23.9).to('#bg',{backgroundColor:'#1D55B0',duration:.35},34.5).to('#bg',{backgroundColor:'#4630B8',duration:.35},47.5);
+
+ // 1 훅: 목록에서 한 줄이 잠기고 사라진다
+ tl.fromTo(S,{y:-1700},{y:0,duration:.45,ease:'power3.in'},0.05).fromTo(SH,{scale:.2,opacity:0},{scale:1,opacity:1,duration:.45},0.05);
+ squash(.5);
+ tl.fromTo('#phone',{y:120,opacity:0},{y:0,opacity:1,duration:.4,ease:'back.out(1.4)'},0.1);
+ tl.to('#ar1',{backgroundColor:'#E4DEFF',duration:.2},1.0);
+ pop('#alock',1.25,{from:2.4,ease:'power4.in',d:.22});
+ tl.to('#ar1',{x:700,opacity:0,duration:.3,ease:'power3.in'},2.1).to(['#ar2','#ar3'],{y:-128,duration:.28,ease:'power2.out'},2.38);
+ hop(2.45,60);
+ // 2 화면 공유
+ pop('#share',3.5);
+ tl.to('#share',{scale:1.08,duration:.22,yoyo:true,repeat:5,ease:'sine.inOut'},3.9);
+ [0,1,2,3].forEach(k=>tl.to('#br'+k,{backgroundColor:'#FFE9A8',duration:.16,yoyo:true,repeat:1},3.9+k*.32));
+ tl.to('#br1',{backgroundColor:'#FFD0CC',duration:.2},5.2).to('#br1',{x:10,duration:.05,yoyo:true,repeat:5},5.2);
+ // 3 달력
+ pop('#cal',6.0);
+ tl.fromTo('#cal20',{yPercent:100},{yPercent:0,duration:.35,ease:'back.out(1.6)'},6.7).to('#cal19',{yPercent:-100,duration:.3,ease:'power2.in'},6.6);
+ pop('#lcpill',7.25);
+ // 4 메뉴
+ tl.set('#cur',{x:480,y:520,opacity:1},8.45);
+ cur(8.5,566,48); click(8.9);
+ tl.fromTo('#menu',{scale:.3,opacity:0},{scale:1,opacity:1,duration:.22,ease:'back.out(1.8)'},8.98);
+ cur(9.25,400,262,.3); tl.to('#mLock',{backgroundColor:'#E9E4FF',duration:.15},9.5); click(9.72);
+ tl.fromTo('#sheet',{y:420,opacity:0},{y:0,opacity:1,duration:.3,ease:'power3.out'},9.85);
+ cur(10.15,330,590,.3); click(10.5);
+ tl.to('#sBtn',{scale:.94,duration:.08,yoyo:true,repeat:1},10.5);
+ tl.set('#cur',{opacity:0},10.85);
+ tl.set(['#menu','#sheet'],{opacity:0},0);
+ // 5 PIN
+ tl.set('#pinB',{opacity:0},0).set('#pinok',{opacity:0},0);
+ ['k2','k5','k8','k0'].forEach((k,i)=>{const t=11.4+i*.24;
+   tl.to('#'+k,{backgroundColor:'#D9D2FF',scale:.92,duration:.08,yoyo:true,repeat:1},t);
+   tl.fromTo('#pd'+i,{scale:0},{scale:1,duration:.15,ease:'back.out(3)'},t+.05);});
+ tl.to('#pinA',{opacity:0,y:-20,duration:.15},12.4).fromTo('#pinB',{opacity:0,y:20},{opacity:1,y:0,duration:.2},12.5);
+ tl.to(['#pd0','#pd1','#pd2','#pd3'],{scale:0,duration:.1},12.42);
+ [0,1,2,3].forEach(i=>tl.to('#pd'+i,{scale:1,duration:.12,ease:'back.out(3)'},12.62+i*.13));
+ pop('#pinok',13.15);
+ // 6 세 곳에서 사라짐
+ [0,1,2].forEach(k=>{slideIn('#pan'+k,13.7+k*.12);
+   const t=14.25+k*.42;
+   tl.to('#pt'+k,{opacity:0,x:60,duration:.2},t).to('#pe'+k,{opacity:1,duration:.2},t+.1);
+   pop('#pk'+k,t+.12);});
+ tl.set(['#pk0','#pk1','#pk2'],{opacity:0},0);
+ // 7 Projects 안
+ tl.set(['#sdL','#sdR'],{opacity:0},0);
+ tl.set('#cur',{x:420,y:560,opacity:1},16.25);
+ cur(16.35,170,300,.3); click(16.7);
+ tl.to('#sdP',{backgroundColor:'#E4DEFF',duration:.15},16.7);
+ slideIn('#sdL',16.85,-60);
+ cur(17.15,260,420,.25); click(17.45);
+ slideIn('#sdR',17.6,-60);
+ tl.to('#sdR',{scale:1.05,duration:.15,yoyo:true,repeat:1},18.0);
+ tl.set('#cur',{opacity:0},18.6);
+ // 8 얼굴·지문
+ pop('#face',18.95);
+ tl.fromTo('#fsl',{y:0},{y:250,duration:.45,ease:'sine.inOut',yoyo:true,repeat:1},19.15);
+ tl.set('#fok',{opacity:0},0); pop('#fok',20.05);
+ slideIn('#dv1',20.2); slideIn('#dv2',20.45);
+ // 9 1분 뒤 다시 잠김
+ tl.fromTo('#ringc',{attr:{'stroke-dashoffset':528}},{attr:{'stroke-dashoffset':0},duration:1.5,ease:'none'},21.65);
+ tl.set('#relock',{opacity:0},0);
+ pop('#relock',23.2,{from:2.2,ease:'power4.in',d:.2});
+ tl.to('#ringc',{attr:{stroke:'#B9B2E6'},duration:.2},23.2);
+ tl.to('#cam',{x:10,duration:.04,yoyo:true,repeat:3},23.4);
+ // 10 암호화 아님
+ [0,1,2].forEach(k=>{slideIn('#kv'+k,24.2+k*.14); tl.set('#kt'+k,{opacity:0},0); pop('#kt'+k,24.85+k*.4);});
+ // 11 기억
+ slideIn('#mrow',26.7); tl.set(['#mlock','#mstay'],{opacity:0},0);
+ tl.fromTo('#mlock',{y:-160,opacity:0},{y:0,opacity:1,duration:.25,ease:'power3.in'},27.15);
+ tl.fromTo('#marr',{scaleY:0,transformOrigin:'50% 0'},{scaleY:1,duration:.2},27.3);
+ slideIn('#mem',26.9,80);
+ tl.to('#mem',{borderColor:'#E5484D',duration:.2},27.9);
+ pop('#mstay',27.95,{from:2.2,ease:'power4.in',d:.2});
+ // 12 재설정 = 삭제
+ tl.set('#cur',{x:300,y:420,opacity:1},29.25);
+ cur(29.4,520,70,.35); click(29.85);
+ tl.to('#rbtn',{scale:.9,duration:.08,yoyo:true,repeat:1},29.85);
+ [0,1,2].forEach(k=>tl.to('#lr'+k,{y:260,rotation:(k%2?8:-8),opacity:0,duration:.4,ease:'power2.in'},30.05+k*.2));
+ tl.set('#cur',{opacity:0},30.3);
+ tl.fromTo('#st12',{scale:2.6,opacity:0,rotation:-18},{scale:1,opacity:1,rotation:-8,duration:.24,ease:'power4.in'},30.85);
+ tl.to('#cam',{x:14,duration:.04,yoyo:true,repeat:5},31.09);
+ // 13 고객센터
+ pop('#hs',32.15);
+ slideIn('#kv3',32.4); slideIn('#kv4',32.6);
+ tl.set(['#kv3 em','#kv4 em'],{opacity:0},0);
+ pop('#kv3 em',33.0,{from:2,ease:'power4.in',d:.18}); pop('#kv4 em',33.45,{from:2,ease:'power4.in',d:.18});
+ tl.to('#hs',{rotation:-8,duration:.1,yoyo:true,repeat:3},33.0);
+ // 14 못 잠그는 대화
+ [0,1,2,3].forEach(k=>{pop('#tl'+k,34.75+k*.1); tl.set('#tx'+k,{opacity:0},0);
+   pop('#tx'+k,35.4+k*.3,{from:2.2,ease:'power4.in',d:.16});
+   tl.to('#tl'+k,{backgroundColor:'#E3E1EE',color:'#8C88A8',duration:.2},35.45+k*.3);});
+ // 15 잠근 채로는
+ [0,1,2,3].forEach(k=>{pop('#ac'+k,37.35+k*.1); tl.set('#al'+k,{opacity:0},0);
+   tl.to('#ac'+k,{color:'#A7A3BF',backgroundColor:'#E9E7F2',duration:.2},38.1+k*.26);
+   pop('#al'+k,38.1+k*.26,{from:2,ease:'power4.in',d:.16});});
+ // 16 프로젝트에서 빠짐
+ slideIn('.fold',39.9,0); slideIn('#fcard',39.95,0);
+ tl.set('#fcut',{opacity:0},0);
+ tl.fromTo('#fcard .lk',{scale:0},{scale:1,duration:.2,ease:'back.out(3)'},40.55);
+ tl.to('#fcard',{y:300,rotation:3,duration:.45,ease:'back.inOut(1.4)'},40.9);
+ tl.to('#fgh',{opacity:1,duration:.2},41.1);
+ pop('#fcut',41.45,{from:2,ease:'power4.in',d:.16});
+ // 17 임시 채팅과 비교
+ slideIn('#cmpA',42.5,-200); slideIn('#cmpB',42.95,200);
+ tl.to('#cmpA',{opacity:.55,duration:.25},43.9).to('#cmpB',{scale:1.04,duration:.2,yoyo:true,repeat:1},43.9);
+ // 18 요금제
+ [0,1,2,3].forEach(k=>{pop('#pl'+k,45.15+k*.08);
+   tl.to('#pl'+k,{backgroundColor:k===0?'#FFD84D':'#6C4DFF',color:k===0?'#231C52':'#fff',duration:.15},45.7+k*.22);
+   tl.to('#pl'+k,{scale:1.08,duration:.1,yoyo:true,repeat:1},45.7+k*.22);});
+ slideIn('#devs',46.6,0);
+ hop(45.85,80);
+ // 19 정리
+ [0,1,2,3].forEach(k=>{slideIn('#ch'+k,47.7+k*.13); tl.set('#cx'+k,{opacity:0},0);
+   pop('#cx'+k,48.5+k*.36,{from:2.4,ease:'power4.in',d:.16});});
+ hop(49.65,60);
+ // 20 저장
+ tl.to('#phone',{y:1500,duration:.4,ease:'power3.in'},50.4);
+ tl.to(S,{x:388,scaleX:1.15,scaleY:1.15,duration:.5,ease:'power2.inOut'},50.5).to(SH,{x:388,scale:1.4,duration:.5,ease:'power2.inOut'},50.5);
+ tl.fromTo('#save',{y:-200,opacity:0,scale:.6},{y:0,opacity:1,scale:1,duration:.4,ease:'back.out(1.8)'},50.7);
+ tl.to(S,{y:-200,duration:.24,ease:'power2.out'},51.3).to(S,{y:0,duration:.22,ease:'power2.in'},51.54)
+   .to(S,{scaleY:.95,scaleX:1.32,duration:.07},51.76).to(S,{scaleY:1.15,scaleX:1.15,duration:.3,ease:'elastic.out(1,.4)'},51.83);
+ tl.to('#savein',{attr:{fill:'#FFD84D'},duration:.1},51.54).to('#save',{scale:1.18,duration:.12,yoyo:true,repeat:1},51.54);
+ [[-260,-200],[260,-220],[-300,60],[300,40],[-150,-330],[160,-340]].forEach(([x,y],k)=>{
+   tl.fromTo('#k'+(k+1)+'s',{x:0,y:0,opacity:1,scale:1,rotation:0},{x,y,opacity:0,scale:1.8,rotation:90,duration:.7,ease:'power2.out',immediateRender:false},51.56);});
+ tl.to('#save',{y:-14,duration:.4,yoyo:true,repeat:1,ease:'sine.inOut'},52.1);
+
+ window.__timelines = window.__timelines || {};
+ window.__timelines['main'] = tl;
+ tl.seek(0);
+})();
+</script>
+</body>
+</html>
